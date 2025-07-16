@@ -1,0 +1,35 @@
+# --- Environment Variables ---
+# Ignore the file that contains secret API keys and other environment variables.
+# This is the most important line to prevent leaking your secrets.
+.env
+__pycache__/
+
+# --- Python Virtual Environment ---
+# Ignore the virtual environment folder. This folder contains installed packages
+# and is specific to your local machine. It should not be in version control.
+.venv/
+
+# --- Python Cache ---
+# Ignore Python's bytecode cache directory and compiled files.
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- IDE and Editor Configuration ---
+# Ignore configuration files from popular editors like VS Code and PyCharm.
+.vscode/
+.idea/
+
+# --- Database Files ---
+# Ignore the SQLite database file. It's better to share the schema
+# or use migrations rather than the database file itself.
+data/experiments.db
+*.sqlite3
+
+# --- Generated Files & Logs ---
+# Ignore any folders where you might store generated test outputs or logs.
+test_outputs/
+reports/
+*.log
+

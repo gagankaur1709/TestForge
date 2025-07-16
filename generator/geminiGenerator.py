@@ -1,7 +1,7 @@
 import os
 from google import genai
 from google.genai import types
-from baseGenerator import TestGenerator
+from generator.baseGenerator import TestGenerator
 
 class GeminiGenerator(TestGenerator):
     """
