@@ -6,25 +6,15 @@ from config import Config
 
 def get_db_connection():
     conn = sqlite3.connect(Config.DATABASE_PATH)
-    # This allows you to access columns by name (like a dictionary)
     conn.row_factory = sqlite3.Row
     return conn
 
 def init_db():
-    """
-    Initializes the database and creates the 'experiments' table if it
-    doesn't already exist. This function should be called once when the
-    application starts.
-    """
     print("Initializing database...")
     conn = get_db_connection()
     cursor = conn.cursor()
-    
-    # Drop table if it exists for a clean start during development (optional)
-    # In a real production app, you would use migrations instead.
-    # cursor.execute('DROP TABLE IF EXISTS experiments')
 
-    # Define the schema for the experiments table
+    # Schema for the experiments table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS experiments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,12 +51,6 @@ def init_db():
     print("Database initialized successfully.")
 
 def add_experiment_result(result_data: dict):
-    """
-    Adds a new record for a completed experiment to the database.
-
-    Args:
-        result_data: A dictionary containing all the metrics for the run.
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
     
@@ -105,9 +89,6 @@ def add_experiment_result(result_data: dict):
     print(f"Result for experiment '{result_data.get('experiment_id')}' added to database.")
 
 def get_all_experiments():
-    """
-    Retrieves all experiment records from the database.
-    """
     conn = get_db_connection()
     experiments = conn.execute('SELECT * FROM experiments ORDER BY timestamp DESC').fetchall()
     conn.close()
