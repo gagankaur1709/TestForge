@@ -23,29 +23,19 @@ def analyze_effectiveness(test_file_path: str, benchmark_path: str, output_dir: 
     results = {
         "compiles": False,
         "runs_successfully": False,
-        "fault_detected": False, # Placeholder
+        "fault_detected": False, 
         "line_coverage": 0.0,
         "branch_coverage": 0.0
     }
 
-    # Determine the destination for the test file within the benchmark project
     test_filename = os.path.basename(test_file_path)
-    # This path needs to be made more dynamic in a real implementation
     test_destination_dir = os.path.join(benchmark_path, 'src', 'test', 'java', 'org', 'springframework', 'samples', 'petclinic', 'model')
     os.makedirs(test_destination_dir, exist_ok=True)
     destination_path = os.path.join(test_destination_dir, test_filename)
-    
-    # Copy the test file to the benchmark directory
     shutil.copyfile(test_file_path, destination_path)
-
-    # Run Maven to compile and test
     success, output = run_maven_command(['mvn', 'clean', 'verify'], working_dir=benchmark_path)
-    
-    # Save the build log to the experiment's output directory
     with open(os.path.join(output_dir, 'build_log.txt'), 'w') as f:
         f.write(output)
-
-    # Clean up the copied test file immediately after the run
     os.remove(destination_path)
 
     if not success:
@@ -55,7 +45,6 @@ def analyze_effectiveness(test_file_path: str, benchmark_path: str, output_dir: 
     results["compiles"] = True
     results["runs_successfully"] = "BUILD SUCCESS" in output
     
-    # Parse JaCoCo coverage report
     jacoco_report_path = os.path.join(benchmark_path, 'target', 'site', 'jacoco', 'jacoco.xml')
     if os.path.exists(jacoco_report_path):
         shutil.copy(jacoco_report_path, os.path.join(output_dir, 'jacoco.xml'))

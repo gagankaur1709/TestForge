@@ -70,7 +70,9 @@ def run_experiment(generator_name, prompt_strategy, benchmark_name):
     with open(test_file_path, 'w') as f:
         f.write(generated_code)
 
+    print("Analyzing effectiveness...")
     effectiveness_results = analyze_effectiveness(test_file_path, benchmark_path, output_dir)
+    print("Analyzing maintainability...")
     maintainability_results = analyze_maintainability(test_file_path, config['PMD_PATH'], config['RULESET_PATH'])
     
     final_results = {

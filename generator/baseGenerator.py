@@ -23,9 +23,7 @@ class TestGenerator(ABC):
 
         Args:
             code_context: A string containing the source code to be tested.
-            prompt_strategy: A string identifying the prompting technique 
-                             (e.g., 'CoT', 'GToT'). This might be ignored
-                             by non-LLM generators.
+            prompt_strategy: A string identifying the prompting technique
 
         Returns:
             A string containing the complete, generated test code.

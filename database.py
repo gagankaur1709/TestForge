@@ -54,7 +54,6 @@ def add_experiment_result(result_data: dict):
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Using parameterized queries to prevent SQL injection
     query = '''
         INSERT INTO experiments (
             experiment_id, generator_name, prompt_strategy, benchmark_name,
@@ -90,6 +89,7 @@ def add_experiment_result(result_data: dict):
 
 def get_all_experiments():
     conn = get_db_connection()
+    print("Getting all experiments...")
     experiments = conn.execute('SELECT * FROM experiments ORDER BY timestamp DESC').fetchall()
     conn.close()
     return experiments

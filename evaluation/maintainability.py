@@ -25,15 +25,13 @@ def analyze_maintainability(test_file_path: str, pmd_path: str, ruleset_path: st
     
     results = {
         "cyclomatic_complexity": 0,
-        "cognitive_complexity": 0,  # Note: PMD doesn't calculate this directly, placeholder
+        "cognitive_complexity": 0, 
         "coupling_between_objects": 0,
-        "test_brittleness_score": 0 # Placeholder for future implementation
+        "test_brittleness_score": 0 
     }
     
     report_file = "pmd_report.xml"
 
-    # Construct the command to run PMD
-    # On Windows, the command might be 'pmd.bat' instead of 'run.sh pmd'
     pmd_executable = os.path.join(pmd_path, 'bin', 'pmd')
     command = [
         pmd_executable,
@@ -44,27 +42,18 @@ def analyze_maintainability(test_file_path: str, pmd_path: str, ruleset_path: st
     ]
 
     try:
-        # Run PMD as a subprocess
         subprocess.run(command, check=True, capture_output=True, text=True)
-        
-        # Parse the generated XML report
         if os.path.exists(report_file):
             tree = ET.parse(report_file)
             root = tree.getroot()
-            
-            # Namespace is often required for parsing PMD reports
             ns = {'pmd': 'http://pmd.sourceforge.net/report/2.0.0'}
             
-            # Extract metrics from violations reported by PMD
-            # This is an example; you'll need to adjust based on your ruleset
             for violation in root.findall('.//pmd:violation', ns):
                 rule = violation.get('rule')
                 if rule == 'CyclomaticComplexity':
-                    # PMD often reports complexity in the message
                     message = violation.text
                     if message:
                         try:
-                            # Example message: "The method 'testMethod' has a Cyclomatic Complexity of 10."
                             complexity = int(message.split(" of ")[-1].replace('.', ''))
                             results['cyclomatic_complexity'] += complexity
                         except (ValueError, IndexError):
@@ -74,13 +63,12 @@ def analyze_maintainability(test_file_path: str, pmd_path: str, ruleset_path: st
                     message = violation.text
                     if message:
                         try:
-                            # Example message: "The class 'TestClass' has a coupling of 5."
                             coupling = int(message.split(" of ")[-1].replace('.', ''))
-                            results['coupling_between_objects'] = coupling # Usually one value per class
+                            results['coupling_between_objects'] = coupling
                         except (ValueError, IndexError):
                             pass
 
-            os.remove(report_file) # Clean up the report file
+            os.remove(report_file)
         
     except subprocess.CalledProcessError as e:
         print(f"PMD analysis failed with exit code {e.returncode}")

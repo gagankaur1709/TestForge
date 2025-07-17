@@ -26,7 +26,7 @@ class GeminiGenerator(TestGenerator):
             full_prompt = prompt_template.format(code_context=code_context) # Construct the full prompt
             
             response = client.models.generate_content(
-                model='gemini-1.5-pro-latest', # Specifying the model string
+                model='gemini 2.0 Flash-Lite', # Specifying the model string
                 contents=full_prompt
             )
             
