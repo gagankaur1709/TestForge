@@ -34,3 +34,5 @@ reports/
 *.log
 outputs/
 
+pmd_report.xml
+
