@@ -9,7 +9,7 @@ init_db()
 
 app = Flask(__name__)
 app.config.from_object(Config)
-app.secret_key = 'a_super_secret_key_for_flashing_messages' # Needed for flash messages
+app.secret_key = app.config['SECRET_KEY']
 
 @app.route('/')
 def index():
@@ -25,16 +25,11 @@ def index():
 
 @app.route('/run', methods=('GET', 'POST'))
 def run():
-    """
-    This page displays a form to start a new experiment. 
-    """
     if request.method == 'POST':
         generator_name = request.form['generator_name']
         prompt_strategy = request.form['prompt_strategy']
         benchmark_name = request.form['benchmark_name']
 
-        # Run the experiment in a background thread so the UI doesn't freeze
-        # This is important because your experiment can take a long time to run.
         thread = threading.Thread(
             target=run_experiment,
             args=(generator_name, prompt_strategy, benchmark_name)
