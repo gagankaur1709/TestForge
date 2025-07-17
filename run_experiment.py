@@ -50,7 +50,6 @@ def run_experiment(generator_name, prompt_strategy, benchmark_name):
     else:
         raise ValueError(f"Unknown generator: {generator_name}")
 
-    # Specify the classes you want to include in the integration test context
     class_names = ["Owner", "Pet", "Visit", "OwnerController", "PetController", "Vet", "VetController"]
     code_context = load_code_context(class_names, benchmark_path)
     if not code_context:

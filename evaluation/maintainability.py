@@ -33,16 +33,16 @@ def analyze_maintainability(test_file_path: str, pmd_path: str, ruleset_path: st
     report_file = "pmd_report.xml"
 
     pmd_executable = os.path.join(pmd_path, 'bin', 'pmd')
-    command = [
-        pmd_executable,
-        '-d', test_file_path,
-        '-f', 'xml',
-        '-R', ruleset_path,
-        '-r', report_file
+    pmd_cmd = [
+        pmd_executable, "check",
+        "--dir", test_file_path,
+        "--rulesets", ruleset_path,
+        "--format", "xml",
+        "--report-file", "pmd_report.xml"
     ]
 
     try:
-        subprocess.run(command, check=True, capture_output=True, text=True)
+        subprocess.run(pmd_cmd, check=True, capture_output=True, text=True)
         if os.path.exists(report_file):
             tree = ET.parse(report_file)
             root = tree.getroot()

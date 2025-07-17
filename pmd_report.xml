@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 https://pmd.github.io/schema/report_2_0_0.xsd" version="7.15.0" timestamp="2025-07-17T15:46:13.833">
+<error filename="outputs/Gemini-Pro_chain_of_thought_75013625/GeneratedTest.java" msg="ParseException: Parse exception in file 'outputs/Gemini-Pro_chain_of_thought_75013625/GeneratedTest.java' at line 1, column 10: Encountered &lt;IDENTIFIER: &quot;occurred&quot;&gt;.
+Was expecting:
+    &quot;(&quot; ...">
+<![CDATA[net.sourceforge.pmd.lang.ast.ParseException: Parse exception in file 'outputs/Gemini-Pro_chain_of_thought_75013625/GeneratedTest.java' at line 1, column 10: Encountered <IDENTIFIER: "occurred">.
+Was expecting:
+    "(" ...
+	at net.sourceforge.pmd.lang.java.ast.JavaParserImpl.generateParseException(JavaParserImpl.java:14677)
+	at net.sourceforge.pmd.lang.java.ast.JavaParserImpl.jj_consume_token(JavaParserImpl.java:14558)
+	at net.sourceforge.pmd.lang.java.ast.JavaParserImpl.FormalParameters(JavaParserImpl.java:1821)
+	at net.sourceforge.pmd.lang.java.ast.JavaParserImpl.MethodDeclaration(JavaParserImpl.java:1764)
+	at net.sourceforge.pmd.lang.java.ast.JavaParserImpl.CompilationUnit(JavaParserImpl.java:413)
+	at net.sourceforge.pmd.lang.java.ast.JavaParser.parseImpl(JavaParser.java:57)
+	at net.sourceforge.pmd.lang.java.ast.JavaParser.parseImpl(JavaParser.java:25)
+	at net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter.parse(JjtreeParserAdapter.java:36)
+	at net.sourceforge.pmd.lang.impl.PmdRunnable.parse(PmdRunnable.java:112)
+	at net.sourceforge.pmd.lang.impl.PmdRunnable.processSource(PmdRunnable.java:132)
+	at net.sourceforge.pmd.lang.impl.PmdRunnable.run(PmdRunnable.java:80)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+]]>
+</error>
+</pmd>
