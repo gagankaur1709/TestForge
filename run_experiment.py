@@ -9,6 +9,29 @@ from generator.geminiGenerator import GeminiGenerator
 from evaluation.effectiveness import analyze_effectiveness
 from evaluation.maintainability import analyze_maintainability
 
+def load_code_context(class_names, benchmark_path):
+    """
+    Loads the source code for the given Java class names from the benchmark project.
+    Args:
+        class_names: List of class names
+        benchmark_path: Path to the root of the benchmark project 
+    Returns:
+        A string containing the concatenated source code of the selected classes.
+    """
+    src_root = os.path.join(benchmark_path, 'src', 'main', 'java', 'org', 'springframework', 'samples', 'petclinic')
+    packages = ['owner', 'model', 'vet', 'system']
+    code = ''
+    for pkg in packages:
+        pkg_dir = os.path.join(src_root, pkg)
+        if not os.path.isdir(pkg_dir):
+            continue
+        for class_name in class_names:
+            java_file = os.path.join(pkg_dir, f'{class_name}.java')
+            if os.path.isfile(java_file):
+                with open(java_file, 'r') as f:
+                    code += f'// File: {pkg}/{class_name}.java\n' + f.read() + '\n\n'
+    return code
+
 def run_experiment(generator_name, prompt_strategy, benchmark_name):
     experiment_id = f"{generator_name}_{prompt_strategy}_{uuid.uuid4().hex[:8]}"
     print(f"\n--- Starting Experiment: {experiment_id} ---")
@@ -27,10 +50,12 @@ def run_experiment(generator_name, prompt_strategy, benchmark_name):
     else:
         raise ValueError(f"Unknown generator: {generator_name}")
 
-    # Load the code context from the benchmark
-    # This is a placeholder - you'll need to build a function to select
-    # specific classes from the benchmark project.
-    code_context = "public class Owner { /* ... source code ... */ }" # Placeholder
+    # Specify the classes you want to include in the integration test context
+    class_names = ["Owner", "Pet", "Visit", "OwnerController", "PetController", "Vet", "VetController"]
+    code_context = load_code_context(class_names, benchmark_path)
+    if not code_context:
+        print("Failed to load code context. Check class names and paths.")
+        return
 
     start_time = time.time()
     generated_code = generator.generate(code_context, prompt_strategy)
