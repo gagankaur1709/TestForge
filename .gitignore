@@ -32,4 +32,5 @@ data/experiments.db
 test_outputs/
 reports/
 *.log
+outputs/
 
