@@ -16,7 +16,6 @@ class DeepSeekGenerator(TestGenerator):
             return "Error: DeepSeek API key is not configured."
 
         try:
-            # The client is an OpenAI client pointed at the DeepSeek API endpoint
             client = OpenAI(
                 api_key=self.api_key,
                 base_url="https://api.deepseek.com/v1"
@@ -36,7 +35,7 @@ class DeepSeekGenerator(TestGenerator):
                         "content": full_prompt,
                     }
                 ],
-                model=model_name, # Use the model_name passed from the UI
+                model=model_name,
             )
             
             raw_response = chat_completion.choices[0].message.content
