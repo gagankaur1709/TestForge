@@ -33,6 +33,7 @@ def analyze_effectiveness(test_file_path: str, benchmark_path: str, output_dir: 
     os.makedirs(test_destination_dir, exist_ok=True)
     destination_path = os.path.join(test_destination_dir, test_filename)
     shutil.copyfile(test_file_path, destination_path)
+    run_maven_command(['mvn', 'spring-javaformat:apply'], working_dir=benchmark_path)
     success, output = run_maven_command(['mvn', 'clean', 'verify'], working_dir=benchmark_path)
     with open(os.path.join(output_dir, 'build_log.txt'), 'w') as f:
         f.write(output)

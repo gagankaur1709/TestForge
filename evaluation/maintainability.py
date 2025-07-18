@@ -3,6 +3,7 @@
 import subprocess
 import os
 import xml.etree.ElementTree as ET
+import re
 
 def analyze_maintainability(test_file_path: str, pmd_path: str, ruleset_path: str) -> dict:
     """
@@ -30,51 +31,42 @@ def analyze_maintainability(test_file_path: str, pmd_path: str, ruleset_path: st
         "test_brittleness_score": 0 
     }
     
-    report_file = "pmd_report.xml"
+    report_file = os.path.join(os.path.dirname(test_file_path), "pmd_report.xml")
 
     pmd_executable = os.path.join(pmd_path, 'bin', 'pmd')
     pmd_cmd = [
         pmd_executable, "check",
-        "--dir", test_file_path,
+        "--dir", os.path.dirname(test_file_path),
         "--rulesets", ruleset_path,
         "--format", "xml",
-        "--report-file", "pmd_report.xml"
+        "--report-file", report_file
     ]
 
-    try:
-        subprocess.run(pmd_cmd, check=True, capture_output=True, text=True)
-        if os.path.exists(report_file):
-            tree = ET.parse(report_file)
-            root = tree.getroot()
-            ns = {'pmd': 'http://pmd.sourceforge.net/report/2.0.0'}
-            
-            for violation in root.findall('.//pmd:violation', ns):
-                rule = violation.get('rule')
-                if rule == 'CyclomaticComplexity':
-                    message = violation.text
-                    if message:
-                        try:
-                            complexity = int(message.split(" of ")[-1].replace('.', ''))
-                            results['cyclomatic_complexity'] += complexity
-                        except (ValueError, IndexError):
-                            pass # Handle cases where parsing fails
-                
-                elif rule == 'CouplingBetweenObjects':
-                    message = violation.text
-                    if message:
-                        try:
-                            coupling = int(message.split(" of ")[-1].replace('.', ''))
-                            results['coupling_between_objects'] = coupling
-                        except (ValueError, IndexError):
-                            pass
-
-            os.remove(report_file)
+    result = subprocess.run(pmd_cmd, capture_output=True, text=True)
+    if os.path.exists(report_file):
+        tree = ET.parse(report_file)
+        root = tree.getroot()
+        violations = list(root.iter('{http://pmd.sourceforge.net/report/2.0.0}violation'))
+        for violation in violations:
+            rule = violation.get('rule')
+            message = violation.text
+            if rule == 'CyclomaticComplexity' and message:
+                try:
+                    match = re.search(r"cyclomatic complexity of (\d+)", message)
+                    if match:
+                        complexity = int(match.group(1))
+                        results['cyclomatic_complexity'] += complexity
+                except Exception as e:
+                    pass
+            elif rule == 'CouplingBetweenObjects' and message:
+                try:
+                    match = re.search(r"of (\d+)", message)
+                    if match:
+                        coupling = int(match.group(1))
+                        results['coupling_between_objects'] = coupling
+                except Exception as e:
+                    pass
+        os.remove(report_file)
         
-    except subprocess.CalledProcessError as e:
-        print(f"PMD analysis failed with exit code {e.returncode}")
-        print(f"Stderr: {e.stderr}")
-    except Exception as e:
-        print(f"An error occurred during maintainability analysis: {e}")
-
     return results
 
