@@ -6,3 +6,4 @@ class Config:
     DATABASE_PATH = os.path.join('data', 'experiments.db')
     BENCHMARK_DIR = 'benchmark'
     SECRET_KEY = os.getenv("SECRET_KEY")
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY")

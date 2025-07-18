@@ -6,6 +6,7 @@ import uuid
 from config import Config
 from database import init_db, add_experiment_result
 from generator.geminiGenerator import GeminiGenerator
+from generator.codellama_generator import CodeLlamaGenerator
 from evaluation.effectiveness import analyze_effectiveness
 from evaluation.maintainability import analyze_maintainability
 
@@ -37,7 +38,7 @@ def run_experiment(generator_name, prompt_strategy, benchmark_name):
     print(f"\n--- Starting Experiment: {experiment_id} ---")
     config = {
         "GOOGLE_API_KEY": Config.GOOGLE_API_KEY,
-        "PMD_PATH": "/Users/gagan/tools/pmd-bin-7.15.0", # IMPORTANT: Update this path
+        "PMD_PATH": "/Users/gagan/tools/pmd-bin-7.15.0",
         "RULESET_PATH": "rulesets/maintainability_rules.xml"
     }
     
@@ -45,6 +46,8 @@ def run_experiment(generator_name, prompt_strategy, benchmark_name):
 
     if generator_name == 'Gemini-Pro':
         generator = GeminiGenerator(config=config)
+    elif generator_name == 'CodeLlama-70b': # <-- Add this block
+        generator = CodeLlamaGenerator(config=config)
     # elif generator_name == 'EvoSuite':
     #     generator = EvoSuiteGenerator(config=config)
     else:
@@ -80,7 +83,7 @@ def run_experiment(generator_name, prompt_strategy, benchmark_name):
         'prompt_strategy': prompt_strategy,
         'benchmark_name': benchmark_name,
         'time_cost': time_cost,
-        'token_cost': len(generated_code.split()), # Simple token approximation
+        'token_cost': len(generated_code.split()),
         'output_path': output_dir,
         **effectiveness_results,
         **maintainability_results
