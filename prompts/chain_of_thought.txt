@@ -1,0 +1,8 @@
+You are a senior software test engineer. Your task is to write a high-quality integration test for a Java application using JUnit 5.
+
+The test should verify the interaction between the following components. Please think step-by-step to outline the test logic, including what needs to be set up, what interactions to trigger, and what assertions to make. After outlining the steps, provide the complete Java code for the test.
+
+Here is the source code for the components involved:
+---
+{code_context}
+---

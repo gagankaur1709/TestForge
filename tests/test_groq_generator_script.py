@@ -1,24 +1,27 @@
-# test_generator_script.py
+# tests/test_groq_api.py
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from generator.geminiGenerator import GeminiGenerator
+# This makes sure the script can find your other project files
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from generator.codellama_generator import CodeLlamaGenerator
 from config import Config
 
 def main():
-    print("--- Starting Test for GeminiGenerator ---")
+    print("--- Starting Test for CodeLlamaGenerator (via Groq) ---")
+
     app_config = {
-        "GOOGLE_API_KEY": Config.GOOGLE_API_KEY
+        "GROQ_API_KEY": Config.GROQ_API_KEY
     }
 
     try:
-        gemini_gen = GeminiGenerator(config=app_config)
-        print("GeminiGenerator instantiated successfully.")
+        codellama_gen = CodeLlamaGenerator(config=app_config)
+        print("CodeLlamaGenerator instantiated successfully.")
     except Exception as e:
-        print(f"Failed to instantiate GeminiGenerator: {e}")
+        print(f"Failed to instantiate CodeLlamaGenerator: {e}")
         return
+
 
     sample_code_context = """
     // Owner.java
@@ -36,13 +39,17 @@ def main():
     }
     """
     
-    prompt_strategy = "chain_of_thought" # This must match the filename in /prompts
+    prompt_strategy = "chain_of_thought"
+    model_name = "llama3-8b-8192"
 
-    print(f"\nGenerating test with strategy: '{prompt_strategy}'...")
-    generated_code = gemini_gen.generate(
+    print(f"\nGenerating test with model '{model_name}' and strategy '{prompt_strategy}'...")
+
+    generated_code = codellama_gen.generate(
         code_context=sample_code_context,
-        prompt_strategy=prompt_strategy
+        prompt_strategy=prompt_strategy,
+        model_name=model_name
     )
+
     print("\n--- Generated Code ---")
     if "Error:" in generated_code:
         print(f"An error occurred: {generated_code}")

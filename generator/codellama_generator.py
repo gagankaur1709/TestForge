@@ -36,7 +36,7 @@ class CodeLlamaGenerator(TestGenerator):
                         "content": full_prompt,
                     }
                 ],
-                model=f'models/{model_name}',
+                model=model_name,
             )
             
             raw_response = chat_completion.choices[0].message.content
