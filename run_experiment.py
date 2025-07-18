@@ -33,8 +33,8 @@ def load_code_context(class_names, benchmark_path):
                     code += f'// File: {pkg}/{class_name}.java\n' + f.read() + '\n\n'
     return code
 
-def run_experiment(generator_name, prompt_strategy, benchmark_name):
-    experiment_id = f"{generator_name}_{prompt_strategy}_{uuid.uuid4().hex[:8]}"
+def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name):
+    experiment_id = f"{model_name}_{prompt_strategy}_{uuid.uuid4().hex[:8]}"
     print(f"\n--- Starting Experiment: {experiment_id} ---")
     config = {
         "GOOGLE_API_KEY": Config.GOOGLE_API_KEY,
@@ -60,7 +60,7 @@ def run_experiment(generator_name, prompt_strategy, benchmark_name):
         return
 
     start_time = time.time()
-    generated_code = generator.generate(code_context, prompt_strategy)
+    generated_code = generator.generate(code_context, prompt_strategy, model_name)
     time_cost = time.time() - start_time
     if "Error:" in generated_code:
         print(f"Failed to generate code: {generated_code}")
@@ -79,7 +79,7 @@ def run_experiment(generator_name, prompt_strategy, benchmark_name):
     
     final_results = {
         'experiment_id': experiment_id,
-        'generator_name': generator_name,
+        'generator_name': f"{generator_name} ({model_name})",
         'prompt_strategy': prompt_strategy,
         'benchmark_name': benchmark_name,
         'time_cost': time_cost,
@@ -95,9 +95,4 @@ def run_experiment(generator_name, prompt_strategy, benchmark_name):
 
 if __name__ == "__main__":
     init_db()
-    run_experiment(
-        generator_name='Gemini-Pro',
-        prompt_strategy='chain_of_thought',
-        benchmark_name='spring-petclinic'
-    )
 

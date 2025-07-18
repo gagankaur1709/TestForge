@@ -15,7 +15,7 @@ class GeminiGenerator(TestGenerator):
         if not self.api_key:
             print("Error: GOOGLE_API_KEY not found in configuration.")
 
-    def generate(self, code_context: str, prompt_strategy: str) -> str:
+    def generate(self, code_context: str, prompt_strategy: str, model_name: str) -> str:
         if not self.api_key:
             return "Error: Gemini API key is not configured."
 
@@ -25,7 +25,7 @@ class GeminiGenerator(TestGenerator):
             full_prompt = prompt_template.format(code_context=code_context) # Construct the full prompt
             
             response = client.models.generate_content(
-                model='models/gemini-2.5-flash', # Specifying the model string
+                model=f'models/{model_name}', # Specifying the model string
                 contents=full_prompt
             )
             

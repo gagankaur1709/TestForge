@@ -16,7 +16,7 @@ class CodeLlamaGenerator(TestGenerator):
         if not self.api_key:
             print("Error: GROQ_API_KEY not found in configuration.")
 
-    def generate(self, code_context: str, prompt_strategy: str) -> str:
+    def generate(self, code_context: str, prompt_strategy: str, model_name: str) -> str:
         if not self.api_key:
             return "Error: Groq API key is not configured."
 
@@ -36,7 +36,7 @@ class CodeLlamaGenerator(TestGenerator):
                         "content": full_prompt,
                     }
                 ],
-                model="llama3-70b-8192",
+                model=f'models/{model_name}',
             )
             
             raw_response = chat_completion.choices[0].message.content

@@ -27,19 +27,24 @@ def index():
 def run():
     if request.method == 'POST':
         generator_name = request.form['generator_name']
+        model_name = request.form['model_name']
         prompt_strategy = request.form['prompt_strategy']
         benchmark_name = request.form['benchmark_name']
 
         thread = threading.Thread(
             target=run_experiment,
-            args=(generator_name, prompt_strategy, benchmark_name)
+            args=(generator_name, model_name, prompt_strategy, benchmark_name)
         )
         thread.start()
 
-        flash(f"Started experiment for {benchmark_name} with {generator_name} and strategy '{prompt_strategy}'. Results will appear on the dashboard shortly.", "success")
+        flash(f"Started experiment with {model_name}. Results will appear on the dashboard.", "success")
         return redirect(url_for('index'))
 
-    return render_template('run_experiment.html')
+    models_by_provider = {
+        "Google Gemini": ["gemini-1.5-pro-latest", "gemini-1.5-flash-latest"],
+        "Groq Llama": ["llama3-70b-8192", "llama3-8b-8192"]
+    }
+    return render_template('run_experiment.html', models_by_provider=models_by_provider)
 
 if __name__ == '__main__':
     app.run(debug=True)

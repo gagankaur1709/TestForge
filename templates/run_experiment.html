@@ -6,12 +6,20 @@
     <form action="{{ url_for('run') }}" method="post">
       <div class="space-y-6">
         <div>
-          <label for="generator_name" class="block text-sm font-medium text-gray-700">Test Generator</label>
-          <select id="generator_name" name="generator_name" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-            <option>Gemini-Pro</option>
-            <option>CodeLlama-70b</option>
-          </select>
-        </div>
+            <label for="generator_provider" class="block text-sm font-medium text-gray-700">Generator Provider</label>
+            <select id="generator_provider" name="generator_provider" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+              {% for provider in models_by_provider.keys() %}
+                <option value="{{ provider }}">{{ provider }}</option>
+              {% endfor %}
+            </select>
+          </div>
+  
+          <div>
+            <label for="model_name" class="block text-sm font-medium text-gray-700">Specific Model</label>
+            <select id="model_name" name="model_name" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+              <!-- Options will be populated by JavaScript -->
+            </select>
+          </div>
 
         <div>
           <label for="prompt_strategy" class="block text-sm font-medium text-gray-700">Prompt Strategy</label>
@@ -34,4 +42,30 @@
       </div>
     </form>
   </div>
+
+  <script>
+    const providerSelect = document.getElementById('generator_provider');
+    const modelSelect = document.getElementById('model_name');
+    const modelsByProvider = JSON.parse('{{ models_by_provider | tojson | safe }}');
+
+    function updateModelOptions() {
+      const selectedProvider = providerSelect.value;
+      const models = modelsByProvider[selectedProvider] || [];
+      
+      modelSelect.innerHTML = '';
+
+      models.forEach(model => {
+        const option = document.createElement('option');
+        option.value = model;
+        option.textContent = model;
+        modelSelect.appendChild(option);
+      });
+    }
+
+    // Update models when the provider changes
+    providerSelect.addEventListener('change', updateModelOptions);
+
+    // Initial population
+    document.addEventListener('DOMContentLoaded', updateModelOptions);
+  </script>
 {% endblock %}
