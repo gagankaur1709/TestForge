@@ -6,6 +6,7 @@ import uuid
 from config import Config
 from database import init_db, add_experiment_result
 from generator.geminiGenerator import GeminiGenerator
+from generator.deepseekGenerator import DeepSeekGenerator
 from generator.codellama_generator import CodeLlamaGenerator
 from evaluation.effectiveness import analyze_effectiveness
 from evaluation.maintainability import analyze_maintainability
@@ -46,8 +47,10 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name):
 
     if generator_name == 'Gemini-Pro':
         generator = GeminiGenerator(config=config)
-    elif generator_name == 'CodeLlama-70b': # <-- Add this block
+    elif generator_name == 'CodeLlama-70b':
         generator = CodeLlamaGenerator(config=config)
+    elif generator_name == 'DeepSeek': 
+        generator = DeepSeekGenerator(config=config)
     # elif generator_name == 'EvoSuite':
     #     generator = EvoSuiteGenerator(config=config)
     else:

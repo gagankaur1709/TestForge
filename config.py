@@ -7,3 +7,4 @@ class Config:
     BENCHMARK_DIR = 'benchmark'
     SECRET_KEY = os.getenv("SECRET_KEY")
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")

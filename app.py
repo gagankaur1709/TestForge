@@ -42,7 +42,8 @@ def run():
 
     models_by_provider = {
         "Google Gemini": ["gemini-1.5-pro-latest", "gemini-1.5-flash-latest"],
-        "Groq Llama": ["llama3-70b-8192", "llama3-8b-8192"]
+        "Groq Llama": ["llama3-70b-8192", "llama3-8b-8192"],
+        "DeepSeek": ["deepseek-coder-v2-instruct"] 
     }
     return render_template('run_experiment.html', models_by_provider=models_by_provider)
 
