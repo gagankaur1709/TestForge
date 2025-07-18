@@ -1,7 +1,7 @@
 import os
 from google import genai
 from google.genai import types
-from generator.baseGenerator import TestGenerator
+from .baseGenerator import TestGenerator
 
 class GeminiGenerator(TestGenerator):
     """
@@ -20,13 +20,12 @@ class GeminiGenerator(TestGenerator):
             return "Error: Gemini API key is not configured."
 
         try:
-            client = genai.Client(api_key=self.api_key,
-                                  http_options=types.HttpOptions(api_version='v1alpha'))
+            client = genai.Client(api_key=self.api_key)
             prompt_template = self._load_prompt_template(prompt_strategy)  # Load the specific prompt strategy
             full_prompt = prompt_template.format(code_context=code_context) # Construct the full prompt
             
             response = client.models.generate_content(
-                model='gemini 2.0 Flash-Lite', # Specifying the model string
+                model='models/gemini-2.5-flash', # Specifying the model string
                 contents=full_prompt
             )
             
