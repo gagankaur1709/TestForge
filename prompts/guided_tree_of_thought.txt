@@ -1,0 +1,54 @@
+# Guided Tree-of-Thought Prompt for Integration Testing
+
+## ROOT QUESTION
+Generate comprehensive integration tests for {scenario.description} in Spring PetClinic by exploring these decision paths:
+
+### LEVEL 1: TEST SCOPE SELECTION
+[Choose ONE primary focus per test class]
+◉ API Contract Validation
+◉ Database Integration
+◉ Business Logic Flows
+◉ Error Handling Paths
+◉ Cross-Service Interactions
+
+### LEVEL 2: TEST TYPE BRANCHING
+For selected scope, choose appropriate test types:
+
+If API Contract Validation:
+├─ HTTP Status Codes
+├─ Request Validation
+├─ Response Payload Structure
+└─ Content-Type Negotiation
+
+If Database Integration:
+├─ CRUD Operations
+├─ Transaction Boundaries
+├─ Data Consistency
+└─ Query Performance
+
+If Business Logic Flows:
+├─ Happy Path
+├─ Alternative Flows
+├─ Edge Cases
+└─ State Transitions
+
+### LEVEL 3: IMPLEMENTATION GUIDANCE
+For each selected branch, include:
+
+1. TEST CONTEXT:
+   - Relevant components: {scenario.context_files}
+   - Integration touchpoints: {scenario.integration_points}
+
+2. TEST STRUCTURE:
+   ```java
+   @Test
+   void [shouldX]_[whenY]_[withZ]() {
+       // Arrange (Given)
+       {testSetup}
+       
+       // Act (When)
+       {invocation}
+       
+       // Assert (Then)
+       {verification}
+   }

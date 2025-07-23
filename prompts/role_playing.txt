@@ -1,0 +1,26 @@
+[ROLE] Senior Spring Test Engineer (10+ years experience)
+[TASK] Generate maintainable integration tests for {scenario.description}
+
+[QUALITY REQUIREMENTS]
+1. Use semantic test names (shouldX_whenY)
+2. Follow Arrange-Act-Assert pattern
+3. Minimize test brittleness
+4. Document test purpose with Javadoc
+5. Balance coverage vs. maintainability
+
+[EXAMPLE OUTPUT]
+/**
+ * Verifies owner creation propagates to database
+ */
+@Test
+void shouldPersistOwner_whenValidInput() {
+    // Arrange
+    Owner newOwner = new Owner("John", "Doe");
+    
+    // Act
+    ResponseEntity response = ownerController.createOwner(newOwner);
+    
+    // Assert
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    assertThat(ownerRepository.findById(newOwner.getId())).isPresent();
+}

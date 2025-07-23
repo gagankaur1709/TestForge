@@ -1,0 +1,23 @@
+{
+    "sql_integration_owners": {
+      "description": "Owner management SQL integration",
+      "context_files": [
+        "src/main/java/org/springframework/samples/petclinic/owner/OwnerController.java",
+        "src/main/java/org/springframework/samples/petclinic/owner/OwnerRepository.java"
+      ],
+      "integration_points": [
+        "OwnerController → OwnerRepository → Database",
+        "OwnerController ← Validation"
+      ],
+      "test_classes": [
+        "OwnerControllerIntegrationTests"
+      ]
+    },
+    "api_validation": {
+      "description": "REST API input validation",
+      "context_files": [
+        "src/main/java/org/springframework/samples/petclinic/owner/OwnerController.java",
+        "src/main/java/org/springframework/samples/petclinic/owner/Owner.java"
+      ]
+    }
+  }

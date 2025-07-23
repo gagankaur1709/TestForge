@@ -1,8 +1,29 @@
-You are a senior software test engineer. Your task is to write a high-quality integration test for a Java application using JUnit 5.
+Generate integration tests for {scenario.description} in Spring PetClinic. Follow this reasoning framework:
 
-The test should verify the interaction between the following components. Please think step-by-step to outline the test logic, including what needs to be set up, what interactions to trigger, and what assertions to make. After outlining the steps, provide the complete Java code for the test.
+1. CONTEXT ANALYSIS:
+   - Relevant classes: {scenario.context_files}
+   - Key integration points: {scenario.integration_points}
 
-Here is the source code for the components involved:
----
-{code_context}
----
+2. TEST DESIGN:
+   - Happy path scenario:
+     * Preconditions: 
+     * Actions: 
+     * Assertions:
+   - Edge cases:
+     * Case 1: 
+     * Case 2:
+
+3. IMPLEMENTATION:
+   - Required mocks: 
+   - Test data setup:
+   - Verification strategy:
+
+Example for OwnerController:
+1. CONTEXT ANALYSIS:
+   - OwnerController ↔ OwnerRepository ↔ Database
+2. TEST DESIGN:
+   - Happy path: POST valid owner → 200 OK
+   - Edge case: POST duplicate owner → 409 Conflict
+3. IMPLEMENTATION:
+   - Mock: OwnerRepository
+   - Verify: Database state change
