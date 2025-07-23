@@ -1,8 +1,8 @@
-Generate integration tests for {scenario.description} in Spring PetClinic. Follow this reasoning framework:
+Generate integration tests for {scenario[description]} in Spring PetClinic. Follow this reasoning framework:
 
 1. CONTEXT ANALYSIS:
-   - Relevant classes: {scenario.context_files}
-   - Key integration points: {scenario.integration_points}
+   - Relevant classes: {scenario[context_files]}
+   - Key integration points: {scenario[integration_points]}
 
 2. TEST DESIGN:
    - Happy path scenario:

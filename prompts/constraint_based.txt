@@ -5,8 +5,8 @@
 4. Use JUnit 5 only
 5. Assertion density = 1-3 per test
 
-[SCENARIO] {scenario.description}
-[CONTEXT] {scenario.context_files}
+[SCENARIO] {scenario[description]}
+[CONTEXT] {scenario[context_files]}
 
 [REQUIREMENTS]
 - Generate tests that satisfy ALL constraints

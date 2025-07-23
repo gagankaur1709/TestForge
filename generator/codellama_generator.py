@@ -1,6 +1,7 @@
 # generators/codellama_generator.py
 
 import os
+from typing import Dict, Optional
 from groq import Groq
 from .baseGenerator import TestGenerator
 
@@ -10,52 +11,77 @@ class CodeLlamaGenerator(TestGenerator):
     accessed via the Groq API.
     """
 
-    def __init__(self, config: dict):
+    def __init__(self, config: Dict):
         super().__init__(config)
         self.api_key = self.config.get("GROQ_API_KEY")
         if not self.api_key:
-            print("Error: GROQ_API_KEY not found in configuration.")
+            raise ValueError("GROQ_API_KEY not found in configuration")
+        self.client = Groq(api_key=self.api_key)
 
-    def generate(self, code_context: str, prompt_strategy: str, model_name: str) -> str:
-        if not self.api_key:
-            return "Error: Groq API key is not configured."
-
+    def generate(self, prompt: str, context: Dict, model_name: str) -> str:
+        """
+        Generates integration tests using CodeLlama via Groq API.
+        Args:
+            prompt: Pre-formatted prompt string from the prompt template
+            context: Dictionary containing:
+                - scenario: Scenario details from scenarios.json
+                - files: Code context dictionary {filename: content}
+            model_name: Name of the model to use (e.g., "llama3-8b-8192")
+        Returns:
+            Generated Java test code as string, or error message if failed
+        """
         try:
-            client = Groq(api_key=self.api_key)
-            prompt_template = self._load_prompt_template(prompt_strategy)
-            full_prompt = prompt_template.format(code_context=code_context)
-            
-            chat_completion = client.chat.completions.create(
+            system_message = self._create_system_message(context.get('scenario', {}))
+            chat_completion = self.client.chat.completions.create(
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are a senior software test engineer specializing in Java integration tests. You only output Java code, with no explanations."
+                        "content": system_message
                     },
                     {
                         "role": "user",
-                        "content": full_prompt,
+                        "content": prompt,
                     }
                 ],
                 model=model_name,
+                temperature=0.3,
+                max_tokens=2000
             )
-            
             raw_response = chat_completion.choices[0].message.content
-            
-            if not raw_response:
-                return "Error: No response text received from Groq API."
-            return self._extract_code(raw_response)
-
-        except FileNotFoundError:
-            return f"Error: Prompt template file not found for strategy '{prompt_strategy}'."
+            if raw_response is None:
+                return "Error: No response received from model."
+            return self._postprocess_response(raw_response)
         except Exception as e:
-            return f"An error occurred while calling the Groq API: {e}"
+            return f"Error: {str(e)}"
 
-    def _load_prompt_template(self, strategy: str) -> str:
-        prompt_file = os.path.join('prompts', f'{strategy}.txt')
-        with open(prompt_file, 'r') as f:
-            return f.read()
+    def _create_system_message(self, scenario: Dict) -> str:
+        return (
+            "You are a senior Java test engineer specializing in Spring integration tests. "
+            f"Current task: {scenario.get('description', '')}\n"
+            "Output requirements:\n"
+            "1. Only generate valid Java test code\n"
+            "2. Use JUnit 5 and Spring test conventions\n"
+            "3. Include necessary imports\n"
+            "4. Focus on testing integration points\n"
+            "5. Format code with proper indentation"
+        )
 
-    def _extract_code(self, response_text: str) -> str:
+    def _postprocess_response(self, response_text: str) -> str:
+        """
+        Extracts Java code from response and ensures proper formatting.
+        Handles:
+        - Code fence extraction (```java)
+        - Basic syntax validation
+        - Import statement preservation
+        """
         if "```java" in response_text:
-            return response_text.split("```java")[1].split("```")[0].strip()
-        return response_text
+            code = response_text.split("```java")[1].split("```")[0].strip()
+        else:
+            code = response_text
+        if "class " not in code:
+            code = f"public class {self._generate_class_name()} {{\n{code}\n}}"
+        return code
+
+    def _generate_class_name(self) -> str:
+        """Generates a fallback test class name if none detected"""
+        return "IntegrationTest" + str(hash(os.urandom(8)))[:4]

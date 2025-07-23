@@ -11,7 +11,7 @@ from generator.deepseekGenerator import DeepSeekGenerator
 from generator.codellama_generator import CodeLlamaGenerator
 from evaluation.effectiveness import analyze_effectiveness
 from evaluation.maintainability import analyze_maintainability
-from utils import load_scenario, load_code_context, postprocess_java_test # Ensure postprocess_java_test is updated in utils.py
+from utils import load_prompt_template, format_prompt, load_scenario, load_code_context, postprocess_java_test
 
 GENERATOR_REGISTRY = {
     'Gemini-Pro': {
@@ -60,13 +60,20 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name):
 
     try:
         scenario = load_scenario('sql_integration_owners')
-        code_context_data = load_code_context(benchmark_dir_full_path, scenario) 
+        code_context_data = load_code_context(benchmark_dir_full_path, scenario)
+        print(code_context_data.keys()) 
+        # Load and format the prompt
+        prompt_template = load_prompt_template(prompt_strategy, scenario)
+        formatted_prompt = format_prompt(prompt_template, code_context_data) 
+
     except (FileNotFoundError, ValueError) as e:
         print(f"Failed to load scenario: {e}")
         return
 
     start_time = time.time()
-    generated_code = generator.generate(code_context_data, prompt_strategy, model_name)
+    generated_code = generator.generate(prompt=formatted_prompt,
+        context=code_context_data,
+        model_name=model_name)
     time_cost = time.time() - start_time
     if "Error:" in generated_code:
         print(f"Failed to generate code: {generated_code}")

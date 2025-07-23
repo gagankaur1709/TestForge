@@ -1,4 +1,4 @@
-Generate integration tests for {scenario.description}, then improve them through self-review:
+Generate integration tests for {scenario[description]}, then improve them through self-review:
 
 [PHASE 1] INITIAL GENERATION
 - Create test cases covering:

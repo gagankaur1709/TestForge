@@ -1,7 +1,7 @@
 # Guided Tree-of-Thought Prompt for Integration Testing
 
 ## ROOT QUESTION
-Generate comprehensive integration tests for {scenario.description} in Spring PetClinic by exploring these decision paths:
+Generate comprehensive integration tests for {scenario[description]} in Spring PetClinic by exploring these decision paths:
 
 ### LEVEL 1: TEST SCOPE SELECTION
 [Choose ONE primary focus per test class]
@@ -36,8 +36,8 @@ If Business Logic Flows:
 For each selected branch, include:
 
 1. TEST CONTEXT:
-   - Relevant components: {scenario.context_files}
-   - Integration touchpoints: {scenario.integration_points}
+   - Relevant components: {scenario[context_files]}
+   - Integration touchpoints: {scenario[integration_points]}
 
 2. TEST STRUCTURE:
    ```java
@@ -52,3 +52,4 @@ For each selected branch, include:
        // Assert (Then)
        {verification}
    }
+```

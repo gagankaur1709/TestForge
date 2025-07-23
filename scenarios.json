@@ -11,13 +11,13 @@
       ],
       "test_classes": [
         "OwnerControllerIntegrationTests"
-      ]
-    },
-    "api_validation": {
-      "description": "REST API input validation",
-      "context_files": [
-        "src/main/java/org/springframework/samples/petclinic/owner/OwnerController.java",
-        "src/main/java/org/springframework/samples/petclinic/owner/Owner.java"
-      ]
+      ],
+      "prompt_templates": {
+        "chain_of_thought": "prompts/chain_of_thought.txt",
+        "role_playing": "prompts/role_playing.txt",
+        "constraint_based": "prompts/constraint_based.txt",
+        "self_correction": "prompts/self_correction.txt",
+        "tree_of_thought": "prompts/tree_of_thought.txt"
+      }
     }
   }

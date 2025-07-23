@@ -1,5 +1,5 @@
 [ROLE] Senior Spring Test Engineer (10+ years experience)
-[TASK] Generate maintainable integration tests for {scenario.description}
+[TASK] Generate maintainable integration tests for {scenario[description]}
 
 [QUALITY REQUIREMENTS]
 1. Use semantic test names (shouldX_whenY)
