@@ -61,7 +61,6 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name):
     try:
         scenario = load_scenario('sql_integration_owners')
         code_context_data = load_code_context(benchmark_dir_full_path, scenario)
-        print(code_context_data.keys()) 
         # Load and format the prompt
         prompt_template = load_prompt_template(prompt_strategy, scenario)
         formatted_prompt = format_prompt(prompt_template, code_context_data) 
@@ -79,9 +78,6 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name):
         print(f"Failed to generate code: {generated_code}")
         return
 
-    # Define the *final* target directory for the generated test within the benchmark project
-    # This path must match the expected package structure of the generated test.
-    # E.g., for package org.springframework.samples.petclinic.owner
     maven_test_target_dir = os.path.join(
         benchmark_dir_full_path, 
         'src', 'test', 'java', 'org', 'springframework', 'samples', 'petclinic', 'owner'
@@ -93,12 +89,9 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name):
     
     print(f"Generated test file saved to Maven test directory: {actual_generated_test_path}")
 
-    # Create a separate 'outputs' directory for experiment *artifacts* (e.g., raw LLM responses, logs, reports)
-    # This keeps your experiment results organized without cluttering the benchmark's source tree.
     experiment_artifacts_dir = os.path.join('outputs', experiment_id)
     os.makedirs(experiment_artifacts_dir, exist_ok=True)
     
-    # Optionally, save the raw generated code to the artifacts directory for debugging/review
     with open(os.path.join(experiment_artifacts_dir, f"raw_{generated_test_file_name}"), 'w', encoding='utf-8') as f:
         f.write(generated_code)
     print(f"Raw generated code saved to: {os.path.join(experiment_artifacts_dir, f'raw_{generated_test_file_name}')}")
@@ -116,8 +109,8 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name):
         'benchmark_name': benchmark_name,
         'time_cost': time_cost,
         'token_cost': len(generated_code.split()),
-        'generated_test_path': actual_generated_test_path, # Store the actual path to the test file Maven uses
-        'experiment_artifacts_dir': experiment_artifacts_dir, # Path to auxiliary experiment outputs
+        'generated_test_path': actual_generated_test_path, 
+        'experiment_artifacts_dir': experiment_artifacts_dir, 
         **effectiveness_results,
         **maintainability_results
     }
@@ -130,6 +123,6 @@ if __name__ == "__main__":
     run_experiment(
         generator_name="CodeLlama-70b",
         model_name="llama3-8b-8192",
-        prompt_strategy="chain_of_thought",
+        prompt_strategy="self_correction",
         benchmark_name="spring-petclinic"
     )

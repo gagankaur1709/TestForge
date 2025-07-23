@@ -18,9 +18,9 @@
 @MockBean OwnerRepository ownerRepository;
 
 @Test  // CONSTRAINT: CC=3, lines=8
-void shouldReturn404_whenOwnerNotFound() {
+void shouldReturn404_whenOwnerNotFound() {{
     given(ownerRepository.findById(any())).willReturn(Optional.empty());
     
     assertThrows(ResourceNotFoundException.class, 
         () -> ownerController.getOwner(999));
-}
+}}

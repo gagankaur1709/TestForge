@@ -21,15 +21,15 @@ Analyze your generated tests for:
 [EXAMPLE OUTPUT]
 // INITIAL VERSION (problems: no cleanup, brittle ID check)
 @Test
-void testAddOwner() {
+void testAddOwner() {{
     Owner o = new Owner();
     ownerController.createOwner(o);
     assertThat(o.getId()).isNotNull();
-}
+}}
 
 // IMPROVED VERSION (added cleanup, better verification)
 @Test
-void shouldPersistOwnerWithGeneratedId_whenValidInput() {
+void shouldPersistOwnerWithGeneratedId_whenValidInput() {{
     Owner o = new Owner("John", "Doe");
     ResponseEntity response = ownerController.createOwner(o);
     
@@ -38,4 +38,4 @@ void shouldPersistOwnerWithGeneratedId_whenValidInput() {
         .isPresent()
         .hasValueSatisfying(owner -> 
             assertThat(owner.getLastName()).isEqualTo("Doe"));
-}
+}}

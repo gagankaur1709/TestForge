@@ -13,7 +13,7 @@
  * Verifies owner creation propagates to database
  */
 @Test
-void shouldPersistOwner_whenValidInput() {
+void shouldPersistOwner_whenValidInput() {{
     // Arrange
     Owner newOwner = new Owner("John", "Doe");
     
@@ -23,4 +23,4 @@ void shouldPersistOwner_whenValidInput() {
     // Assert
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     assertThat(ownerRepository.findById(newOwner.getId())).isPresent();
-}
+}}

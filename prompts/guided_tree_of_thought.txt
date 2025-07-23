@@ -42,14 +42,14 @@ For each selected branch, include:
 2. TEST STRUCTURE:
    ```java
    @Test
-   void [shouldX]_[whenY]_[withZ]() {
+   void [shouldX]_[whenY]_[withZ]() {{
        // Arrange (Given)
-       {testSetup}
+       {{testSetup}}
        
        // Act (When)
-       {invocation}
+       {{invocation}}
        
        // Assert (Then)
-       {verification}
-   }
-```
+       {{verification}}
+   }}
+   ```
