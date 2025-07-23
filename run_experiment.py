@@ -121,8 +121,8 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name):
 if __name__ == "__main__":
     init_db()
     run_experiment(
-        generator_name="CodeLlama-70b",
-        model_name="llama3-8b-8192",
+        generator_name="Gemini-Pro",
+        model_name="gemini-1.5-flash",
         prompt_strategy="self_correction",
         benchmark_name="spring-petclinic"
     )

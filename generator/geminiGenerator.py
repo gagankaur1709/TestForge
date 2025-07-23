@@ -15,34 +15,21 @@ class GeminiGenerator(TestGenerator):
         if not self.api_key:
             print("Error: GOOGLE_API_KEY not found in configuration.")
 
-    def generate(self, code_context: str, prompt_strategy: str, model_name: str) -> str:
+    def generate(self, prompt: str, context: dict, model_name: str) -> str:
         if not self.api_key:
             return "Error: Gemini API key is not configured."
-
         try:
             client = genai.Client(api_key=self.api_key)
-            prompt_template = self._load_prompt_template(prompt_strategy)  # Load the specific prompt strategy
-            full_prompt = prompt_template.format(code_context=code_context) # Construct the full prompt
-            
             response = client.models.generate_content(
-                model=f'models/{model_name}', # Specifying the model string
-                contents=full_prompt
+                model=f'models/{model_name}',
+                contents=prompt
             )
-            
             raw_response = response.text
             if raw_response is None:
                 return "Error: No response received from Gemini API."
             return self._extract_code(raw_response)
-
-        except FileNotFoundError:
-            return f"Error: Prompt template file not found for strategy '{prompt_strategy}'."
         except Exception as e:
             return f"An error occurred while calling the Gemini API: {e}"
-
-    def _load_prompt_template(self, strategy: str) -> str:
-        prompt_file = os.path.join('prompts', f'{strategy}.txt')
-        with open(prompt_file, 'r') as f:
-            return f.read()
 
     def _extract_code(self, response_text: str) -> str:
         if "```java" in response_text:
