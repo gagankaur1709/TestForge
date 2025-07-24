@@ -5,6 +5,37 @@ import os
 import shutil
 import xml.etree.ElementTree as ET
 
+def check_compilation(test_code: str, class_name: str, benchmark_path: str) -> tuple[bool, str]:
+    """
+    Checks if the provided test code compiles within the benchmark project.
+
+    Args:
+        test_code: The string content of the generated Java test.
+        class_name: The name of the test class (e.g., "GeneratedOwnerTest").
+        benchmark_path: The root path of the benchmark project.
+
+    Returns:
+        A tuple: (compiles_successfully: bool, build_log: str)
+    """
+
+    test_filename = f"{class_name}.java"
+    # This path needs to be made more dynamic based on the scenario
+    test_destination_dir = os.path.join(benchmark_path, 'src', 'test', 'java', 'org', 'springframework', 'samples', 'petclinic', 'owner')
+    os.makedirs(test_destination_dir, exist_ok=True)
+    destination_path = os.path.join(test_destination_dir, test_filename)
+
+    with open(destination_path, 'w') as f:
+        f.write(test_code)
+
+    # Use 'mvn compile test-compile' for a faster check than 'verify'
+    success, output = run_maven_command(['mvn', 'test-compile'], working_dir=benchmark_path)
+
+    # Clean up the temporary test file
+    os.remove(destination_path)
+
+    return success, output
+
+
 def run_maven_command(command: list, working_dir: str) -> tuple[bool, str]:
     try:
         process = subprocess.run(command, cwd=working_dir, check=True, capture_output=True, text=True, shell=False)

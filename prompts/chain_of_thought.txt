@@ -18,12 +18,9 @@ Generate integration tests for {scenario[description]} in Spring PetClinic. Foll
    - Test data setup:
    - Verification strategy:
 
-Example for OwnerController:
-1. CONTEXT ANALYSIS:
-   - OwnerController ↔ OwnerRepository ↔ Database
-2. TEST DESIGN:
-   - Happy path: POST valid owner → 200 OK
-   - Edge case: POST duplicate owner → 409 Conflict
-3. IMPLEMENTATION:
-   - Mock: OwnerRepository
-   - Verify: Database state change
+4.  **FINAL CODE GENERATION:**
+    * Based on the plan above, generate the complete Java test class.
+    * **Crucially, ensure the following:**
+        * All necessary import statements from `org.springframework`, `org.junit.jupiter`, and `org.mockito` are included.
+        * The code uses JUnit 5 annotations (`@Test`, `@BeforeEach`, `@ExtendWith(MockitoExtension.class)`).
+        * All mocks are correctly initialized.

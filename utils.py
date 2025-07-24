@@ -44,25 +44,43 @@ def load_code_context(benchmark_path: str, scenario: Dict) -> Dict:
     }
 
 
-def postprocess_java_test(generated_code: str, target_dir: str) -> str:
+def postprocess_java_test_v2(generated_code: str, target_dir: str) -> str:
     """
-    Post-processes the generated Java test code to extract the class name
-    and writes the file to the specified target directory.
-    """
-    class_name = "GeneratedTest"
-    match = re.search(r'public\s+class\s+(\w+)', generated_code)
-    if match:
-        class_name = match.group(1)
+    Performs basic cleanup on generated Java test code.
+    - Removes lines with unfilled template placeholders (e.g., {testSetup})
+    - Removes lines containing only a single curly brace
+    - Ensures the correct package declaration is present
     
+    Args:
+        generated_code: The raw Java code string from the LLM.
+        target_dir: The directory to save the cleaned file.
+        class_name: The name to use for the output Java file.
+
+    Returns:
+        The file name of the cleaned Java file.
+    """
+    
+    class_name = "GeneratedTest"
+    cleaned_lines = []
+    for line in generated_code.splitlines():
+        if re.search(r'\{\w+\}', line):
+            continue
+
+        if line.strip() in ['{', '}']:
+            continue
+            
+        cleaned_lines.append(line)
+
+
+    package_decl = 'package org.springframework.samples.petclinic.owner;'
+    has_package = any(line.strip().startswith(package_decl) for line in cleaned_lines)
+    
+    if not has_package:
+        cleaned_lines = [line for line in cleaned_lines if not line.strip().startswith('package ')]
+        cleaned_lines.insert(0, package_decl)
+    cleaned_code = '\n'.join(cleaned_lines)
     new_file_name = f"{class_name}.java"
     new_file_path = os.path.join(target_dir, new_file_name)
-
-    try:
-        with open(new_file_path, 'w', encoding='utf-8') as f:
-            f.write(generated_code)
-        # Removed the print statement here as it's handled in run_experiment.py
-    except Exception as e:
-        print(f"Error writing generated test to {new_file_path}: {e}")
-        # Consider re-raising or handling this error more robustly
-        
+    with open(new_file_path, 'w', encoding='utf-8') as f:
+        f.write(cleaned_code)
     return new_file_name

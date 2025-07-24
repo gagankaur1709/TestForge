@@ -17,7 +17,8 @@
         "role_playing": "prompts/role_playing.txt",
         "constraint_based": "prompts/constraint_based.txt",
         "self_correction": "prompts/self_correction.txt",
-        "guided_tree_of_thought": "prompts/guided_tree_of_thought.txt"
+        "guided_tree_of_thought": "prompts/guided_tree_of_thought.txt",
+        "repair": "prompts/repair.txt"
       }
     }
   }
