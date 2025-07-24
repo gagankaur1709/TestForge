@@ -19,6 +19,7 @@ Generate integration tests for {scenario[description]} in Spring PetClinic. Foll
    - Verification strategy:
 
 4.  **FINAL CODE GENERATION:**
+    * Add the following package at the beginning of the test class always - package org.springframework.samples.petclinic.owner;
     * Based on the plan above, generate the complete Java test class.
     * **Crucially, ensure the following:**
         * All necessary import statements from `org.springframework`, `org.junit.jupiter`, and `org.mockito` are included.
