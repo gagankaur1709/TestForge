@@ -1,6 +1,7 @@
 # generators/base_generator.py
 
 from abc import ABC, abstractmethod
+from typing import Optional
 
 class TestGenerator(ABC):
     """
@@ -17,13 +18,14 @@ class TestGenerator(ABC):
         self.config = config
 
     @abstractmethod
-    def generate(self, code_context: str, prompt_strategy: str) -> str:
+    def generate(self, code_context: str, prompt_strategy: Optional[str] = None, model_name: Optional[str] = None) -> str:
         """
         The main method to generate a test suite.
 
         Args:
-            code_context: A string containing the source code to be tested.
-            prompt_strategy: A string identifying the prompting technique
+            code_context: A string containing the source code or class name to be tested.
+            prompt_strategy (Optional): The prompting technique to use. Ignored by non-LLM generators.
+            model_name (Optional): The specific model to use. Ignored by non-LLM generators.
 
         Returns:
             A string containing the complete, generated test code.

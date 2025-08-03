@@ -60,7 +60,7 @@ def postprocess_java_test_v2(generated_code: str, target_dir: str) -> str:
         The file name of the cleaned Java file.
     """
     
-    class_name = "GeneratedTest"
+    class_name = "OwnerRepositoryIntegrationTest"
     cleaned_lines = []
     for line in generated_code.splitlines():
         if re.search(r'\{\w+\}', line):

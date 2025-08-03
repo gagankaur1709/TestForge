@@ -8,6 +8,7 @@ __pycache__/
 # Ignore the virtual environment folder. This folder contains installed packages
 # and is specific to your local machine. It should not be in version control.
 .venv/
+.DS_Store
 
 # --- Python Cache ---
 # Ignore Python's bytecode cache directory and compiled files.

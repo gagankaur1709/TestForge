@@ -27,15 +27,20 @@ class EvoSuiteGenerator(TestGenerator):
         output_dir = os.path.join(benchmark_path, "evosuite-tests")
 
         command = [
-            'java',
-            '--add-opens', 'java.desktop/java.awt=ALL-UNNAMED',
-            '-Xms512m',
-            '-Xmx1024m',
-            '-jar', evosuite_jar_path,
-            '-class', class_to_test,
-            '-projectCP', os.path.join(benchmark_path, 'target', 'classes'),
-            '-Dtest_dir=' + output_dir
-        ]
+        'java',
+        '--add-opens', 'java.desktop/java.awt=ALL-UNNAMED',
+        '--add-opens', 'java.desktop/java.awt.color=ALL-UNNAMED',
+        '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+        '--add-opens', 'java.base/java.util=ALL-UNNAMED',
+        '-Xms512m',
+        '-Xmx1024m',
+        '-jar', evosuite_jar_path,
+        '-class', class_to_test,
+        '-projectCP', os.path.join(benchmark_path, 'target', 'classes'),
+        f'-Dtest_dir={output_dir}',
+        '-Dsearch_budget=300'
+    ]
+
 
         print(f"Running EvoSuite command: {' '.join(command)}")
 
@@ -45,7 +50,7 @@ class EvoSuiteGenerator(TestGenerator):
                 command, 
                 capture_output=True, 
                 text=True, 
-                timeout=180,
+                timeout=120,
                 check=True # This will still raise an error if the process fails
             )
 

@@ -9,3 +9,4 @@ class Config:
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
     DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
     EVOSUITE_JAR_PATH = os.path.join('tools', 'evosuite-1.2.0.jar')
+    RANDOOP_JAR_PATH = os.path.join('tools', 'randoop-all-4.3.4.jar') 

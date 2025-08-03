@@ -81,7 +81,7 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name):
             print(f"Generator returned an error: {current_code}")
             continue 
 
-        compiles, build_log = check_compilation(current_code, "GeneratedTest", benchmark_dir_full_path)
+        compiles, build_log = check_compilation(current_code, "OwnerRepositoryIntegrationTest", benchmark_dir_full_path)
 
         if compiles:
             print("Code compiled successfully!")
@@ -102,7 +102,7 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name):
 
     experiment_artifacts_dir = os.path.join('outputs', experiment_id)
     os.makedirs(experiment_artifacts_dir, exist_ok=True)
-    generated_test_file_name = "GeneratedTest.java"
+    generated_test_file_name = "OwnerRepositoryIntegrationTest.java"
     actual_generated_test_path = os.path.join(experiment_artifacts_dir, generated_test_file_name)
 
     with open(actual_generated_test_path, 'w', encoding='utf-8') as f:
@@ -134,6 +134,6 @@ if __name__ == "__main__":
     run_experiment(
         generator_name="Gemini-Pro",
         model_name="gemini-1.5-flash",
-        prompt_strategy="chain_of_thought",
+        prompt_strategy="self_correction",
         benchmark_name="spring-petclinic"
     )

@@ -31,7 +31,7 @@ def check_compilation(test_code: str, class_name: str, benchmark_path: str) -> t
     success, output = run_maven_command(['mvn', 'test-compile'], working_dir=benchmark_path)
 
     # Clean up the temporary test file
-    #os.remove(destination_path)
+    os.remove(destination_path)
 
     return success, output
 
