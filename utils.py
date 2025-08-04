@@ -12,7 +12,7 @@ def load_scenario(scenario_name: str) -> Dict:
         
     return scenarios[scenario_name]
 
-def load_prompt_template(prompt_strategy: str, scenario: Dict) -> str:
+def load_prompt_template(prompt_strategy: str) -> str:
     """Load the appropriate prompt template for the strategy."""
     template_path = os.path.join('prompts', f"{prompt_strategy}.txt")
     if not os.path.exists(template_path):
@@ -38,10 +38,9 @@ def load_code_context(benchmark_path: str, scenario: Dict) -> Dict:
         raise ValueError(f"Error: No valid source files found for scenario '{scenario.get('description', 'N/A')}'.")
     return "".join(all_code)
 
-
 def postprocess_java_test(generated_code: str, class_name: str, package_decl: str) -> str:
     """
-    Performs a simple cleanup of the raw generated Java code.
+    Performs a robust cleanup of the raw generated Java code.
 
     Args:
         generated_code: The raw code string from the LLM.
@@ -51,27 +50,15 @@ def postprocess_java_test(generated_code: str, class_name: str, package_decl: st
     Returns:
         The cleaned Java code as a string.
     """
-    cleaned_lines = []
-    
-    # 1. Remove placeholder lines and lines with only a curly brace
-    for line in generated_code.splitlines():
-        if re.search(r'\{\w+\}', line):
-            continue
-        if line.strip() in ['{', '}']:
-            continue
-        cleaned_lines.append(line)
-        
-    cleaned_code = '\n'.join(cleaned_lines)
-    
-    # 2. Replace any class declaration with the correct unique one
+    # Replace any public class declaration with the correct unique one
     # This handles cases where the LLM names the class something different.
-    cleaned_code = re.sub(r'public class \w+', f'public class {class_name}', cleaned_code)
+    cleaned_code = re.sub(r'public class \w+', f'public class {class_name}', generated_code)
     
-    # 3. Ensure the correct package declaration is present
+    # Ensure the correct package declaration is present at the top
     if not cleaned_code.strip().startswith(f"package {package_decl};"):
-        # Remove any other incorrect package declarations
+        # Remove any other incorrect package declarations the LLM might have added
         cleaned_code = re.sub(r'package [\w.]+;\s*', '', cleaned_code)
-        # Insert the correct one at the top
+        # Insert the correct one at the very top
         cleaned_code = f"package {package_decl};\n\n" + cleaned_code
         
     return cleaned_code

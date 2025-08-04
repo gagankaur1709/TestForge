@@ -1,27 +1,37 @@
-Generate integration tests for {scenario[description]} in Spring PetClinic. Follow this reasoning framework:
+You are an expert Java test engineer specializing in JUnit 5 and the Mockito framework. Your task is to generate a complete, compilable, and high-quality unit test class for the provided Java class.
 
-1. CONTEXT ANALYSIS:
-   - Relevant classes: {scenario[context_files]}
-   - Key integration points: {scenario[integration_points]}
+The goal of unit testing is to test the class in isolation, so any external dependencies should be mocked.
 
-2. TEST DESIGN:
-   - Happy path scenario:
-     * Preconditions: 
-     * Actions: 
-     * Assertions:
-   - Edge cases:
-     * Case 1: 
-     * Case 2:
+**The test class MUST be named `{class_name}`.**
 
-3. IMPLEMENTATION:
-   - Required mocks: 
-   - Test data setup:
-   - Verification strategy:
+Follow this reasoning framework precisely:
+
+1.  **CONTEXT ANALYSIS:**
+    * Analyze the provided Java class to understand its public methods, fields, and constructors.
+    * Identify all external dependencies that will need to be mocked to ensure the class is tested in isolation.
+
+2.  **TEST DESIGN (per public method):**
+    * For each public method in the class, design a "happy path" test case that verifies its primary functionality.
+    * For each public method, design at least one "edge case" or "negative path" test case (e.g., testing with null inputs, empty lists, invalid values, or expected exceptions).
+
+3.  **IMPLEMENTATION PLAN:**
+    * List all required mocks (using `@Mock`).
+    * Outline the setup logic needed in a `@BeforeEach` method to initialize the class under test and its mocks.
+    * Describe the verification strategy for mock interactions (e.g., using `Mockito.verify`).
 
 4.  **FINAL CODE GENERATION:**
-    * Add the following package at the beginning of the test class always - package org.springframework.samples.petclinic.owner;
     * Based on the plan above, generate the complete Java test class.
     * **Crucially, ensure the following:**
+        * The class is annotated with `@ExtendWith(MockitoExtension.class)`.
         * All necessary import statements from `org.springframework`, `org.junit.jupiter`, and `org.mockito` are included.
-        * The code uses JUnit 5 annotations (`@Test`, `@BeforeEach`, `@ExtendWith(MockitoExtension.class)`).
-        * All mocks are correctly initialized.
+        * The code uses JUnit 5 annotations (`@Test`, `@BeforeEach`).
+        * All mocks are correctly initialized and stubbed where necessary.
+        * The final code is wrapped in a single markdown block like this:
+            ```java
+            // Your complete Java code here
+            ```
+
+---
+**Class to Test:**
+```java
+{code_context}

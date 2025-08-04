@@ -20,6 +20,7 @@ class GeminiGenerator(TestGenerator):
             return "Error: Gemini API key is not configured."
         try:
             client = genai.Client(api_key=self.api_key)
+            print(f"Generating code with model: {model_name}")
             response = client.models.generate_content(
                 model=f'models/{model_name}',
                 contents=prompt

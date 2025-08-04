@@ -10,7 +10,7 @@ from generator.randoop_generator import RandoopGenerator
 from generator.evosuite_generator import EvoSuiteGenerator
 from evaluation.effectiveness import analyze_effectiveness, check_compilation
 from evaluation.maintainability import analyze_maintainability
-from utils import load_prompt_template, load_scenario, load_code_context
+from utils import load_prompt_template, load_scenario, load_code_context, postprocess_java_test
 
 
 GENERATOR_REGISTRY = {
@@ -25,7 +25,9 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
     """
     Orchestrates a single, complete experiment run, handling both LLM and traditional generators.
     """
-    experiment_id = f"{generator_name.replace(' ', '-')}_{model_name}_{prompt_strategy}_{uuid.uuid4().hex[:8]}"
+    exp_id_name = model_name or generator_name.replace(' ', '-')
+    experiment_id = f"{exp_id_name}_{scenario_name}_{prompt_strategy or 'default'}_{uuid.uuid4().hex[:8]}"
+    final_class_name = f"GeneratedTest_{experiment_id}"
     print(f"\n--- Starting Experiment: {experiment_id} ---")
 
     # --- 1. Configuration Setup ---
@@ -39,7 +41,10 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
     
     gen_info = GENERATOR_REGISTRY[generator_name]
     for key in gen_info['required_keys']:
-        config[key] = getattr(Config, key)
+        value = getattr(Config, key, None)
+        if not value:
+            raise ValueError(f"Required config key '{key}' is missing from your .env or config.py file.")
+        config[key] = value
 
     benchmark_dir_full_path = os.path.join(Config.BENCHMARK_DIR, benchmark_name)
     generator = gen_info['class'](config=config)
@@ -49,6 +54,8 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
         scenario = load_scenario(scenario_name) # Assumes one 'scenarios.json' for unit tests
         if gen_info['type'] == 'llm':
             code_context = load_code_context(benchmark_dir_full_path, scenario)
+            # prompt_template = load_prompt_template(prompt_strategy) # Simplified call
+            # formatted_prompt = prompt_template.format(code_context=code_context)
         else: # For 'traditional' tools
             class_file_path = scenario['files'][0]
             code_context = class_file_path.replace('src/main/java/', '').replace('.java', '').replace('/', '.')
@@ -63,13 +70,13 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
 
     if gen_info['type'] == 'llm':
         # --- LLM PATH: Use Self-Correction Loop ---
-        max_retries = 3
+        max_retries = 1
         current_code = ""
         for attempt in range(max_retries):
             print(f"\n--- LLM Generation Attempt {attempt + 1}/{max_retries} ---")
             if attempt == 0:
                 prompt_template = load_prompt_template(prompt_strategy)
-                formatted_prompt = prompt_template.format(code_context=code_context)
+                formatted_prompt = prompt_template.format(code_context=code_context, class_name=final_class_name)
                 start_time = time.time()
                 current_code = generator.generate(formatted_prompt, prompt_strategy, model_name)
                 time_cost = time.time() - start_time
@@ -82,12 +89,7 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
                 print(f"Generator returned an error: {current_code}")
                 continue
 
-            test_destination = os.path.join(benchmark_dir_full_path, scenario['test_destination'])
-            compiles, build_log = check_compilation(current_code, f"GeneratedTest_{experiment_id}", test_destination)
-            if compiles:
-                print("✅ Code compiled successfully!")
-                generated_code = current_code
-                break
+            generated_code = current_code
     else:
         # --- TRADITIONAL TOOL PATH: Single Pass ---
         print(f"\n--- Running Traditional Generator: {generator_name} ---")
@@ -100,6 +102,9 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
     if not generated_code or "Error:" in generated_code:
         print("Failed to generate valid code after all attempts. Ending experiment.")
         return
+
+    package_declaration = scenario['test_destination'].replace('src/test/java/', '').replace('/', '.')
+    generated_code = postprocess_java_test(generated_code, final_class_name, package_declaration)
 
     experiment_artifacts_dir = os.path.join('outputs', experiment_id)
     os.makedirs(experiment_artifacts_dir, exist_ok=True)
@@ -144,19 +149,10 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
 if __name__ == "__main__":
     init_db()
     
-    # run_experiment(
-    #     generator_name="Google Gemini",
-    #     model_name="gemini-1.5-flash-latest",
-    #     prompt_strategy="chain_of_thought",
-    #     benchmark_name="spring-petclinic",
-    #     scenario_name="owner_model" # Use a unit test scenario
-    # )
-
-    # Example of running a traditional tool experiment for a UNIT TEST
     run_experiment(
-        generator_name="Randoop",
-        model_name=None, # Not applicable
-        prompt_strategy=None, # Not applicable
+        generator_name="Google Gemini",
+        model_name="gemini-1.5-flash-latest",
+        prompt_strategy="chain_of_thought",
         benchmark_name="spring-petclinic",
-        scenario_name="owner_model" # Use the same unit test scenario
-    )
+        scenario_name="owner_model" 
+    )    
