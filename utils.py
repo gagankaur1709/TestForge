@@ -7,80 +7,71 @@ def load_scenario(scenario_name: str) -> Dict:
     scenarios_file_path = os.path.join(os.path.dirname(__file__), 'scenarios.json')
     with open(scenarios_file_path, 'r') as f:
         scenarios = json.load(f)
+    if scenario_name not in scenarios:
+        raise ValueError(f"Error: Scenario '{scenario_name}' not found in {scenarios_file_path}.")
+        
     return scenarios[scenario_name]
 
 def load_prompt_template(prompt_strategy: str, scenario: Dict) -> str:
     """Load the appropriate prompt template for the strategy."""
-    template_path = scenario['prompt_templates'][prompt_strategy]
-    full_path = os.path.join(os.path.dirname(__file__), template_path)
-    with open(full_path, 'r') as f:
+    template_path = os.path.join('prompts', f"{prompt_strategy}.txt")
+    if not os.path.exists(template_path):
+        raise FileNotFoundError(f"Error: Prompt template not found at '{template_path}'")
+        
+    with open(template_path, 'r') as f:
         return f.read()
-
-def format_prompt(template: str, context: dict) -> str:
-    try:
-        return template.format(
-            scenario=context['scenario'],
-            code_context=context['files']
-        )
-    except Exception as e:
-        print(f"Prompt formatting failed: {e}. Context keys: {context.keys()}")
-        raise
 
 def load_code_context(benchmark_path: str, scenario: Dict) -> Dict:
     """Enhanced to include prompt context."""
-    code_context = {}
-    for relative_path in scenario['context_files']:
+    all_code = []
+    
+    for relative_path in scenario.get('files', []):
         full_path = os.path.join(benchmark_path, relative_path)
-        with open(full_path, 'r', encoding='utf-8') as f:
-            code_context[relative_path] = f.read()
-    
-    return {
-        "scenario": {
-            "description": scenario.get("description", ""),
-            "integration_points": scenario.get("integration_points", []),
-            "context_files": scenario.get("context_files", [])
-        },
-        "files": code_context
-    }
+        
+        if os.path.exists(full_path):
+            with open(full_path, 'r', encoding='utf-8') as f:
+                all_code.append(f"// --- File: {relative_path} ---\n")
+                all_code.append(f.read())
+        else:
+            raise FileNotFoundError(f"Error: Benchmark source file not found at {full_path}")          
+    if not all_code:
+        raise ValueError(f"Error: No valid source files found for scenario '{scenario.get('description', 'N/A')}'.")
+    return "".join(all_code)
 
 
-def postprocess_java_test_v2(generated_code: str, target_dir: str) -> str:
+def postprocess_java_test(generated_code: str, class_name: str, package_decl: str) -> str:
     """
-    Performs basic cleanup on generated Java test code.
-    - Removes lines with unfilled template placeholders (e.g., {testSetup})
-    - Removes lines containing only a single curly brace
-    - Ensures the correct package declaration is present
-    
+    Performs a simple cleanup of the raw generated Java code.
+
     Args:
-        generated_code: The raw Java code string from the LLM.
-        target_dir: The directory to save the cleaned file.
-        class_name: The name to use for the output Java file.
+        generated_code: The raw code string from the LLM.
+        class_name: The desired public class name for the test.
+        package_decl: The package declaration to ensure is present.
 
     Returns:
-        The file name of the cleaned Java file.
+        The cleaned Java code as a string.
     """
-    
-    class_name = "OwnerRepositoryIntegrationTest"
     cleaned_lines = []
+    
+    # 1. Remove placeholder lines and lines with only a curly brace
     for line in generated_code.splitlines():
         if re.search(r'\{\w+\}', line):
             continue
-
         if line.strip() in ['{', '}']:
             continue
-            
         cleaned_lines.append(line)
-
-
-    package_decl = 'package org.springframework.samples.petclinic.owner;'
-    has_package = any(line.strip().startswith(package_decl) for line in cleaned_lines)
-    
-    if not has_package:
-        cleaned_lines = [line for line in cleaned_lines if not line.strip().startswith('package ')]
-        cleaned_lines.insert(0, package_decl)
+        
     cleaned_code = '\n'.join(cleaned_lines)
-    new_file_name = f"{class_name}.java"
-    new_file_path = os.path.join(target_dir, new_file_name)
-    with open(new_file_path, 'w', encoding='utf-8') as f:
-        f.write(cleaned_code)
-    return new_file_name
+    
+    # 2. Replace any class declaration with the correct unique one
+    # This handles cases where the LLM names the class something different.
+    cleaned_code = re.sub(r'public class \w+', f'public class {class_name}', cleaned_code)
+    
+    # 3. Ensure the correct package declaration is present
+    if not cleaned_code.strip().startswith(f"package {package_decl};"):
+        # Remove any other incorrect package declarations
+        cleaned_code = re.sub(r'package [\w.]+;\s*', '', cleaned_code)
+        # Insert the correct one at the top
+        cleaned_code = f"package {package_decl};\n\n" + cleaned_code
+        
+    return cleaned_code

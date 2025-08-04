@@ -1,24 +1,23 @@
 {
-    "sql_integration_owners": {
-      "description": "Owner management SQL integration",
-      "context_files": [
-        "src/main/java/org/springframework/samples/petclinic/owner/OwnerController.java",
-        "src/main/java/org/springframework/samples/petclinic/owner/OwnerRepository.java"
-      ],
-      "integration_points": [
-        "OwnerController → OwnerRepository → Database",
-        "OwnerController ← Validation"
-      ],
-      "test_classes": [
-        "OwnerControllerIntegrationTests"
-      ],
-      "prompt_templates": {
-        "chain_of_thought": "prompts/chain_of_thought.txt",
-        "role_playing": "prompts/role_playing.txt",
-        "constraint_based": "prompts/constraint_based.txt",
-        "self_correction": "prompts/self_correction.txt",
-        "guided_tree_of_thought": "prompts/guided_tree_of_thought.txt",
-        "repair": "prompts/repair.txt"
-      }
-    }
+  "owner_model": {
+    "description": "Unit test for the Person model class.",
+    "files": [
+      "src/main/java/org/springframework/samples/petclinic/model/Person.java"
+    ],
+    "test_destination": "src/test/java/org/springframework/samples/petclinic/model"
+  },
+  "vet_model": {
+    "description": "Unit test for the Vet model class.",
+    "files": [
+      "src/main/java/org/springframework/samples/petclinic/vet/Vet.java"
+    ],
+    "test_destination": "src/test/java/org/springframework/samples/petclinic/model"
+  },
+  "person_model": {
+    "description": "Unit test for the Owner model class.",
+    "files": [
+      "src/main/java/org/springframework/samples/petclinic/owner/Owner.java"
+    ],
+    "test_destination": "src/test/java/org/springframework/samples/petclinic/model"
   }
+}

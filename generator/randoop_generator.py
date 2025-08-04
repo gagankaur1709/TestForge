@@ -1,5 +1,3 @@
-# generators/randoop_generator.py
-
 import os
 import subprocess
 import shutil
@@ -42,17 +40,19 @@ class RandoopGenerator(TestGenerator):
         try:
             subprocess.run(command, check=True, capture_output=True, text=True, timeout=180)
 
-            all_generated_code = []
+            generated_code = ""
+            regression_test_file = "RegressionTest0.java"
             if os.path.exists(output_dir):
                 for file in os.listdir(output_dir):
-                    if file.endswith(".java"):
+                    if file == regression_test_file:
                         with open(os.path.join(output_dir, file), 'r', encoding='utf-8') as f:
-                            all_generated_code.append(f.read())
+                            generated_code = f.read()
+                        break
             
-            if not all_generated_code:
+            if not generated_code:
                 return "Error: Randoop ran but did not produce any test files."
 
-            return "\n\n".join(all_generated_code)
+            return generated_code
 
         except subprocess.TimeoutExpired as e:
             return f"Error: Randoop execution timed out.\n---STDERR---\n{e.stderr}\n---STDOUT---\n{e.stdout}"
