@@ -70,7 +70,7 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
 
     if gen_info['type'] == 'llm':
         # --- LLM PATH: Use Self-Correction Loop ---
-        max_retries = 1
+        max_retries = 2
         current_code = ""
         build_log = ""
         for attempt in range(max_retries):
@@ -82,9 +82,9 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
                 current_code = generator.generate(formatted_prompt, prompt_strategy, model_name)
                 time_cost = time.time() - start_time
             else:
-                repair_template = load_prompt_template('self_correction')
+                repair_template = load_prompt_template('repair')
                 repair_prompt = repair_template.format(broken_code=current_code, error_message=build_log)
-                current_code = generator.generate(repair_prompt, 'self_correction', model_name)
+                current_code = generator.generate(repair_prompt, 'repair', model_name)
             
             if "Error:" in current_code:
                 print(f"Generator returned an error: {current_code}")
