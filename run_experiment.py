@@ -150,18 +150,10 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
 if __name__ == "__main__":
     init_db()
     
-    # run_experiment(
-    #     generator_name="Google Gemini",
-    #     model_name="gemini-1.5-flash-latest",
-    #     prompt_strategy="chain_of_thought",
-    #     benchmark_name="spring-petclinic",
-    #     scenario_name="owner_model" 
-    # )  
-
     run_experiment(
         generator_name="Groq Llama",
         model_name="llama3-8b-8192",
-        prompt_strategy="constraint_based",
+        prompt_strategy="role_playing",
         benchmark_name="spring-petclinic",
         scenario_name="owner_model" 
     )   
