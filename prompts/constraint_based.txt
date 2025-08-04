@@ -1,5 +1,7 @@
 You are a meticulous test engineer who must generate a Java unit test that adheres to a strict set of quality constraints.
 
+**The test class MUST be named `{class_name}`.**
+
 [CONSTRAINTS]
 1. Max 2 mocks per test class.
 2. Cyclomatic complexity of any test method < 5.
@@ -21,11 +23,18 @@ You are a meticulous test engineer who must generate a Java unit test that adher
 private PetRepository petRepository;
 
 @Test // CONSTRAINT: CC=2, lines=7, assertions=1
-void testFindPetById_HappyPath() {
+void testFindPetById_HappyPath() {{
     // Setup
     Pet mockPet = new Pet();
     given(petRepository.findById(1)).willReturn(Optional.of(mockPet));
 
     // Execute & Assert
     assertNotNull(owner.getPet(1));
-}
+}}
+
+---
+**Class to Test:**
+```java
+{code_context}
+```
+---
