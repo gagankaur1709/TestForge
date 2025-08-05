@@ -1,11 +1,9 @@
-# evaluation/effectiveness.py
-
 import subprocess
 import os
 import shutil
 import xml.etree.ElementTree as ET
 
-def check_compilation(test_code: str, class_name: str, benchmark_path: str) -> tuple[bool, str]:
+def check_compilation(test_code: str, class_name: str, benchmark_path: str, test_destination_dir: str) -> tuple[bool, str]:
     """
     Checks if the provided test code compiles within the benchmark project.
 
@@ -19,18 +17,13 @@ def check_compilation(test_code: str, class_name: str, benchmark_path: str) -> t
     """
 
     test_filename = f"{class_name}.java"
-    # This path needs to be made more dynamic based on the scenario
-    test_destination_dir = os.path.join(benchmark_path, 'src', 'test', 'java', 'org', 'springframework', 'samples', 'petclinic', 'owner')
-    os.makedirs(test_destination_dir, exist_ok=True)
     destination_path = os.path.join(test_destination_dir, test_filename)
+    os.makedirs(test_destination_dir, exist_ok=True)
 
     with open(destination_path, 'w') as f:
         f.write(test_code)
-
-    # Use 'mvn compile test-compile' for a faster check than 'verify'
     success, output = run_maven_command(['mvn', 'test-compile'], working_dir=benchmark_path)
 
-    # Clean up the temporary test file
     os.remove(destination_path)
 
     return success, output

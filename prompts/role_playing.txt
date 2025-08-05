@@ -12,6 +12,7 @@ Generate a comprehensive and high-quality JUnit 5 unit test class for the provid
 3. Minimize test brittleness by mocking all external dependencies (e.g., repositories, services, clients). Do not test the dependencies themselves.
 4. Document the purpose of each test method with a clear Javadoc comment.
 5. Balance achieving high code coverage with creating tests that are easy to read and maintain.
+6. The first line of the file MUST be the package declaration.** For example, a test for a class in `org.springframework.samples.petclinic.owner` must start with `package org.springframework.samples.petclinic.owner;
 
 [EXAMPLE OUTPUT]
 /**

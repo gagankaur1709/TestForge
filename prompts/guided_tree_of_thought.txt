@@ -1,6 +1,8 @@
 You are a systematic test engineer. Your task is to generate a complete JUnit 5 unit test class for the provided Java class by following a deliberate thought process.
 
 **The test class MUST be named `{class_name}`.**
+**The first line of the file MUST be the package declaration.** For example, a test for a class in `org.springframework.samples.petclinic.owner` must start with `package org.springframework.samples.petclinic.owner;**
+**You MUST include all necessary import statements.** Do not rely on same-package access.**
 
 **Step 1: High-Level Test Plan**
 First, analyze the class under test and create a high-level plan. List each public method and the different categories of test cases needed (e.g., happy path, edge cases, null handling, error conditions).
