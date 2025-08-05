@@ -97,6 +97,32 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
         start_time = time.time()
         generated_code = generator.generate(code_context)
         time_cost = time.time() - start_time
+        if "Error:" in generated_code:
+            print(f"Generator failed: {generated_code}")
+            generation_successful = False
+            
+            # Create a dictionary to log the failure to the database
+            failure_results = {
+                'experiment_id': experiment_id,
+                'generator_name': f"{generator_name} ({model_name or 'N/A'})",
+                'prompt_strategy': 'N/A',
+                'benchmark_name': benchmark_name,
+                'time_cost': time_cost,
+                'token_cost': 0,
+                'output_path': None,
+                'compiles': False,
+                'runs_successfully': False,
+                'fault_detected': False,
+                'line_coverage': 0.0,
+                'branch_coverage': 0.0,
+                'cyclomatic_complexity': None,
+                'cognitive_complexity': None,
+                'coupling_between_objects': None,
+                'test_brittleness_score': None
+            }
+            add_experiment_result(failure_results)
+            print(f"--- Failure for experiment {experiment_id} has been logged. ---")
+            return
 
 
     # --- 4. Final Evaluation and Storage ---
@@ -104,15 +130,20 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
         print("Failed to generate valid code after all attempts. Ending experiment.")
         return
 
-    package_declaration = scenario['test_destination'].replace('src/test/java/', '').replace('/', '.')
-    generated_code = postprocess_java_test(generated_code, final_class_name, package_declaration)
-
     experiment_artifacts_dir = os.path.join('outputs', experiment_id)
     os.makedirs(experiment_artifacts_dir, exist_ok=True)
     
     # Use a unique name for the test file to avoid conflicts
     if gen_info['type'] == 'llm':
         final_class_name = f"GeneratedTest_{experiment_id}"
+        package_declaration = scenario['test_destination'].replace('src/test/java/', '').replace('/', '.')
+        
+        print("Post-processing LLM-generated code...")
+        cleaned_code = postprocess_java_test(generated_code, final_class_name, package_declaration)
+        
+        actual_test_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")
+        with open(actual_test_path, 'w', encoding='utf-8') as f:
+            f.write(cleaned_code)
     elif generator_name == 'Randoop':
         final_class_name = "RegressionTest0" # Use Randoop's default class name
     elif generator_name == 'EvoSuite':
@@ -150,10 +181,18 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
 if __name__ == "__main__":
     init_db()
     
-    run_experiment(
-        generator_name="Groq Llama",
-        model_name="llama3-8b-8192",
-        prompt_strategy="role_playing",
-        benchmark_name="spring-petclinic",
-        scenario_name="owner_model" 
-    )   
+    # run_experiment(
+    #     generator_name="Groq Llama",
+    #     model_name="llama3-8b-8192",
+    #     prompt_strategy="role_playing",
+    #     benchmark_name="spring-petclinic",
+    #     scenario_name="owner_model" 
+    # ) 
+
+    # run_experiment(
+    #     generator_name = "Randoop",
+    #     model_name = None,
+    #     prompt_strategy = None,
+    #     benchmark_name="spring-petclinic",
+    #     scenario_name="owner_controller" 
+    # )  

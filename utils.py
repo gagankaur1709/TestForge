@@ -52,7 +52,11 @@ def postprocess_java_test(generated_code: str, class_name: str, package_decl: st
     """
     # Replace any public class declaration with the correct unique one
     # This handles cases where the LLM names the class something different.
-    cleaned_code = re.sub(r'public class \w+', f'public class {class_name}', generated_code)
+    pattern = re.compile(r'public\s+class\s+\w+(\s*\{|\s+extends\s+[\w\s.]+\s*\{)')
+    
+    # Replace the found class declaration with the correct unique one,
+    # preserving whatever came after the original name.
+    cleaned_code = pattern.sub(f'public class {class_name}\\1', generated_code, count=1)
     
     # Ensure the correct package declaration is present at the top
     if not cleaned_code.strip().startswith(f"package {package_decl};"):

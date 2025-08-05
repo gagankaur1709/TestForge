@@ -19,5 +19,12 @@
       "src/main/java/org/springframework/samples/petclinic/owner/OwnerController.java"
     ],
     "test_destination": "src/test/java/org/springframework/samples/petclinic/owner"
+  },
+  "pet_validator": {
+    "description": "Tests the PetValidator for handling pet validation logic.",
+    "files": [
+      "src/main/java/org/springframework/samples/petclinic/owner/PetValidator.java"
+    ],
+    "test_destination": "src/test/java/org/springframework/samples/petclinic/owner"
   }
 }

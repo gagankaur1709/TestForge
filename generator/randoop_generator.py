@@ -21,18 +21,24 @@ class RandoopGenerator(TestGenerator):
         output_dir = os.path.join(benchmark_path, "randoop-tests")
         os.makedirs(output_dir, exist_ok=True)
 
-        # Randoop needs a full classpath, including the project's compiled
-        # classes and all of its dependencies.
-        classpath = f"{os.path.join(benchmark_path, 'target', 'classes')}:{os.path.join(benchmark_path, 'target', 'dependency', '*')}"
+        classes_path = os.path.join(benchmark_path, 'target', 'classes')
+        dependency_path = os.path.join(benchmark_path, 'target', 'dependency')
+
+        classpath_jars = [randoop_jar_path, classes_path]
+        if os.path.exists(dependency_path):
+            for jar_file in os.listdir(dependency_path):
+                if jar_file.endswith('.jar'):
+                    classpath_jars.append(os.path.join(dependency_path, jar_file))
+        
+        classpath = os.pathsep.join(classpath_jars)
 
         command = [
             'java',
-            '-classpath', f"{randoop_jar_path}:{classpath}",
+            '-classpath', classpath, # Use the complete, explicit classpath
             'randoop.main.Main',
             'gentests',
             f'--testclass={class_to_test}',
-            f'--junit-output-dir={output_dir}',
-            '--time-limit=120' # 2-minute time limit
+            f'--junit-output-dir={output_dir}'
         ]
 
         print(f"Running Randoop command: {' '.join(command)}")
