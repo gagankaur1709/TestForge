@@ -1,23 +1,23 @@
 {
-  "owner_model": {
-    "description": "Unit test for the Person model class.",
+  "person_model": {
+    "description": "Tests the simple Person model (POJO).",
     "files": [
       "src/main/java/org/springframework/samples/petclinic/model/Person.java"
     ],
     "test_destination": "src/test/java/org/springframework/samples/petclinic/model"
   },
   "vet_model": {
-    "description": "Unit test for the Vet model class.",
+    "description": "Tests the Vet model, which has a relationship with Specialty.",
     "files": [
       "src/main/java/org/springframework/samples/petclinic/vet/Vet.java"
     ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/model"
+    "test_destination": "src/test/java/org/springframework/samples/petclinic/vet"
   },
-  "person_model": {
-    "description": "Unit test for the Owner model class.",
+  "owner_controller": {
+    "description": "Tests the OwnerController, a complex class with multiple dependencies.",
     "files": [
-      "src/main/java/org/springframework/samples/petclinic/owner/Owner.java"
+      "src/main/java/org/springframework/samples/petclinic/owner/OwnerController.java"
     ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/model"
+    "test_destination": "src/test/java/org/springframework/samples/petclinic/owner"
   }
 }
