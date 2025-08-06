@@ -92,37 +92,27 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
     # Build enhanced test scaffold with better context
     final_class_name = _get_final_class_name('llm', experiment_id)
     test_package = scenario['test_destination'].replace('src/test/java/', '').replace('/', '.')
-    scaffold_parts = [
-                f"package {test_package};\n",
-                "\n".join(analysis_results['imports']),
-                # Add common testing imports
-                "import org.junit.jupiter.api.Test;",
-                "import org.junit.jupiter.api.extension.ExtendWith;",
-                "import org.mockito.InjectMocks;",
-                "import org.mockito.Mock;",
-                "import org.mockito.junit.jupiter.MockitoExtension;",
-                "import static org.junit.jupiter.api.Assertions.*;\n",
-                "@ExtendWith(MockitoExtension.class)",
-                f"public class {final_class_name} {{\n"
-            ]
-    class_under_test_name = analysis_results['class_name']
-    class_under_test_variable = class_under_test_name[0].lower() + class_under_test_name[1:]
-    scaffold_parts.append(f"    @InjectMocks\n    private {class_under_test_name} {class_under_test_variable};\n")
-
-    for dep_type, dep_name in analysis_results['dependencies_to_mock']:
-        scaffold_parts.append(f"    @Mock\n    private {dep_type} {dep_name};\n")
     
-    for method in analysis_results['public_methods']:
-        test_method_name = "test" + method[0].upper() + method[1:]
-        scaffold_parts.append(f"    @Test\n    void {test_method_name}() {{")
-        scaffold_parts.append("        // TODO: Implement test logic\n    }\n")
-            
-    scaffold_parts.append("}")
+    # The scaffold now only provides the package and the necessary imports from the original file.
+    # The LLM is responsible for generating the entire test class, including test-specific imports.
+    scaffold_parts = [
+        f"package {test_package};\n",
+        "\n".join(analysis_results['imports']),
+        "import org.junit.jupiter.api.Test;",
+        "import org.junit.jupiter.api.extension.ExtendWith;",
+        "import org.mockito.InjectMocks;",
+        "import org.mockito.Mock;",
+        "import org.mockito.junit.jupiter.MockitoExtension;",
+        "import static org.junit.jupiter.api.Assertions.*;",
+        "import static org.mockito.ArgumentMatchers.*;",
+        "import static org.mockito.Mockito.*;",
+        "import static org.mockito.BDDMockito.*;"
+    ]
     code_scaffold = "\n".join(scaffold_parts)
 
 
     max_retries = 2
-    raw_code = ""
+    cleaned_code = ""
     time_cost = 0.0
     
     for attempt in range(max_retries):
@@ -142,10 +132,9 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
                 code_scaffold=code_scaffold, 
                 class_name=final_class_name
             )
-            print(prompt)
         else:
             # Assumes build_log is passed in from the calling scope's previous iteration
-            prompt = prompt_template.format(broken_code=raw_code, error_message=build_log)
+            prompt = prompt_template.format(broken_code=cleaned_code, error_message=build_log)
 
         start_time = time.time()
         raw_code = generator.generate(prompt, prompt_strategy, model_name)
@@ -155,7 +144,7 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
             print(f"Generator returned an error or empty code: {raw_code}")
             continue
 
-        cleaned_code = postprocess_java_test(raw_code, final_class_name, test_package)
+        cleaned_code = postprocess_java_test(raw_code, code_context)
         test_destination = os.path.join(benchmark_dir_full_path, scenario['test_destination'])
         compiles, build_log = check_compilation(cleaned_code, final_class_name, benchmark_dir_full_path, test_destination)
 

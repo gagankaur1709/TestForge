@@ -10,7 +10,7 @@ You are a meticulous test engineer who must generate a Java unit test that adher
 5. Each test method must have between 1 and 3 assertions.
 
 [REQUIREMENTS]
-- **IMPORTANT**: You must complete the provided test scaffold - do not create a new test class from scratch.
+- **IMPORTANT**: You must absolutely include the imports provided in the test scaffold - Add necessary imports on top of it if any.
 - **CRITICAL**: Do NOT wrap your output in markdown code blocks (```java). Provide ONLY the Java code.
 - Generate test logic that satisfies ALL of the above constraints.
 - Add comments to the generated code to prove compliance with each constraint.

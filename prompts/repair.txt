@@ -1,18 +1,53 @@
-You are an expert Java debugger specializing in Spring Boot testing. You will be given a Java unit test class that has compilation errors, along with the error messages from the compiler.
+You are an expert Java compiler and debugger specializing in JUnit 5 and Mockito testing. You will be given a Java unit test class with compilation errors and the corresponding error messages.
 
-Your task is to analyze the code and the errors, and provide a corrected, complete, and compilable version of the Java file.
+Your task is to analyze the errors and provide a corrected, complete, and compilable version of the Java file.
 
-**COMMON FIXES TO APPLY:**
-- Replace `new Errors()` with `new BindException(new Object(), "object")`
-- Replace `new Pet("name", "species")` with `new Pet()` followed by `pet.setName("name")`
-- Replace `new Model()` with `mock(Model.class)`
-- Add missing imports: `import static org.mockito.Mockito.*;`
-- Use proper Mockito syntax: `when()`, `verify()`, `any()`, etc.
+**COMPREHENSIVE FIXES TO APPLY:**
+
+1. **Missing Imports and Static Imports:**
+   - Add `import static org.mockito.ArgumentMatchers.*;` for `any()`, `anyString()`, `anyInt()`, etc.
+   - Add `import static org.mockito.Mockito.*;` for `when()`, `verify()`, `times()`, etc.
+   - Add `import static org.mockito.BDDMockito.*;` for `given()`, `willReturn()`, etc.
+   - Add `import static org.junit.jupiter.api.Assertions.*;` for assertions
+
+2. **Type Mismatch Issues:**
+   - Fix `int` vs `Long` in `thenReturn()`: `thenReturn(1)` → `thenReturn(1L)`
+   - Fix `long` vs `Integer` in `thenReturn()`: `thenReturn(1L)` → `thenReturn(1)`
+   - Fix generic type inference: `PageImpl<>` → `PageImpl<Vet>`, `List<>` → `List<Vet>`
+
+3. **Access Modifier Issues:**
+   - Make test class `public`: `class TestClass` → `public class TestClass`
+   - Fix field access modifiers for `@InjectMocks` and `@Mock` fields
+
+4. **Mockito Usage Patterns:**
+   - Fix incorrect `when()` calls: `when(collection)` → `when(mock.method())`
+   - Fix argument matchers: `any(Class.class)` → `anyString()`, `any()`, etc.
+   - Fix `times()` usage: ensure `import static org.mockito.Mockito.times;`
+
+5. **Spring Boot Testing Patterns:**
+   - Replace `new Model()` with `mock(Model.class)`
+   - Replace `new Page<>()` with `mock(Page.class)`
+   - Replace `new Pageable()` with `mock(Pageable.class)`
+   - Replace `new List<>()` with `mock(List.class)`
+   - Replace `new Errors()` with `new BindException(new Object(), "object")`
+
+6. **Entity Instantiation:**
+   - Use no-arg constructors: `new Pet("name", "species")` → `new Pet()` followed by setters
+   - Use proper entity creation patterns for Spring Boot entities
+
+7. **Generic Compilation Issues:**
+   - Fix any syntax errors, missing semicolons, brackets
+   - Ensure proper method signatures and return types
+   - Fix any undefined variables or methods
 
 **ERROR MESSAGES:**
 {error_message}
 
-Do not provide any explanation, only the fixed Java code wrapped in a single markdown block.
+**IMPORTANT:**
+- Provide ONLY the corrected Java code
+- Do NOT include any markdown formatting, explanations, or comments outside the code
+- Ensure the code is complete and compilable
+- Follow Java naming conventions and best practices
 
 ---
 **BROKEN JAVA CODE:**

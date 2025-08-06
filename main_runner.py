@@ -9,17 +9,18 @@ from discover_classes import discover_classes_in_project
 # Define the LLM providers and models to test
 LLM_PROVIDERS_AND_MODELS = {
     #'Google Gemini': ["gemini-1.5-flash"],
-    'Google Gemini': ["gemini-1.5-pro"],
-    # 'Groq Llama': ["llama3-8b-8192", "llama3-70b-8192"],
+    #'Google Gemini': ["gemini-1.5-pro"],
+    'Groq Llama': [ "llama3-70b-8192"],
+    #'Groq Llama': ["llama3-8b-8192"],
     # 'DeepSeek': ["deepseek-coder", "deepseek-chat"]
 }
 
 # Define the prompt strategies to test for each LLM
 PROMPT_STRATEGIES = [
-    # "chain_of_thought",
-     "role_playing",
-    # "constraint_based",
-    # "guided_tree_of_thought"
+    "chain_of_thought",
+    "role_playing",
+    "constraint_based",
+    "guided_tree_of_thought"
 ]
 
 # Define the traditional tools to run as a baseline
@@ -86,7 +87,7 @@ def main(run_mode='pilot'):
 
     if run_mode == 'pilot':
         print("\n--- RUNNING IN PILOT MODE ---")
-        scenario_file = 'scenarios_pilot.json'
+        scenario_file = 'scenarios_spring-petclinic.json'
     elif run_mode == 'full':
         print("\n--- RUNNING IN FULL DISCOVERY MODE ---")
         scenario_file = f"scenarios_{benchmark_name}.json"
@@ -101,20 +102,20 @@ def main(run_mode='pilot'):
     SCENARIOS_TO_RUN = list(all_scenarios.keys())
 
 #   #  --- Run Traditional Tool Experiments ---
-#     print("\n--- PHASE 1: RUNNING TRADITIONAL BASELINES ---")
-#     for scenario in SCENARIOS_TO_RUN:
-#         for tool in TRADITIONAL_TOOLS:
-#             print(f"\n=> Running {tool} on {scenario}...")
-#             try:
-#                 run_experiment(
-#                     generator_name=tool,
-#                     model_name=None,
-#                     prompt_strategy=None,
-#                     benchmark_name="spring-petclinic",
-#                     scenario_name=scenario
-#                 )
-#             except Exception as e:
-#                 print(f"!!!!!! An error occurred while running {tool} on {scenario}: {e} !!!!!!")
+    print("\n--- PHASE 1: RUNNING TRADITIONAL BASELINES ---")
+    for scenario in SCENARIOS_TO_RUN:
+        for tool in TRADITIONAL_TOOLS:
+            print(f"\n=> Running {tool} on {scenario}...")
+            try:
+                run_experiment(
+                    generator_name=tool,
+                    model_name=None,
+                    prompt_strategy=None,
+                    benchmark_name="spring-petclinic",
+                    scenario_name=scenario
+                )
+            except Exception as e:
+                print(f"!!!!!! An error occurred while running {tool} on {scenario}: {e} !!!!!!")
 
     #--- Run LLM Experiments ---
     print("\n--- PHASE 2: RUNNING LLM GENERATORS ---")

@@ -1,7 +1,7 @@
 You are a systematic test engineer. Your task is to generate test logic for the provided test scaffold by following a deliberate thought process.
 
 **The test class MUST be named `{class_name}`.**
-**IMPORTANT**: You must complete the provided test scaffold - do not create a new test class from scratch.
+**IMPORTANT**: You must absolutely include the imports including the package declaration provided in the test scaffold - Add necessary imports on top of it if any.
 **CRITICAL**: Do NOT wrap your output in markdown code blocks (```java). Provide ONLY the Java code.**
 
 **Step 1: High-Level Test Plan**

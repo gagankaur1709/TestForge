@@ -12,7 +12,7 @@ Generate comprehensive and high-quality test logic for the provided test scaffol
 3. Minimize test brittleness by mocking all external dependencies (e.g., repositories, services, clients). Do not test the dependencies themselves.
 4. Document the purpose of each test method with a clear Javadoc comment.
 5. Balance achieving high code coverage with creating tests that are easy to read and maintain.
-6. **IMPORTANT**: You must complete the provided test scaffold - do not create a new test class from scratch.
+6. **IMPORTANT**: You must absolutely include the imports provided in the test scaffold - Add necessary imports on top of it if any.
 7. **CRITICAL**: Do NOT wrap your output in markdown code blocks (```java). Provide ONLY the Java code.
 
 [EXAMPLE OUTPUT]

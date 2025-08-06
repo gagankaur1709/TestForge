@@ -1,26 +1,4 @@
 {
-  "org_springframework_samples_petclinic_petclinicruntimehints": {
-    "description": "Unit test for the PetClinicRuntimeHints class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/PetClinicRuntimeHints.java"
-    ],
-    "dependencies": [
-      "src/main/java/org/springframework/samples/petclinic/model/BaseEntity.java",
-      "src/main/java/org/springframework/samples/petclinic/model/Person.java",
-      "src/main/java/org/springframework/samples/petclinic/vet/Vet.java"
-    ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic"
-  },
-  "org_springframework_samples_petclinic_petclinicapplication": {
-    "description": "Unit test for the PetClinicApplication class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/PetClinicApplication.java"
-    ],
-    "dependencies": [
-      "src/main/java/org/springframework/samples/petclinic/PetClinicRuntimeHints.java"
-    ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic"
-  },
   "org_springframework_samples_petclinic_vet_vet": {
     "description": "Unit test for the Vet class.",
     "files": [
@@ -33,17 +11,6 @@
     ],
     "test_destination": "src/test/java/org/springframework/samples/petclinic/vet"
   },
-  "org_springframework_samples_petclinic_vet_specialty": {
-    "description": "Unit test for the Specialty class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/vet/Specialty.java"
-    ],
-    "dependencies": [
-      "src/main/java/org/springframework/samples/petclinic/model/NamedEntity.java",
-      "src/main/java/org/springframework/samples/petclinic/vet/Vet.java"
-    ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/vet"
-  },
   "org_springframework_samples_petclinic_vet_vetcontroller": {
     "description": "Unit test for the VetController class.",
     "files": [
@@ -53,26 +20,6 @@
       "src/main/java/org/springframework/samples/petclinic/vet/Vet.java",
       "src/main/java/org/springframework/samples/petclinic/vet/VetRepository.java",
       "src/main/java/org/springframework/samples/petclinic/vet/Vets.java"
-    ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/vet"
-  },
-  "org_springframework_samples_petclinic_vet_vetrepository": {
-    "description": "Unit test for the VetRepository class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/vet/VetRepository.java"
-    ],
-    "dependencies": [
-      "src/main/java/org/springframework/samples/petclinic/vet/Vet.java"
-    ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/vet"
-  },
-  "org_springframework_samples_petclinic_vet_vets": {
-    "description": "Unit test for the Vets class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/vet/Vets.java"
-    ],
-    "dependencies": [
-      "src/main/java/org/springframework/samples/petclinic/vet/Vet.java"
     ],
     "test_destination": "src/test/java/org/springframework/samples/petclinic/vet"
   },
@@ -112,16 +59,6 @@
     ],
     "test_destination": "src/test/java/org/springframework/samples/petclinic/owner"
   },
-  "org_springframework_samples_petclinic_owner_ownerrepository": {
-    "description": "Unit test for the OwnerRepository class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/owner/OwnerRepository.java"
-    ],
-    "dependencies": [
-      "src/main/java/org/springframework/samples/petclinic/owner/Owner.java"
-    ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/owner"
-  },
   "org_springframework_samples_petclinic_owner_ownercontroller": {
     "description": "Unit test for the OwnerController class.",
     "files": [
@@ -130,16 +67,6 @@
     "dependencies": [
       "src/main/java/org/springframework/samples/petclinic/owner/Owner.java",
       "src/main/java/org/springframework/samples/petclinic/owner/OwnerRepository.java"
-    ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/owner"
-  },
-  "org_springframework_samples_petclinic_owner_pettyperepository": {
-    "description": "Unit test for the PetTypeRepository class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/owner/PetTypeRepository.java"
-    ],
-    "dependencies": [
-      "src/main/java/org/springframework/samples/petclinic/owner/PetType.java"
     ],
     "test_destination": "src/test/java/org/springframework/samples/petclinic/owner"
   },
@@ -168,38 +95,6 @@
     ],
     "test_destination": "src/test/java/org/springframework/samples/petclinic/owner"
   },
-  "org_springframework_samples_petclinic_owner_owner": {
-    "description": "Unit test for the Owner class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/owner/Owner.java"
-    ],
-    "dependencies": [
-      "src/main/java/org/springframework/samples/petclinic/model/Person.java",
-      "src/main/java/org/springframework/samples/petclinic/owner/Pet.java",
-      "src/main/java/org/springframework/samples/petclinic/owner/Visit.java"
-    ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/owner"
-  },
-  "org_springframework_samples_petclinic_owner_visit": {
-    "description": "Unit test for the Visit class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/owner/Visit.java"
-    ],
-    "dependencies": [
-      "src/main/java/org/springframework/samples/petclinic/model/BaseEntity.java"
-    ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/owner"
-  },
-  "org_springframework_samples_petclinic_owner_pettype": {
-    "description": "Unit test for the PetType class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/owner/PetType.java"
-    ],
-    "dependencies": [
-      "src/main/java/org/springframework/samples/petclinic/model/NamedEntity.java"
-    ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/owner"
-  },
   "org_springframework_samples_petclinic_system_welcomecontroller": {
     "description": "Unit test for the WelcomeController class.",
     "files": [
@@ -207,65 +102,5 @@
     ],
     "dependencies": [],
     "test_destination": "src/test/java/org/springframework/samples/petclinic/system"
-  },
-  "org_springframework_samples_petclinic_system_cacheconfiguration": {
-    "description": "Unit test for the CacheConfiguration class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/system/CacheConfiguration.java"
-    ],
-    "dependencies": [],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/system"
-  },
-  "org_springframework_samples_petclinic_system_crashcontroller": {
-    "description": "Unit test for the CrashController class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/system/CrashController.java"
-    ],
-    "dependencies": [],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/system"
-  },
-  "org_springframework_samples_petclinic_system_webconfiguration": {
-    "description": "Unit test for the WebConfiguration class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/system/WebConfiguration.java"
-    ],
-    "dependencies": [],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/system"
-  },
-  "org_springframework_samples_petclinic_model_baseentity": {
-    "description": "Unit test for the BaseEntity class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/model/BaseEntity.java"
-    ],
-    "dependencies": [],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/model"
-  },
-  "org_springframework_samples_petclinic_model_person": {
-    "description": "Unit test for the Person class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/model/Person.java"
-    ],
-    "dependencies": [
-      "src/main/java/org/springframework/samples/petclinic/model/BaseEntity.java"
-    ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/model"
-  },
-  "org_springframework_samples_petclinic_model_package-info": {
-    "description": "Unit test for the package-info class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/model/package-info.java"
-    ],
-    "dependencies": [],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/model"
-  },
-  "org_springframework_samples_petclinic_model_namedentity": {
-    "description": "Unit test for the NamedEntity class.",
-    "files": [
-      "src/main/java/org/springframework/samples/petclinic/model/NamedEntity.java"
-    ],
-    "dependencies": [
-      "src/main/java/org/springframework/samples/petclinic/model/BaseEntity.java"
-    ],
-    "test_destination": "src/test/java/org/springframework/samples/petclinic/model"
   }
 }

@@ -1,26 +1,26 @@
-You are an expert Java test engineer specializing in JUnit 5 and the Mockito framework. Your task is to **complete the provided JUnit 5 unit test class scaffold** by writing the test logic inside each empty method.
+You are an expert Java test engineer specializing in JUnit 5 and the Mockito framework. Your task is to **generate a complete JUnit 5 unit test class** based on the provided code context and test scaffold.
 
 The goal of unit testing is to test the class in isolation, so any external dependencies should be mocked.
 
 **The test class MUST be named `{class_name}`.**
 
-**IMPORTANT SPRING BOOT TESTING PATTERNS:**
+**IMPORTANT TESTING PATTERNS:**
 - Use `BindException` instead of `Errors` for validation testing
-- For entities like `Pet`, use no-argument constructor then call setters: `Pet pet = new Pet(); pet.setName("TestPet");`
+- For entities, use no-argument constructor then call setters: `Entity entity = new Entity(); entity.setName("TestName");`
 - For controllers, mock dependencies and verify interactions
 - For repositories, mock return values and verify calls
-- Always use `mock(Model.class)` instead of `new Model()`
+- Always use `mock(Class.class)` instead of `new Class()` for abstract classes/interfaces
 
 Follow this reasoning framework precisely:
 
 1.  **CONTEXT ANALYSIS:**
     * Analyze the provided **CODE CONTEXT** (the class being tested) to understand its structure, methods, dependencies, and behavior.
-    * Analyze the provided **TEST SCAFFOLD** to understand the test class structure, mocked dependencies, and empty test methods that need to be implemented.
-    * Understand the relationships between the class under test and its dependencies (which are already provided as fields annotated with `@Mock` in the scaffold).
-    * Review the empty test methods that need to be implemented and map them to the corresponding methods in the code context.
+    * Review the **TEST SCAFFOLD** which provides the package declaration and essential imports for testing.
+    * Understand the relationships between the class under test and its dependencies.
+    * Identify all public methods that need test coverage.
 
 2.  **TEST DESIGN (per public method):**
-    * For each empty `@Test` method in the scaffold, examine the corresponding method in the code context to understand:
+    * For each public method in the code context, design comprehensive test cases:
       - What the method does
       - What parameters it takes
       - What it returns
@@ -33,16 +33,21 @@ Follow this reasoning framework precisely:
 
 3.  **COMMON PATTERNS TO FOLLOW:**
     * Validation testing: `BindException errors = new BindException(new Object(), "object");`
-    * Entity creation: `Pet pet = new Pet(); pet.setName("TestPet");`
+    * Entity creation: `Entity entity = new Entity(); entity.setName("TestName");`
     * Mock setup: `when(dependency.method()).thenReturn(value);`
     * Verification: `verify(dependency, times(1)).method();`
     * Assertions: Use `assertTrue()`, `assertFalse()`, `assertEquals()`, etc.
 
 4.  **FINAL CODE IMPLEMENTATION:**
-    * Based on your analysis of the code context and your test design, provide the single, complete, and compilable Java test class with all the test method bodies filled in.
-    * **IMPORTANT**: You must complete the provided scaffold - do not create a new test class from scratch.
+    * Generate a complete, compilable Java test class that includes:
+      - The package declaration and imports from the scaffold
+      - A public test class with the name `{class_name}`
+      - `@ExtendWith(MockitoExtension.class)` annotation
+      - `@InjectMocks` field for the class under test
+      - `@Mock` fields for all dependencies
+      - Multiple `@Test` methods covering different scenarios for each public method
+    * **IMPORTANT**: You must absolutely include all imports provided in the test scaffold.
     * **CRITICAL**: Do NOT wrap your output in markdown code blocks (```java). Provide ONLY the Java code.
-    * Do not repeat the scaffold. Only provide the final, completed code with the test logic implemented.
 
 ---
 **CODE CONTEXT (Class Being Tested):**
@@ -51,7 +56,7 @@ Follow this reasoning framework precisely:
 ```
 
 ---
-**TEST SCAFFOLD TO COMPLETE:**
+**TEST SCAFFOLD (Package and Imports):**
 ```java
 {code_scaffold}
 ```
