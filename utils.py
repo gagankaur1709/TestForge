@@ -4,7 +4,7 @@ import re
 from typing import Dict
 
 def load_scenario(scenario_name: str) -> Dict:
-    scenarios_file_path = os.path.join(os.path.dirname(__file__), 'scenarios_spring-petclinic.json')
+    scenarios_file_path = os.path.join(os.path.dirname(__file__), 'scenarios_pilot.json')
     with open(scenarios_file_path, 'r') as f:
         scenarios = json.load(f)
     if scenario_name not in scenarios:
@@ -49,42 +49,31 @@ def load_code_context(benchmark_path: str, scenario: Dict) -> str:
 
     return "".join(all_code_parts)
 
-def postprocess_java_test(generated_code: str, class_name: str, package_decl: str) -> str:
+def postprocess_java_test(raw_code: str, final_class_name: str, package_declaration: str) -> str:
     """
-    Cleans LLM-generated Java code:
-    - Removes markdown fences like ```java and ```
-    - Replaces the class name with a specified one
-    - Ensures the correct package declaration
-    
-    Args:
-        generated_code: The raw code string from the LLM (possibly fenced).
-        class_name: The desired class name.
-        package_decl: The package name to insert.
-    
-    Returns:
-        A cleaned Java code string.
+    Post-processes raw LLM-generated Java test code to fix common issues.
     """
-
-    # Step 1: Remove triple backticks at the start and end (```java or ```)
-    match = re.search(r"```(?:java)?(.*)```", generated_code, re.DOTALL)
+    if not raw_code:
+        return raw_code
     
-    if match:
-        # If a markdown block is found, its content is in the first captured group.
-        code_to_process = match.group(1).strip()
-    else:
-        # If no markdown block is found, assume the whole string is code and clean it up.
-        code_to_process = generated_code.strip()
-
-    # Step 2: Replace the class name
-    class_pattern = re.compile(r'public\s+class\s+\w+')
-    if class_pattern.search(code_to_process):
-        cleaned_code = class_pattern.sub(f'public class {class_name}', code_to_process, count=1)
-    else:
-        cleaned_code = f"public class {class_name} {{\n{code_to_process}\n}}"
-
-    # Step 3: Ensure package declaration is correct
-    if not cleaned_code.strip().startswith(f"package {package_decl};"):
-        cleaned_code = re.sub(r'^package\s+[\w.]+;\s*', '', cleaned_code, flags=re.MULTILINE)
-        cleaned_code = f"package {package_decl};\n\n{cleaned_code}"
-
+    # Extract the actual test code from the response - handle various markdown formats
+    code_patterns = [
+        r'```java\s*(.*?)\s*```',  # ```java ... ```
+        r'```\s*(.*?)\s*```',      # ``` ... ```
+        r'`{3,}\s*(.*?)\s*`{3,}',  # Any number of backticks
+    ]
+    
+    cleaned_code = raw_code
+    for pattern in code_patterns:
+        code_match = re.search(pattern, raw_code, re.DOTALL)
+        if code_match:
+            cleaned_code = code_match.group(1).strip()
+            break
+    
+    # If no markdown blocks found, use the raw code but clean it
+    if cleaned_code == raw_code:
+        # Remove any leading/trailing markdown artifacts
+        cleaned_code = re.sub(r'^[`\-\s]*', '', cleaned_code)
+        cleaned_code = re.sub(r'[`\-\s]*$', '', cleaned_code)
+    
     return cleaned_code

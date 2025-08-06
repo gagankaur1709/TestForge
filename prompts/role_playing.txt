@@ -4,7 +4,7 @@ You are a Senior Software Test Engineer with over 10 years of experience special
 **The test class MUST be named `{class_name}`.**
 
 [TASK]
-Generate a comprehensive and high-quality JUnit 5 unit test class for the provided Java class. The primary goal is to test the class in complete isolation from its dependencies.
+Generate comprehensive and high-quality test logic for the provided test scaffold. The primary goal is to test the class in complete isolation from its dependencies.
 
 [QUALITY REQUIREMENTS]
 1. Use semantic test names that follow the `should_when` convention (e.g., `shouldReturnOwner_whenValidIdIsProvided`).
@@ -12,7 +12,8 @@ Generate a comprehensive and high-quality JUnit 5 unit test class for the provid
 3. Minimize test brittleness by mocking all external dependencies (e.g., repositories, services, clients). Do not test the dependencies themselves.
 4. Document the purpose of each test method with a clear Javadoc comment.
 5. Balance achieving high code coverage with creating tests that are easy to read and maintain.
-6. The first line of the file MUST be the package declaration.** For example, a test for a class in `org.springframework.samples.petclinic.owner` must start with `package org.springframework.samples.petclinic.owner;
+6. **IMPORTANT**: You must complete the provided test scaffold - do not create a new test class from scratch.
+7. **CRITICAL**: Do NOT wrap your output in markdown code blocks (```java). Provide ONLY the Java code.
 
 [EXAMPLE OUTPUT]
 /**
@@ -34,7 +35,16 @@ void shouldReturnOwner_whenValidIdIsProvided() {{
     verify(ownerRepository).findById(1); // Verify the mock was called
 }}
 
+**OUTPUT FORMAT**: Provide ONLY the completed Java code without any markdown formatting, comments, or explanations.
+
 ---
-**Class to Test:**
+**CODE CONTEXT (Class Being Tested):**
 ```java
 {code_context}
+```
+
+---
+**TEST SCAFFOLD TO COMPLETE:**
+```java
+{code_scaffold}
+```

@@ -1,11 +1,11 @@
-You are a systematic test engineer. Your task is to generate a complete JUnit 5 unit test class for the provided Java class by following a deliberate thought process.
+You are a systematic test engineer. Your task is to generate test logic for the provided test scaffold by following a deliberate thought process.
 
 **The test class MUST be named `{class_name}`.**
-**The first line of the file MUST be the package declaration.** For example, a test for a class in `org.springframework.samples.petclinic.owner` must start with `package org.springframework.samples.petclinic.owner;**
-**You MUST include all necessary import statements.** Do not rely on same-package access.**
+**IMPORTANT**: You must complete the provided test scaffold - do not create a new test class from scratch.
+**CRITICAL**: Do NOT wrap your output in markdown code blocks (```java). Provide ONLY the Java code.**
 
 **Step 1: High-Level Test Plan**
-First, analyze the class under test and create a high-level plan. List each public method and the different categories of test cases needed (e.g., happy path, edge cases, null handling, error conditions).
+First, analyze the class under test (code context) and create a high-level plan. List each public method and the different categories of test cases needed (e.g., happy path, edge cases, null handling, error conditions).
 
 **Step 2: Detailed Test Case Design**
 For each test case in your plan, think through the specifics:
@@ -21,9 +21,18 @@ For each test case in your plan, think through the specifics:
   - **Assertion:** Assert that the result is null or an exception is thrown.
 
 **Step 3: Final Code Generation**
-Based on your detailed design, generate the complete, compilable Java unit test class, including all necessary mocks, setup, and assertions. The final code must be wrapped in a single markdown block.
+Based on your detailed design, complete the provided test scaffold by implementing the test logic in each empty test method. 
+
+**OUTPUT FORMAT**: Provide ONLY the completed Java code without any markdown formatting, comments, or explanations.
 
 ---
-**Class to Test:**
+**CODE CONTEXT (Class Being Tested):**
 ```java
 {code_context}
+```
+
+---
+**TEST SCAFFOLD TO COMPLETE:**
+```java
+{code_scaffold}
+```

@@ -9,11 +9,10 @@ You are a meticulous test engineer who must generate a Java unit test that adher
 4. The test must use JUnit 5 annotations exclusively.
 5. Each test method must have between 1 and 3 assertions.
 
-[CLASS UNDER TEST]
-{code_context}
-
 [REQUIREMENTS]
-- Generate a complete unit test class that satisfies ALL of the above constraints.
+- **IMPORTANT**: You must complete the provided test scaffold - do not create a new test class from scratch.
+- **CRITICAL**: Do NOT wrap your output in markdown code blocks (```java). Provide ONLY the Java code.
+- Generate test logic that satisfies ALL of the above constraints.
 - Add comments to the generated code to prove compliance with each constraint.
 - Do not generate any code that would violate a constraint.
 - The first line of the file MUST be the package declaration.** For example, a test for a class in `org.springframework.samples.petclinic.owner` must start with `package org.springframework.samples.petclinic.owner;**
@@ -34,9 +33,16 @@ void testFindPetById_HappyPath() {{
     assertNotNull(owner.getPet(1));
 }}
 
+**OUTPUT FORMAT**: Provide ONLY the completed Java code without any markdown formatting, comments, or explanations.
+
 ---
-**Class to Test:**
+**CODE CONTEXT (Class Being Tested):**
 ```java
 {code_context}
 ```
+
 ---
+**TEST SCAFFOLD TO COMPLETE:**
+```java
+{code_scaffold}
+```

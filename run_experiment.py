@@ -11,6 +11,7 @@ from generator.evosuite_generator import EvoSuiteGenerator
 from evaluation.effectiveness import analyze_effectiveness, check_compilation
 from evaluation.maintainability import analyze_maintainability
 from utils import load_prompt_template, load_scenario, load_code_context, postprocess_java_test
+from static_analyzer import analyze_java_file
 
 
 GENERATOR_REGISTRY = {
@@ -21,19 +22,14 @@ GENERATOR_REGISTRY = {
     'Randoop': {'class': RandoopGenerator, 'required_keys': ['RANDOOP_JAR_PATH'], 'type': 'traditional'}
 }
 
-def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, scenario_name):
-    """
-    Orchestrates a single, complete experiment run, handling both LLM and traditional generators.
-    """
+def _setup_experiment(generator_name, model_name, prompt_strategy, scenario_name, benchmark_name):
+    """Initializes experiment parameters, configuration, and directories."""
     exp_id_name = model_name or generator_name.replace(' ', '-')
     experiment_id = f"{exp_id_name}_{scenario_name}_{prompt_strategy or 'default'}_{uuid.uuid4().hex[:8]}"
-    sanitized_id_for_java = experiment_id.replace('-', '_')
-    final_class_name = f"GeneratedTest_{sanitized_id_for_java}"
     print(f"\n--- Starting Experiment: {experiment_id} ---")
 
-    # --- 1. Configuration Setup ---
     config = {
-        "PMD_PATH": "/Users/gagan/tools/pmd-bin-7.15.0", # IMPORTANT: Update this path
+        "PMD_PATH": "/Users/gagan/tools/pmd-bin-7.15.0",
         "RULESET_PATH": "rulesets/maintainability_rules.xml"
     }
     
@@ -44,148 +40,159 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
     for key in gen_info['required_keys']:
         value = getattr(Config, key, None)
         if not value:
-            raise ValueError(f"Required config key '{key}' is missing from your .env or config.py file.")
+            raise ValueError(f"Required config key '{key}' is missing from .env or config.py.")
         config[key] = value
 
     benchmark_dir_full_path = os.path.join(Config.BENCHMARK_DIR, benchmark_name)
-    generator = gen_info['class'](config=config)
+    config['BENCHMARK_DIR'] = benchmark_dir_full_path
     
-    # --- 2. Load Scenario and Prepare Generator Input ---
-    try:
-        scenario = load_scenario(scenario_name) # Assumes one 'scenarios.json' for unit tests
-        if gen_info['type'] == 'llm':
-            code_context = load_code_context(benchmark_dir_full_path, scenario)
-        else: # For 'traditional' tools
-            class_file_path = scenario['files'][0]
-            code_context = class_file_path.replace('src/main/java/', '').replace('.java', '').replace('/', '.')
-            config['BENCHMARK_DIR'] = benchmark_dir_full_path
-    except Exception as e:
-        print(f"Failed to load scenario or context: {e}")
-        return
-
-    # --- 3. Generation Phase (Conditional Logic) ---
-    generated_code = None
-    time_cost = 0.0
-
-    if gen_info['type'] == 'llm':
-        # --- LLM PATH: Use Self-Correction Loop with Corrected Logic ---
-        max_retries = 2
-        raw_code = ""
-        cleaned_code = "" # This will now be the variable we test
-        build_log = ""
-        
-        for attempt in range(max_retries):
-            print(f"\n--- LLM Generation Attempt {attempt + 1}/{max_retries} ---")
-            
-            sanitized_id_for_java = experiment_id.replace('-', '_')
-            final_class_name = f"GeneratedTest_{sanitized_id_for_java}"
-            package_declaration = scenario['test_destination'].replace('src/test/java/', '').replace('/', '.')
-
-            if attempt == 0:
-                # Initial Generation
-                prompt_template = load_prompt_template(prompt_strategy)
-                formatted_prompt = prompt_template.format(code_context=code_context, class_name=final_class_name)
-                start_time = time.time()
-                raw_code = generator.generate(formatted_prompt, prompt_strategy, model_name)
-                time_cost = time.time() - start_time
-            else:
-                # Repair Attempt
-                repair_template = load_prompt_template('repair')
-                # The broken code is the *cleaned* code from the previous failed attempt
-                repair_prompt = repair_template.format(broken_code=cleaned_code, error_message=build_log)
-                raw_code = generator.generate(repair_prompt, 'repair', model_name)
-            
-            if not raw_code or "Error:" in raw_code:
-                print(f"Generator returned an error or empty code: {raw_code}")
-                continue
-
-            # --- THIS IS THE FIX ---
-            # 1. Post-process the raw code IMMEDIATELY after generation.
-            print("Post-processing LLM-generated code...")
-            cleaned_code = postprocess_java_test(raw_code, final_class_name, package_declaration)
-            
-            # 2. Check compilation on the CLEANED code.
-            test_destination = os.path.join(benchmark_dir_full_path, scenario['test_destination'])
-            compiles, build_log = check_compilation(cleaned_code, final_class_name, benchmark_dir_full_path, test_destination)
-            # --- END OF FIX ---
-
-            if compiles:
-                print("Code compiled successfully!")
-                generated_code = cleaned_code # The final good code is the cleaned version
-                break
-            else:
-                # Save artifacts for the FAILED cleaned code
-                experiment_artifacts_dir = os.path.join('outputs', experiment_id)
-                os.makedirs(experiment_artifacts_dir, exist_ok=True)
-                log_filename = f"build_failure_log_attempt_{attempt + 1}.txt"
-                log_filepath = os.path.join(experiment_artifacts_dir, log_filename)
-                with open(log_filepath, 'w', encoding='utf-8') as f:
-                    f.write(build_log)
-
-                failed_test_filename = f"FailedTest_attempt_{attempt + 1}.java"
-                failed_test_filepath = os.path.join(experiment_artifacts_dir, failed_test_filename)
-                with open(failed_test_filepath, 'w', encoding='utf-8') as f:
-                    f.write(cleaned_code) # Save the cleaned code that failed
-
-                print(f"Compilation failed. Full log and the failed (cleaned) test file have been saved.")
-        
-    else:
-        # --- TRADITIONAL TOOL PATH: Single Pass ---
-        print(f"\n--- Running Traditional Generator: {generator_name} ---")
-        start_time = time.time()
-        generated_code = generator.generate(code_context)
-        time_cost = time.time() - start_time
-        if "Error:" in generated_code:
-            print(f"Generator failed: {generated_code}")
-            generation_successful = False
-            
-            # Create a dictionary to log the failure to the database
-            failure_results = {
-                'experiment_id': experiment_id,
-                'generator_name': f"{generator_name} ({model_name or 'N/A'})",
-                'prompt_strategy': 'N/A',
-                'benchmark_name': benchmark_name,
-                'time_cost': time_cost,
-                'token_cost': 0,
-                'output_path': None,
-                'compiles': False,
-                'runs_successfully': False,
-                'fault_detected': False,
-                'line_coverage': 0.0,
-                'branch_coverage': 0.0,
-                'cyclomatic_complexity': None,
-                'cognitive_complexity': None,
-                'coupling_between_objects': None,
-                'test_brittleness_score': None
-            }
-            add_experiment_result(failure_results)
-            print(f"--- Failure for experiment {experiment_id} has been logged. ---")
-            return
-
-
-    if not generated_code or "Error:" in generated_code:
-        print("Failed to generate valid code after all attempts. Ending experiment.")
-        return
-
+    generator = gen_info['class'](config=config)
+    scenario = load_scenario(scenario_name)
+    
     experiment_artifacts_dir = os.path.join('outputs', experiment_id)
     os.makedirs(experiment_artifacts_dir, exist_ok=True)
     
-    
+    return experiment_id, config, generator, scenario, benchmark_dir_full_path, experiment_artifacts_dir
+
+def _get_final_class_name(generator_name, experiment_id):
+    """Determines the final test class name based on the generator."""
     if generator_name == 'Randoop':
-        final_class_name = "RegressionTest0" # Use Randoop's default class name
+        return "RegressionTest0"
     elif generator_name == 'EvoSuite':
-        final_class_name = "GeneratedEvoSuiteTest"
-     # Use a consistent name for EvoSuite
-    cleaned_code = generated_code
-    # Here you could call your post-processing script if needed
-    # For now, we'll just save the raw successful code
+        # This is a placeholder; EvoSuite's output might be multiple files.
+        # The generator should ideally return the main test file name.
+        return "GeneratedEvoSuiteTest" 
+    else: # LLM generators
+        sanitized_id = experiment_id.replace('-', '_')
+        return f"GeneratedTest_{sanitized_id}"
+
+def _log_experiment_failure(experiment_id, generator_name, model_name, benchmark_name, time_cost):
+    """Logs a failed experiment run to the database."""
+    failure_results = {
+        'experiment_id': experiment_id,
+        'generator_name': f"{generator_name} ({model_name or 'N/A'})",
+        'prompt_strategy': 'N/A',
+        'benchmark_name': benchmark_name,
+        'time_cost': time_cost,
+        'token_cost': 0, 'output_path': None, 'compiles': False,
+        'runs_successfully': False, 'fault_detected': False, 'line_coverage': 0.0,
+        'branch_coverage': 0.0, 'cyclomatic_complexity': None, 'cognitive_complexity': None,
+        'coupling_between_objects': None, 'test_brittleness_score': None
+    }
+    add_experiment_result(failure_results)
+    print(f"--- Failure for experiment {experiment_id} has been logged. ---")
+
+def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experiment_id, benchmark_dir_full_path, experiment_artifacts_dir):
+    """Handles the LLM generation and self-correction loop."""
+    target_file_path = os.path.join(benchmark_dir_full_path, scenario['files'][0])
+    analysis_results = analyze_java_file(target_file_path)
+    if not analysis_results:
+        raise ValueError("Static analysis failed.")
+
+    # Build enhanced test scaffold with better context
+    final_class_name = _get_final_class_name('llm', experiment_id)
+    test_package = scenario['test_destination'].replace('src/test/java/', '').replace('/', '.')
+    scaffold_parts = [
+                f"package {test_package};\n",
+                "\n".join(analysis_results['imports']),
+                # Add common testing imports
+                "import org.junit.jupiter.api.Test;",
+                "import org.junit.jupiter.api.extension.ExtendWith;",
+                "import org.mockito.InjectMocks;",
+                "import org.mockito.Mock;",
+                "import org.mockito.junit.jupiter.MockitoExtension;",
+                "import static org.junit.jupiter.api.Assertions.*;\n",
+                "@ExtendWith(MockitoExtension.class)",
+                f"public class {final_class_name} {{\n"
+            ]
+    class_under_test_name = analysis_results['class_name']
+    class_under_test_variable = class_under_test_name[0].lower() + class_under_test_name[1:]
+    scaffold_parts.append(f"    @InjectMocks\n    private {class_under_test_name} {class_under_test_variable};\n")
+
+    for dep_type, dep_name in analysis_results['dependencies_to_mock']:
+        scaffold_parts.append(f"    @Mock\n    private {dep_type} {dep_name};\n")
     
+    for method in analysis_results['public_methods']:
+        test_method_name = "test" + method[0].upper() + method[1:]
+        scaffold_parts.append(f"    @Test\n    void {test_method_name}() {{")
+        scaffold_parts.append("        // TODO: Implement test logic\n    }\n")
+            
+    scaffold_parts.append("}")
+    code_scaffold = "\n".join(scaffold_parts)
+
+
+    max_retries = 2
+    raw_code = ""
+    time_cost = 0.0
+    
+    for attempt in range(max_retries):
+        print(f"\n--- LLM Generation Attempt {attempt + 1}/{max_retries} ---")
+        
+        prompt_template_name = 'repair' if attempt > 0 else prompt_strategy
+        prompt_template = load_prompt_template(prompt_template_name)
+        
+        if attempt == 0:
+            # Load the code context for the class being tested
+            target_file_path = os.path.join(benchmark_dir_full_path, scenario['files'][0])
+            with open(target_file_path, 'r', encoding='utf-8') as f:
+                code_context = f.read()
+            
+            prompt = prompt_template.format(
+                code_context=code_context,
+                code_scaffold=code_scaffold, 
+                class_name=final_class_name
+            )
+            print(prompt)
+        else:
+            # Assumes build_log is passed in from the calling scope's previous iteration
+            prompt = prompt_template.format(broken_code=raw_code, error_message=build_log)
+
+        start_time = time.time()
+        raw_code = generator.generate(prompt, prompt_strategy, model_name)
+        time_cost += time.time() - start_time
+        
+        if not raw_code or "Error:" in raw_code:
+            print(f"Generator returned an error or empty code: {raw_code}")
+            continue
+
+        cleaned_code = postprocess_java_test(raw_code, final_class_name, test_package)
+        test_destination = os.path.join(benchmark_dir_full_path, scenario['test_destination'])
+        compiles, build_log = check_compilation(cleaned_code, final_class_name, benchmark_dir_full_path, test_destination)
+
+        if compiles:
+            print("Code compiled successfully!")
+            return cleaned_code, time_cost
+        else:
+            log_path = os.path.join(experiment_artifacts_dir, f"build_failure_log_attempt_{attempt + 1}.txt")
+            with open(log_path, 'w', encoding='utf-8') as f:
+                f.write(build_log)
+            failed_test_path = os.path.join(experiment_artifacts_dir, f"FailedTest_attempt_{attempt + 1}.java")
+            with open(failed_test_path, 'w', encoding='utf-8') as f:
+                f.write(cleaned_code)
+            print("Compilation failed. Logs and failed test saved.")
+            
+    return None, time_cost # Return None if all retries fail
+
+def _run_traditional_generation(generator, scenario, benchmark_dir_full_path):
+    """Handles test generation using traditional tools like EvoSuite or Randoop."""
+    print(f"\n--- Running Traditional Generator: {generator.__class__.__name__} ---")
+    class_file_path = scenario['files'][0]
+    code_context = class_file_path.replace('src/main/java/', '').replace('.java', '').replace('/', '.')
+    
+    start_time = time.time()
+    generated_code = generator.generate(code_context)
+    time_cost = time.time() - start_time
+    
+    return generated_code, time_cost
+
+def _finalize_and_log_results(experiment_id, generated_code, final_class_name, generator_name, model_name, prompt_strategy, benchmark_name, time_cost, experiment_artifacts_dir, config):
+    """Analyzes the generated code and logs the final results to the database."""
     actual_test_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")
     with open(actual_test_path, 'w', encoding='utf-8') as f:
-        f.write(cleaned_code)
+        f.write(generated_code)
 
     print("\nAnalyzing final effectiveness...")
-    effectiveness_results = analyze_effectiveness(actual_test_path, benchmark_dir_full_path, experiment_artifacts_dir)
+    effectiveness_results = analyze_effectiveness(actual_test_path, config['BENCHMARK_DIR'], experiment_artifacts_dir)
     
     print("Analyzing final maintainability...")
     maintainability_results = analyze_maintainability(actual_test_path, config['PMD_PATH'], config['RULESET_PATH'])
@@ -193,34 +200,62 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
     final_results = {
         'experiment_id': experiment_id,
         'generator_name': f"{generator_name} ({model_name or 'N/A'})",
-        'prompt_strategy': prompt_strategy if gen_info['type'] == 'llm' else 'N/A',
+        'prompt_strategy': prompt_strategy if GENERATOR_REGISTRY[generator_name]['type'] == 'llm' else 'N/A',
         'benchmark_name': benchmark_name,
         'time_cost': time_cost,
-        'token_cost': len(generated_code.split()) if gen_info['type'] == 'llm' else 0,
+        'token_cost': len(generated_code.split()) if GENERATOR_REGISTRY[generator_name]['type'] == 'llm' else 0,
         'output_path': experiment_artifacts_dir,
         **effectiveness_results,
         **maintainability_results
     }
-
+    
     add_experiment_result(final_results)
     print(f"--- Experiment {experiment_id} Finished and Saved ---")
 
+def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, scenario_name):
+    """
+    Orchestrates a single, complete experiment run.
+    """
+    try:
+        experiment_id, config, generator, scenario, benchmark_dir_full_path, experiment_artifacts_dir = _setup_experiment(
+            generator_name, model_name, prompt_strategy, scenario_name, benchmark_name
+        )
+    except (ValueError, FileNotFoundError) as e:
+        print(f"Experiment setup failed: {e}")
+        return
+
+    gen_info = GENERATOR_REGISTRY[generator_name]
+    generated_code = None
+    time_cost = 0.0
+
+    try:
+        if gen_info['type'] == 'llm':
+            generated_code, time_cost = _run_llm_generation(
+                generator, scenario, prompt_strategy, model_name, experiment_id, benchmark_dir_full_path, experiment_artifacts_dir
+            )
+        else: # traditional
+            generated_code, time_cost = _run_traditional_generation(
+                generator, scenario, benchmark_dir_full_path
+            )
+    except Exception as e:
+        print(f"An unexpected error occurred during generation: {e}")
+        _log_experiment_failure(experiment_id, generator_name, model_name, benchmark_name, time_cost)
+        return
+
+    if not generated_code or "Error:" in generated_code:
+        print(f"Generator failed to produce valid code. Raw output: {generated_code}")
+        if gen_info['type'] == 'traditional':
+            _log_experiment_failure(experiment_id, generator_name, model_name, benchmark_name, time_cost)
+        # For LLMs, failure is already handled within the loop, so we just exit.
+        return
+        
+    final_class_name = _get_final_class_name(generator_name, experiment_id)
+    
+    _finalize_and_log_results(
+        experiment_id, generated_code, final_class_name, generator_name, model_name, 
+        prompt_strategy, benchmark_name, time_cost, experiment_artifacts_dir, config
+    )
 
 if __name__ == "__main__":
     init_db()
-    
-    # run_experiment(
-    #     generator_name="Groq Llama",
-    #     model_name="llama3-8b-8192",
-    #     prompt_strategy="role_playing",
-    #     benchmark_name="spring-petclinic",
-    #     scenario_name="owner_model" 
-    # ) 
-
-    # run_experiment(
-    #     generator_name = "Randoop",
-    #     model_name = None,
-    #     prompt_strategy = None,
-    #     benchmark_name="spring-petclinic",
-    #     scenario_name="owner_controller" 
-    # )  
+    pass 
