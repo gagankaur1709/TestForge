@@ -4,7 +4,7 @@ import re
 from typing import Dict
 
 def load_scenario(scenario_name: str) -> Dict:
-    scenarios_file_path = os.path.join(os.path.dirname(__file__), 'scenarios.json')
+    scenarios_file_path = os.path.join(os.path.dirname(__file__), 'scenarios_spring-petclinic.json')
     with open(scenarios_file_path, 'r') as f:
         scenarios = json.load(f)
     if scenario_name not in scenarios:
@@ -21,22 +21,33 @@ def load_prompt_template(prompt_strategy: str) -> str:
     with open(template_path, 'r') as f:
         return f.read()
 
-def load_code_context(benchmark_path: str, scenario: Dict) -> Dict:
-    """Enhanced to include prompt context."""
-    all_code = []
+def load_code_context(benchmark_path: str, scenario: Dict) -> str:
+    """
+    Loads and concatenates the source code for the main file and its
+    specified dependencies for a unit test scenario.
+    """
+    all_code_parts = []
     
-    for relative_path in scenario.get('files', []):
+    files_to_load = scenario.get('files', []) + scenario.get('dependencies', [])
+    
+    print(f"Loading context for scenario: {scenario.get('description', 'No description')}")
+
+    for relative_path in files_to_load:
         full_path = os.path.join(benchmark_path, relative_path)
         
         if os.path.exists(full_path):
             with open(full_path, 'r', encoding='utf-8') as f:
-                all_code.append(f"// --- File: {relative_path} ---\n")
-                all_code.append(f.read())
+                all_code_parts.append(f"// --- File: {relative_path} ---\n")
+                all_code_parts.append(f.read())
+                all_code_parts.append("\n\n")
         else:
-            raise FileNotFoundError(f"Error: Benchmark source file not found at {full_path}")          
-    if not all_code:
-        raise ValueError(f"Error: No valid source files found for scenario '{scenario.get('description', 'N/A')}'.")
-    return "".join(all_code)
+            # Raise an error if a file is missing
+            raise FileNotFoundError(f"Error: Benchmark source file not found at {full_path}")
+            
+    if not all_code_parts:
+        raise ValueError("Error: No valid source files found for scenario.")
+
+    return "".join(all_code_parts)
 
 def postprocess_java_test(generated_code: str, class_name: str, package_decl: str) -> str:
     """

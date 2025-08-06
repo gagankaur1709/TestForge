@@ -3,13 +3,8 @@ from database import init_db
 from config import Config
 import os
 import subprocess
-
-SCENARIOS_TO_RUN = [
-    "person_model",
-    "vet_model",
-    "owner_controller",
-    "pet_validator"
-]
+import json
+from discover_classes import discover_classes_in_project
 
 # Define the LLM providers and models to test
 LLM_PROVIDERS_AND_MODELS = {
@@ -83,21 +78,31 @@ def main():
         print("Halting pilot study due to benchmark preparation failure.")
         return
 
-    # --- Run Traditional Tool Experiments ---
-    # print("\n--- PHASE 1: RUNNING TRADITIONAL BASELINES ---")
-    # for scenario in SCENARIOS_TO_RUN:
-    #     for tool in TRADITIONAL_TOOLS:
-    #         print(f"\n=> Running {tool} on {scenario}...")
-    #         try:
-    #             run_experiment(
-    #                 generator_name=tool,
-    #                 model_name=None,
-    #                 prompt_strategy=None,
-    #                 benchmark_name="spring-petclinic",
-    #                 scenario_name=scenario
-    #             )
-    #         except Exception as e:
-    #             print(f"!!!!!! An error occurred while running {tool} on {scenario}: {e} !!!!!!")
+    benchmark_name = "spring-petclinic"
+    benchmark_path = os.path.join(Config.BENCHMARK_DIR, benchmark_name)
+    scenario_file = f"scenarios_{benchmark_name}.json"
+    discover_classes_in_project(benchmark_path, scenario_file)
+
+    with open(scenario_file, 'r') as f:
+        all_scenarios = json.load(f)
+    
+    SCENARIOS_TO_RUN = list(all_scenarios.keys())
+
+    #--- Run Traditional Tool Experiments ---
+    print("\n--- PHASE 1: RUNNING TRADITIONAL BASELINES ---")
+    for scenario in SCENARIOS_TO_RUN:
+        for tool in TRADITIONAL_TOOLS:
+            print(f"\n=> Running {tool} on {scenario}...")
+            try:
+                run_experiment(
+                    generator_name=tool,
+                    model_name=None,
+                    prompt_strategy=None,
+                    benchmark_name="spring-petclinic",
+                    scenario_name=scenario
+                )
+            except Exception as e:
+                print(f"!!!!!! An error occurred while running {tool} on {scenario}: {e} !!!!!!")
 
     #--- Run LLM Experiments ---
     print("\n--- PHASE 2: RUNNING LLM GENERATORS ---")
