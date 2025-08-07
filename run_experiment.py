@@ -219,12 +219,12 @@ def _finalize_and_log_results(experiment_id, generated_code, final_class_name, g
     if benchmark_name == "humaneval":
         # For HumanEval, save the generated solution
         remove_markdown_and_backticks(generated_code)
-        solution_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")
-        with open(solution_path, 'w', encoding='utf-8') as f:
-            f.write(generated_code)
+        # solution_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")
+        # with open(solution_path, 'w', encoding='utf-8') as f:
+        #     f.write(generated_code)
         
         print("\nAnalyzing HumanEval effectiveness...")
-        effectiveness_results = analyze_humaneval_effectiveness(solution_path, scenario, experiment_artifacts_dir)
+        effectiveness_results = analyze_humaneval_effectiveness(generated_code, scenario, experiment_artifacts_dir, final_class_name)
         
         # Maintainability is less relevant for HumanEval, so we use default values
         maintainability_results = {

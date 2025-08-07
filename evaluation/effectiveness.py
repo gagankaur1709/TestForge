@@ -2,6 +2,8 @@ import subprocess
 import os
 import shutil
 import xml.etree.ElementTree as ET
+import re
+from config import Config
 
 def check_compilation(test_code: str, class_name: str, benchmark_path: str, test_destination_dir: str) -> tuple[bool, str]:
     """
@@ -89,44 +91,80 @@ def analyze_effectiveness(test_file_path: str, benchmark_path: str, output_dir: 
 
     return results
 
-def analyze_humaneval_effectiveness(generated_solution_path: str, scenario: dict, output_dir: str) -> dict:
+def analyze_humaneval_effectiveness(generated_test_code: str, scenario: dict, output_dir: str, class_name: str) -> dict:
     """
     A simple pipeline to compile and run a generated HumanEval solution file.
+    The LLM should now generate complete, compilable Java files.
     """
     results = {"compiles": False, "runs_successfully": False}
     
+    solution_code = f"""
+    {scenario['prompt']}
+    {scenario['canonical_solution']}
+    """
+
+    imports_from_solution = re.findall(r'import\s+[\w\.\*]+;', scenario['prompt'])
+    imports_from_llm = re.findall(r'import\s+[\w\.\*]+;', generated_test_code)
+    print(imports_from_solution)
+    all_imports = sorted(list(set(imports_from_solution + imports_from_llm)))
+    import_block = "\n".join(all_imports)
+    test_class_code = re.sub(r'import\s+(?:static\s+)?[\w\.\*]+;', '', generated_test_code).strip()
+
+    full_java_code = f"""
+    {import_block}
+    import static org.junit.jupiter.api.Assertions.*;
+    import static org.junit.jupiter.api.Assertions.assertFalse;
+    import static org.junit.jupiter.api.Assertions.assertTrue;
+    import static org.junit.jupiter.api.Assertions.assertEquals;
+    import static org.junit.jupiter.api.Assertions.assertThrows;
+    import static org.junit.jupiter.api.Assertions.assertNotNull;
+    import static org.junit.jupiter.api.Assertions.assertNull;
+    import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+    import org.mockito.Mockito;
+    import org.mockito.junit.jupiter.MockitoExtension;
+    import org.junit.jupiter.api.extension.ExtendWith;
+    import org.junit.jupiter.api.Test;
+    import org.junit.jupiter.api.BeforeEach;
+    import org.junit.jupiter.api.AfterEach;
+    import org.junit.jupiter.api.BeforeAll;
+    {solution_code}
+    {test_class_code}
+    """
+
+    java_file_path = os.path.join(output_dir, f"{class_name}.java")
+    with open(java_file_path, 'w', encoding='utf-8') as f:
+        f.write(full_java_code)
+
+
     try:
-        if not os.path.exists(generated_solution_path):
-            print(f"Generated solution file not found: {generated_solution_path}")
-            return results
-        
-        class_name = os.path.basename(generated_solution_path).replace('.java', '')
-        junit_jar_path = "tools/junit-platform-console-standalone-1.10.3.jar"
+        junit_jar_path = Config.JUNIT_JAR_PATH
+        mockito_jar_path = Config.MOCKITO_JAR_PATH
+        # Instead of renaming, compile the original file directly
         compile_result = subprocess.run(
-            ['javac', '-cp', junit_jar_path, generated_solution_path], 
+            ['javac', '-cp', f"{junit_jar_path}:{mockito_jar_path}", java_file_path], 
             capture_output=True, text=True
         )
+
+        results["compiles"] = compile_result.returncode == 0
         
         if compile_result.returncode != 0:
             print(f"Compilation failed: {compile_result.stderr}")
             with open(os.path.join(output_dir, 'compilation_error.txt'), 'w') as f:
                 f.write(f"STDOUT:\n{compile_result.stdout}\n\nSTDERR:\n{compile_result.stderr}\n\nRETURN CODE: {compile_result.returncode}")
             return results
-        
+        print(f"Compilation successful")
         results["compiles"] = True
         
         try:
+            class_path = f"{os.path.dirname(java_file_path)}{os.pathsep}{mockito_jar_path}"
             result = subprocess.run(
-                ['java', '-cp', f'{junit_jar_path}:{os.path.dirname(generated_solution_path)}', 
-                 'org.junit.platform.console.ConsoleLauncher', 
-                 '--class-path', os.path.dirname(generated_solution_path),
-                 '--select-class', class_name],
-                capture_output=True, text=True, timeout=30
+            ['java', '-jar', junit_jar_path, '--class-path', class_path, '--select-class', class_name],
+            capture_output=True, text=True, timeout=30
             )
-            
             results["runs_successfully"] = result.returncode == 0 and "Test run finished" in result.stdout
             with open(os.path.join(output_dir, 'test_output.txt'), 'w') as f:
                 f.write(f"STDOUT:\n{result.stdout}\n\nSTDERR:\n{result.stderr}\n\nRETURN CODE: {result.returncode}")
+        
                 
         except subprocess.TimeoutExpired:
             print("Test execution timed out after 30 seconds")
