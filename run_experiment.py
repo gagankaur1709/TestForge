@@ -10,7 +10,7 @@ from generator.randoop_generator import RandoopGenerator
 from generator.evosuite_generator import EvoSuiteGenerator
 from evaluation.effectiveness import analyze_effectiveness, check_compilation, analyze_humaneval_effectiveness
 from evaluation.maintainability import analyze_maintainability
-from utils import load_prompt_template, load_scenario, load_code_context, postprocess_java_test
+from utils import load_prompt_template, load_scenario, remove_markdown_and_backticks, postprocess_java_test
 from static_analyzer import analyze_java_file
 
 
@@ -59,10 +59,8 @@ def _get_final_class_name(generator_name, experiment_id):
     if generator_name == 'Randoop':
         return "RegressionTest0"
     elif generator_name == 'EvoSuite':
-        # This is a placeholder; EvoSuite's output might be multiple files.
-        # The generator should ideally return the main test file name.
         return "GeneratedEvoSuiteTest" 
-    else: # LLM generators
+    else:
         sanitized_id = experiment_id.replace('-', '_')
         return f"GeneratedTest_{sanitized_id}"
 
@@ -89,12 +87,9 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
     if not analysis_results:
         raise ValueError("Static analysis failed.")
 
-    # Build enhanced test scaffold with better context
     final_class_name = _get_final_class_name('llm', experiment_id)
     test_package = scenario['test_destination'].replace('src/test/java/', '').replace('/', '.')
     
-    # The scaffold now only provides the package and the necessary imports from the original file.
-    # The LLM is responsible for generating the entire test class, including test-specific imports.
     scaffold_parts = [
         f"package {test_package};\n",
         "\n".join(analysis_results['imports']),
@@ -122,7 +117,6 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
         prompt_template = load_prompt_template(prompt_template_name)
         
         if attempt == 0:
-            # Load the code context for the class being tested
             target_file_path = os.path.join(benchmark_dir_full_path, scenario['files'][0])
             with open(target_file_path, 'r', encoding='utf-8') as f:
                 code_context = f.read()
@@ -133,7 +127,6 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
                 class_name=final_class_name
             )
         else:
-            # Assumes build_log is passed in from the calling scope's previous iteration
             prompt = prompt_template.format(broken_code=cleaned_code, error_message=build_log)
 
         start_time = time.time()
@@ -160,14 +153,22 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
                 f.write(cleaned_code)
             print("Compilation failed. Logs and failed test saved.")
             
-    return None, time_cost # Return None if all retries fail
+    return None, time_cost
 
 def _run_humaneval_generation(generator, scenario, prompt_strategy, model_name, experiment_id, experiment_artifacts_dir):
     """Handles HumanEval-specific LLM generation."""
     print(f"\n--- Running HumanEval Generation ---")
     
-    # For HumanEval, the context is the prompt from the scenario
-    code_context = scenario['prompt']
+    # Combine method signature from prompt with method body from canonical_solution
+    method_signature = scenario['prompt']
+    method_body = scenario['canonical_solution']
+    
+    # Remove the opening brace from the signature and combine with the body
+    # The signature ends with "{" and the body starts with the implementation
+    full_method = f"{method_signature.rstrip()[:-1]}\n{method_body}"
+    
+    code_context = full_method
+    print("code_context", code_context)
     generated_code = ""
     max_retries = 2
     time_cost = 0.0
@@ -177,16 +178,15 @@ def _run_humaneval_generation(generator, scenario, prompt_strategy, model_name, 
         
         prompt_template_name = 'repair' if attempt > 0 else f'{prompt_strategy}'
         prompt_template = load_prompt_template(prompt_template_name)
-        
+
+        final_class_name = _get_final_class_name('llm', experiment_id)
+
         if attempt == 0:
             prompt = prompt_template.format(
                 code_context=code_context,
-                task_id=scenario['task_id'],
-                entry_point=scenario['entry_point']
+                class_name=final_class_name
             )
         else:
-            # For repair attempts, we would need to handle compilation errors
-            # This is simplified for now
             prompt = prompt_template.format(broken_code=generated_code, error_message="Compilation error")
         
         start_time = time.time()
@@ -196,8 +196,7 @@ def _run_humaneval_generation(generator, scenario, prompt_strategy, model_name, 
         if not raw_code or "Error:" in raw_code:
             print(f"Generator returned an error or empty code: {raw_code}")
             continue
-        
-        # For HumanEval, we return the raw code as-is
+    
         return raw_code, time_cost
     
     return None, time_cost
@@ -219,12 +218,13 @@ def _finalize_and_log_results(experiment_id, generated_code, final_class_name, g
     
     if benchmark_name == "humaneval":
         # For HumanEval, save the generated solution
+        remove_markdown_and_backticks(generated_code)
         solution_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")
         with open(solution_path, 'w', encoding='utf-8') as f:
             f.write(generated_code)
         
         print("\nAnalyzing HumanEval effectiveness...")
-        effectiveness_results = analyze_humaneval_effectiveness(generated_code, scenario, experiment_artifacts_dir)
+        effectiveness_results = analyze_humaneval_effectiveness(solution_path, scenario, experiment_artifacts_dir)
         
         # Maintainability is less relevant for HumanEval, so we use default values
         maintainability_results = {

@@ -1,42 +1,28 @@
-You are an expert Java programmer specializing in solving algorithmic problems. Your task is to **generate a complete Java solution** for the given HumanEval problem.
+You are an expert Java test engineer specializing in JUnit 5. Your task is to write a comprehensive and high-quality unit test class for the provided Java solution code.
+
+The goal is to verify the correctness of the given solution by testing its logic, especially its handling of edge cases.
+
+**The test class MUST be named `{class_name}`.**
 
 Follow this reasoning framework precisely:
 
-1. **PROBLEM ANALYSIS:**
-   * Carefully read and understand the problem description
-   * Identify the input parameters and their types
-   * Understand the expected output and its type
-   * Note any constraints or special requirements
-   * Identify the entry point function name and signature
+1.  **SOLUTION ANALYSIS:**
+    * Carefully read and understand the provided Java solution to determine its functionality.
+    * Identify the public method(s) that need to be tested.
+    * Analyze the logic to identify potential edge cases (e.g., empty inputs, nulls, zero, negative numbers, large numbers).
 
-2. **ALGORITHM DESIGN:**
-   * Think through the logical steps needed to solve the problem
-   * Consider edge cases and boundary conditions
-   * Design the most efficient approach
-   * Plan the data structures and methods needed
+2.  **TEST CASE DESIGN:**
+    * Design a "happy path" test case with a standard input to verify the primary functionality.
+    * Design at least three "edge case" test cases based on your analysis to test the solution's robustness.
+    * For each test case, determine the correct expected output based on the problem description.
 
-3. **IMPLEMENTATION STRATEGY:**
-   * Break down the solution into manageable parts
-   * Consider helper methods if needed
-   * Plan error handling and validation
-   * Ensure the solution handles all test cases
-
-4. **FINAL CODE IMPLEMENTATION:**
-   * Generate a complete, compilable Java solution
-   * Include the exact function signature as specified
-   * Implement the core logic with proper Java syntax
-   * Add necessary imports if required
-   * Ensure the code is clean, readable, and efficient
-
-**IMPORTANT REQUIREMENTS:**
-- The function must be named exactly as specified in the entry point
-- Follow Java naming conventions and best practices
-- The solution should be efficient and handle edge cases
-- Do NOT include any test code or main method
-- Provide ONLY the Java code solution, no explanations in the output
+3.  **FINAL CODE IMPLEMENTATION:**
+    * Generate a complete, compilable JUnit 5 test class.
+    * Include assertions (`assertEquals`, `assertTrue`, etc.) to verify the expected output for each test case.
+    * Ensure all necessary imports (like `org.junit.jupiter.api.Test`) are included.
+    * The final code must be wrapped in a single markdown block.
 
 ---
-**PROBLEM DESCRIPTION:**
+**SOLUTION TO TEST:**
+```java
 {code_context}
-
----

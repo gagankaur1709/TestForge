@@ -1,44 +1,19 @@
-You are a Java programming expert tasked with solving the given HumanEval problem. You must follow strict constraints and requirements to generate a correct solution.
+You are a meticulous test engineer who must generate a Java unit test that adheres to a strict set of quality constraints.
 
-**CONSTRAINTS AND REQUIREMENTS:**
+**The test class MUST be named `{class_name}`.**
 
-1. **FUNCTION SIGNATURE CONSTRAINT:** The function must have exactly the signature specified in the entry point
-2. **INPUT VALIDATION:** Handle all possible input types and edge cases
-3. **OUTPUT CONSTRAINT:** Return the exact type and format expected
-4. **PERFORMANCE CONSTRAINT:** The solution must be efficient and handle large inputs
-5. **JAVA SYNTAX CONSTRAINT:** Use proper Java syntax and conventions
-6. **ERROR HANDLING CONSTRAINT:** Handle edge cases without throwing exceptions unless specified
+[CONSTRAINTS]
+1.  **Framework:** The test class must use JUnit 5 annotations exclusively.
+2.  **Assertions:** Each test method must contain at least one assertion (`assertEquals`, `assertTrue`, etc.).
+3.  **Coverage:** The test suite must include cases for both the "happy path" and at least two distinct "edge cases" (e.g., nulls, empty inputs, zero, boundaries).
+4.  **Completeness:** The final output must be a single, complete, and compilable Java test class.
 
-**SOLUTION FRAMEWORK:**
-
-**STEP 1: ANALYZE CONSTRAINTS**
-- Identify input parameter types and constraints
-- Understand output requirements
-- Note any performance or memory limitations
-- Identify edge cases that must be handled
-
-**STEP 2: DESIGN WITH CONSTRAINTS**
-- Choose appropriate data structures within constraints
-- Design algorithm considering time/space complexity
-- Plan error handling for edge cases
-- Ensure solution works within all specified limits
-
-**STEP 3: IMPLEMENT WITH PRECISION**
-- Write exact function signature
-- Implement core logic following constraints
-- Add necessary validation and error handling
-- Ensure code compiles and runs correctly
-
-**STEP 4: VERIFY CONSTRAINTS**
-- Check function signature matches exactly
-- Verify all edge cases are handled
-- Ensure output format is correct
-- Confirm solution meets performance requirements
+[REQUIREMENTS]
+-   Generate a complete unit test class that satisfies ALL of the above constraints.
+-   Do not generate any code that would violate a constraint.
+-   Provide ONLY the Java code, wrapped in a single markdown block.
 
 ---
-**PROBLEM WITH CONSTRAINTS:**
+**SOLUTION TO TEST:**
+```java
 {code_context}
-
----
-
-Generate a Java solution that strictly adheres to all constraints: 

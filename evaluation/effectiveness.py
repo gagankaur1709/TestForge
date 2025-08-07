@@ -89,36 +89,55 @@ def analyze_effectiveness(test_file_path: str, benchmark_path: str, output_dir: 
 
     return results
 
-def analyze_humaneval_effectiveness(generated_solution: str, scenario: dict, output_dir: str) -> dict:
+def analyze_humaneval_effectiveness(generated_solution_path: str, scenario: dict, output_dir: str) -> dict:
     """
-    A simplified pipeline to compile and run a single-file HumanEval test.
+    A simple pipeline to compile and run a generated HumanEval solution file.
     """
     results = {"compiles": False, "runs_successfully": False}
     
-    # 1. Construct the full Java file from the prompt, solution, and test code
-    class_name = f"HumanEval_{scenario['task_id'].replace('/', '_')}"
-    full_java_code = f"""
-    {scenario['description']}
-    {generated_solution}
-    }}
-    {scenario['test_code']}
-    """
-    
-    java_file_path = os.path.join(output_dir, f"{class_name}.java")
-    with open(java_file_path, 'w') as f:
-        f.write(full_java_code)
-
     try:
-        subprocess.run(['javac', '-cp', 'path/to/junit.jar', java_file_path], check=True, capture_output=True)
+        if not os.path.exists(generated_solution_path):
+            print(f"Generated solution file not found: {generated_solution_path}")
+            return results
+        
+        class_name = os.path.basename(generated_solution_path).replace('.java', '')
+        junit_jar_path = "tools/junit-platform-console-standalone-1.10.3.jar"
+        compile_result = subprocess.run(
+            ['javac', '-cp', junit_jar_path, generated_solution_path], 
+            capture_output=True, text=True
+        )
+        
+        if compile_result.returncode != 0:
+            print(f"Compilation failed: {compile_result.stderr}")
+            with open(os.path.join(output_dir, 'compilation_error.txt'), 'w') as f:
+                f.write(f"STDOUT:\n{compile_result.stdout}\n\nSTDERR:\n{compile_result.stderr}\n\nRETURN CODE: {compile_result.returncode}")
+            return results
+        
         results["compiles"] = True
+        
+        try:
+            result = subprocess.run(
+                ['java', '-cp', f'{junit_jar_path}:{os.path.dirname(generated_solution_path)}', 
+                 'org.junit.platform.console.ConsoleLauncher', 
+                 '--class-path', os.path.dirname(generated_solution_path),
+                 '--select-class', class_name],
+                capture_output=True, text=True, timeout=30
+            )
+            
+            results["runs_successfully"] = result.returncode == 0 and "Test run finished" in result.stdout
+            with open(os.path.join(output_dir, 'test_output.txt'), 'w') as f:
+                f.write(f"STDOUT:\n{result.stdout}\n\nSTDERR:\n{result.stderr}\n\nRETURN CODE: {result.returncode}")
+                
+        except subprocess.TimeoutExpired:
+            print("Test execution timed out after 30 seconds")
+            results["runs_successfully"] = False
+        except Exception as e:
+            print(f"Error running tests: {e}")
+            results["runs_successfully"] = False
 
-        # 3. Run the compiled test using a standard test runner
-        # This part is complex and may require a specific test runner setup
-        # For now, we'll placeholder the success.
-        results["runs_successfully"] = True # Placeholder
-
-    except subprocess.CalledProcessError as e:
-        print(f"HumanEval evaluation failed: {e.stderr.decode()}")
-        results["runs_successfully"] = False
+    except Exception as e:
+        print(f"An unexpected error occurred in HumanEval evaluation: {e}")
+        with open(os.path.join(output_dir, 'evaluation_error.txt'), 'w') as f:
+            f.write(f"Error: {str(e)}")
 
     return results

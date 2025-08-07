@@ -354,9 +354,10 @@ def _ensure_package_declaration(code: str, test_package: str) -> str:
     # Add package declaration at the beginning
     return package_declaration + cleaned_code
 
-def postprocess_java_test(raw_code: str, code_context: str) -> str:
+def remove_markdown_and_backticks(raw_code: str) -> str:
     """
-    Post-processes raw LLM-generated Java test code to fix common issues.
+    Removes markdown code blocks and backticks from raw LLM-generated code.
+    Returns the cleaned code without any markdown formatting.
     """
     if not raw_code:
         return raw_code
@@ -380,6 +381,18 @@ def postprocess_java_test(raw_code: str, code_context: str) -> str:
         # Remove any leading/trailing markdown artifacts
         cleaned_code = re.sub(r'^[`\-\s]*', '', cleaned_code)
         cleaned_code = re.sub(r'[`\-\s]*$', '', cleaned_code)
+    
+    return cleaned_code
+
+def postprocess_java_test(raw_code: str, code_context: str) -> str:
+    """
+    Post-processes raw LLM-generated Java test code to fix common issues.
+    """
+    if not raw_code:
+        return raw_code
+    
+    # First, remove markdown and backticks
+    cleaned_code = remove_markdown_and_backticks(raw_code)
 
     # Extract package from code_context or use default
     package_match = re.search(r'package\s+([\w\.]+);', code_context)
