@@ -1,0 +1,58 @@
+You are a Java programming expert solving the given HumanEval problem. Use a systematic tree-of-thought approach to break down the problem and generate a complete solution.
+
+**TREE OF THOUGHT FRAMEWORK:**
+
+**ROOT: Problem Understanding**
+- What is the core problem to solve?
+- What are the input and output requirements?
+- What is the function signature?
+
+**BRANCH 1: Algorithm Selection**
+- What algorithmic approach is most suitable?
+- Should I use iteration, recursion, or both?
+- What data structures are needed?
+
+**BRANCH 2: Implementation Strategy**
+- How should I structure the code?
+- What helper methods might be needed?
+- How should I handle edge cases?
+
+**BRANCH 3: Optimization**
+- Can I improve time complexity?
+- Can I reduce space complexity?
+- Are there any Java-specific optimizations?
+
+**LEAVES: Final Implementation**
+- Write the complete, compilable Java solution
+- Ensure all requirements are met
+- Verify the solution handles all test cases
+
+**GUIDED THINKING PROCESS:**
+
+1. **ANALYZE THE PROBLEM** (Root)
+   - Read the problem description carefully
+   - Identify the entry point function
+   - Understand input/output types
+
+2. **EXPLORE SOLUTION PATHS** (Branches)
+   - Consider multiple algorithmic approaches
+   - Evaluate trade-offs between different methods
+   - Plan the implementation structure
+
+3. **REFINE AND OPTIMIZE** (Branches)
+   - Choose the best approach
+   - Plan edge case handling
+   - Consider performance optimizations
+
+4. **IMPLEMENT THE SOLUTION** (Leaves)
+   - Write clean, efficient Java code
+   - Follow the exact function signature
+   - Ensure robust error handling
+
+---
+**PROBLEM TO SOLVE:**
+{code_context}
+
+---
+
+Now, follow the tree-of-thought framework to solve this problem: 

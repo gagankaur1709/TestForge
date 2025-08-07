@@ -8,7 +8,7 @@ from generator.deepseekGenerator import DeepSeekGenerator
 from generator.codellama_generator import CodeLlamaGenerator
 from generator.randoop_generator import RandoopGenerator
 from generator.evosuite_generator import EvoSuiteGenerator
-from evaluation.effectiveness import analyze_effectiveness, check_compilation
+from evaluation.effectiveness import analyze_effectiveness, check_compilation, analyze_humaneval_effectiveness
 from evaluation.maintainability import analyze_maintainability
 from utils import load_prompt_template, load_scenario, load_code_context, postprocess_java_test
 from static_analyzer import analyze_java_file
@@ -47,7 +47,7 @@ def _setup_experiment(generator_name, model_name, prompt_strategy, scenario_name
     config['BENCHMARK_DIR'] = benchmark_dir_full_path
     
     generator = gen_info['class'](config=config)
-    scenario = load_scenario(scenario_name)
+    scenario = load_scenario(scenario_name, benchmark_name)
     
     experiment_artifacts_dir = os.path.join('outputs', experiment_id)
     os.makedirs(experiment_artifacts_dir, exist_ok=True)
@@ -162,6 +162,46 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
             
     return None, time_cost # Return None if all retries fail
 
+def _run_humaneval_generation(generator, scenario, prompt_strategy, model_name, experiment_id, experiment_artifacts_dir):
+    """Handles HumanEval-specific LLM generation."""
+    print(f"\n--- Running HumanEval Generation ---")
+    
+    # For HumanEval, the context is the prompt from the scenario
+    code_context = scenario['prompt']
+    generated_code = ""
+    max_retries = 2
+    time_cost = 0.0
+    
+    for attempt in range(max_retries):
+        print(f"\n--- HumanEval Generation Attempt {attempt + 1}/{max_retries} ---")
+        
+        prompt_template_name = 'repair' if attempt > 0 else f'{prompt_strategy}'
+        prompt_template = load_prompt_template(prompt_template_name)
+        
+        if attempt == 0:
+            prompt = prompt_template.format(
+                code_context=code_context,
+                task_id=scenario['task_id'],
+                entry_point=scenario['entry_point']
+            )
+        else:
+            # For repair attempts, we would need to handle compilation errors
+            # This is simplified for now
+            prompt = prompt_template.format(broken_code=generated_code, error_message="Compilation error")
+        
+        start_time = time.time()
+        raw_code = generator.generate(prompt, prompt_strategy, model_name)
+        time_cost += time.time() - start_time
+        
+        if not raw_code or "Error:" in raw_code:
+            print(f"Generator returned an error or empty code: {raw_code}")
+            continue
+        
+        # For HumanEval, we return the raw code as-is
+        return raw_code, time_cost
+    
+    return None, time_cost
+
 def _run_traditional_generation(generator, scenario, benchmark_dir_full_path):
     """Handles test generation using traditional tools like EvoSuite or Randoop."""
     print(f"\n--- Running Traditional Generator: {generator.__class__.__name__} ---")
@@ -174,17 +214,36 @@ def _run_traditional_generation(generator, scenario, benchmark_dir_full_path):
     
     return generated_code, time_cost
 
-def _finalize_and_log_results(experiment_id, generated_code, final_class_name, generator_name, model_name, prompt_strategy, benchmark_name, time_cost, experiment_artifacts_dir, config):
+def _finalize_and_log_results(experiment_id, generated_code, final_class_name, generator_name, model_name, prompt_strategy, benchmark_name, time_cost, experiment_artifacts_dir, config, scenario=None):
     """Analyzes the generated code and logs the final results to the database."""
-    actual_test_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")
-    with open(actual_test_path, 'w', encoding='utf-8') as f:
-        f.write(generated_code)
-
-    print("\nAnalyzing final effectiveness...")
-    effectiveness_results = analyze_effectiveness(actual_test_path, config['BENCHMARK_DIR'], experiment_artifacts_dir)
     
-    print("Analyzing final maintainability...")
-    maintainability_results = analyze_maintainability(actual_test_path, config['PMD_PATH'], config['RULESET_PATH'])
+    if benchmark_name == "humaneval":
+        # For HumanEval, save the generated solution
+        solution_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")
+        with open(solution_path, 'w', encoding='utf-8') as f:
+            f.write(generated_code)
+        
+        print("\nAnalyzing HumanEval effectiveness...")
+        effectiveness_results = analyze_humaneval_effectiveness(generated_code, scenario, experiment_artifacts_dir)
+        
+        # Maintainability is less relevant for HumanEval, so we use default values
+        maintainability_results = {
+            'cyclomatic_complexity': None,
+            'cognitive_complexity': None,
+            'coupling_between_objects': None,
+            'test_brittleness_score': None
+        }
+    else:
+        # For Spring PetClinic and other benchmarks
+        actual_test_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")
+        with open(actual_test_path, 'w', encoding='utf-8') as f:
+            f.write(generated_code)
+
+        print("\nAnalyzing final effectiveness...")
+        effectiveness_results = analyze_effectiveness(actual_test_path, config['BENCHMARK_DIR'], experiment_artifacts_dir)
+        
+        print("Analyzing final maintainability...")
+        maintainability_results = analyze_maintainability(actual_test_path, config['PMD_PATH'], config['RULESET_PATH'])
     
     final_results = {
         'experiment_id': experiment_id,
@@ -218,7 +277,12 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
     time_cost = 0.0
 
     try:
-        if gen_info['type'] == 'llm':
+        if benchmark_name == "humaneval" and gen_info['type'] == 'llm':
+            # Use HumanEval-specific generation for HumanEval benchmark
+            generated_code, time_cost = _run_humaneval_generation(
+                generator, scenario, prompt_strategy, model_name, experiment_id, experiment_artifacts_dir
+            )
+        elif gen_info['type'] == 'llm':
             generated_code, time_cost = _run_llm_generation(
                 generator, scenario, prompt_strategy, model_name, experiment_id, benchmark_dir_full_path, experiment_artifacts_dir
             )
@@ -242,7 +306,7 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
     
     _finalize_and_log_results(
         experiment_id, generated_code, final_class_name, generator_name, model_name, 
-        prompt_strategy, benchmark_name, time_cost, experiment_artifacts_dir, config
+        prompt_strategy, benchmark_name, time_cost, experiment_artifacts_dir, config, scenario
     )
 
 if __name__ == "__main__":

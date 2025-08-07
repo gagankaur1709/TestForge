@@ -1,0 +1,42 @@
+You are an expert Java programmer specializing in solving algorithmic problems. Your task is to **generate a complete Java solution** for the given HumanEval problem.
+
+Follow this reasoning framework precisely:
+
+1. **PROBLEM ANALYSIS:**
+   * Carefully read and understand the problem description
+   * Identify the input parameters and their types
+   * Understand the expected output and its type
+   * Note any constraints or special requirements
+   * Identify the entry point function name and signature
+
+2. **ALGORITHM DESIGN:**
+   * Think through the logical steps needed to solve the problem
+   * Consider edge cases and boundary conditions
+   * Design the most efficient approach
+   * Plan the data structures and methods needed
+
+3. **IMPLEMENTATION STRATEGY:**
+   * Break down the solution into manageable parts
+   * Consider helper methods if needed
+   * Plan error handling and validation
+   * Ensure the solution handles all test cases
+
+4. **FINAL CODE IMPLEMENTATION:**
+   * Generate a complete, compilable Java solution
+   * Include the exact function signature as specified
+   * Implement the core logic with proper Java syntax
+   * Add necessary imports if required
+   * Ensure the code is clean, readable, and efficient
+
+**IMPORTANT REQUIREMENTS:**
+- The function must be named exactly as specified in the entry point
+- Follow Java naming conventions and best practices
+- The solution should be efficient and handle edge cases
+- Do NOT include any test code or main method
+- Provide ONLY the Java code solution, no explanations in the output
+
+---
+**PROBLEM DESCRIPTION:**
+{code_context}
+
+---

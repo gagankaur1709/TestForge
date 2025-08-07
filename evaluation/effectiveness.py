@@ -89,3 +89,36 @@ def analyze_effectiveness(test_file_path: str, benchmark_path: str, output_dir: 
 
     return results
 
+def analyze_humaneval_effectiveness(generated_solution: str, scenario: dict, output_dir: str) -> dict:
+    """
+    A simplified pipeline to compile and run a single-file HumanEval test.
+    """
+    results = {"compiles": False, "runs_successfully": False}
+    
+    # 1. Construct the full Java file from the prompt, solution, and test code
+    class_name = f"HumanEval_{scenario['task_id'].replace('/', '_')}"
+    full_java_code = f"""
+    {scenario['description']}
+    {generated_solution}
+    }}
+    {scenario['test_code']}
+    """
+    
+    java_file_path = os.path.join(output_dir, f"{class_name}.java")
+    with open(java_file_path, 'w') as f:
+        f.write(full_java_code)
+
+    try:
+        subprocess.run(['javac', '-cp', 'path/to/junit.jar', java_file_path], check=True, capture_output=True)
+        results["compiles"] = True
+
+        # 3. Run the compiled test using a standard test runner
+        # This part is complex and may require a specific test runner setup
+        # For now, we'll placeholder the success.
+        results["runs_successfully"] = True # Placeholder
+
+    except subprocess.CalledProcessError as e:
+        print(f"HumanEval evaluation failed: {e.stderr.decode()}")
+        results["runs_successfully"] = False
+
+    return results

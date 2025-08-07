@@ -23,6 +23,14 @@ PROMPT_STRATEGIES = [
     "guided_tree_of_thought"
 ]
 
+# Define HumanEval-specific prompt strategies
+HUMANEVAL_PROMPT_STRATEGIES = [
+    "chain_of_thought",
+    "role_playing",
+    "constraint_based",
+    "guided_tree_of_thought"
+]
+
 # Define the traditional tools to run as a baseline
 TRADITIONAL_TOOLS = [
     "Randoop"
@@ -78,20 +86,31 @@ def main(run_mode='pilot'):
     print("--- INITIALIZING PILOT STUDY ---")
 
     init_db()
-    if not prepare_benchmark("spring-petclinic"):
-        print("Halting pilot study due to benchmark preparation failure.")
-        return
-
-    benchmark_name = "spring-petclinic"
-    benchmark_path = os.path.join(Config.BENCHMARK_DIR, benchmark_name)
-
+    
+    # Determine benchmark and setup
     if run_mode == 'pilot':
         print("\n--- RUNNING IN PILOT MODE ---")
+        benchmark_name = "spring-petclinic"
         scenario_file = 'scenarios_spring-petclinic.json'
+        # Only prepare benchmark for Spring PetClinic
+        if not prepare_benchmark(benchmark_name):
+            print("Halting pilot study due to benchmark preparation failure.")
+            return
     elif run_mode == 'full':
         print("\n--- RUNNING IN FULL DISCOVERY MODE ---")
+        benchmark_name = "spring-petclinic"
         scenario_file = f"scenarios_{benchmark_name}.json"
+        benchmark_path = os.path.join(Config.BENCHMARK_DIR, benchmark_name)
         discover_classes_in_project(benchmark_path, scenario_file)
+        # Only prepare benchmark for Spring PetClinic
+        if not prepare_benchmark(benchmark_name):
+            print("Halting full study due to benchmark preparation failure.")
+            return
+    elif run_mode == 'humaneval':
+        print("\n--- RUNNING IN HUMANEVAL MODE ---")
+        benchmark_name = "humaneval"
+        scenario_file = 'scenarios_humaneval.json'
+        # No benchmark preparation needed for HumanEval
     else:
         print(f"Error: Unknown run mode '{run_mode}'")
         return
@@ -119,17 +138,21 @@ def main(run_mode='pilot'):
 
     #--- Run LLM Experiments ---
     print("\n--- PHASE 2: RUNNING LLM GENERATORS ---")
+    
+    # Choose appropriate prompt strategies based on benchmark
+    strategies_to_use = HUMANEVAL_PROMPT_STRATEGIES if benchmark_name == "humaneval" else PROMPT_STRATEGIES
+    
     for scenario in SCENARIOS_TO_RUN:
         for provider, models in LLM_PROVIDERS_AND_MODELS.items():
             for model in models:
-                for strategy in PROMPT_STRATEGIES:
+                for strategy in strategies_to_use:
                     print(f"\n=> Running {provider} ({model}) on {scenario} with strategy '{strategy}'...")
                     try:
                         run_experiment(
                             generator_name=provider,
                             model_name=model,
                             prompt_strategy=strategy,
-                            benchmark_name="spring-petclinic",
+                            benchmark_name=benchmark_name,
                             scenario_name=scenario
                         )
                     except Exception as e:

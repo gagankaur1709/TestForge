@@ -4,8 +4,8 @@ import os
 import re
 from typing import Dict
 
-def load_scenario(scenario_name: str) -> Dict:
-    scenarios_file_path = os.path.join(os.path.dirname(__file__), 'scenarios_spring-petclinic.json')
+def load_scenario(scenario_name: str, benchmark_name: str = "spring-petclinic") -> Dict:
+    scenarios_file_path = os.path.join(os.path.dirname(__file__), f'scenarios_{benchmark_name}.json')
     with open(scenarios_file_path, 'r') as f:
         scenarios = json.load(f)
     if scenario_name not in scenarios:
