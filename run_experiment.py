@@ -158,13 +158,8 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
 def _run_humaneval_generation(generator, scenario, prompt_strategy, model_name, experiment_id, experiment_artifacts_dir):
     """Handles HumanEval-specific LLM generation."""
     print(f"\n--- Running HumanEval Generation ---")
-    
-    # Combine method signature from prompt with method body from canonical_solution
     method_signature = scenario['prompt']
     method_body = scenario['canonical_solution']
-    
-    # Remove the opening brace from the signature and combine with the body
-    # The signature ends with "{" and the body starts with the implementation
     full_method = f"{method_signature.rstrip()[:-1]}\n{method_body}"
     
     code_context = full_method
@@ -217,13 +212,8 @@ def _finalize_and_log_results(experiment_id, generated_code, final_class_name, g
     """Analyzes the generated code and logs the final results to the database."""
     
     if benchmark_name == "humaneval":
-        # For HumanEval, clean the generated code and combine it with the solution
         cleaned_code = remove_markdown_and_backticks(generated_code)
-        
-        # Combine the solution code with the generated test code
-        combined_code = combine_humaneval_java_code(scenario, cleaned_code)
-        
-        # Save the combined code
+        combined_code = combine_humaneval_java_code(scenario, cleaned_code)     
         solution_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")
         with open(solution_path, 'w', encoding='utf-8') as f:
             f.write(combined_code)
@@ -233,8 +223,8 @@ def _finalize_and_log_results(experiment_id, generated_code, final_class_name, g
 
         print("Analyzing HumanEval maintainability...")
         maintainability_results = analyze_maintainability(solution_path, config['PMD_PATH'], config['RULESET_PATH'])
+        
     else:
-        # For Spring PetClinic and other benchmarks
         actual_test_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")
         with open(actual_test_path, 'w', encoding='utf-8') as f:
             f.write(generated_code)
@@ -278,7 +268,6 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
 
     try:
         if benchmark_name == "humaneval" and gen_info['type'] == 'llm':
-            # Use HumanEval-specific generation for HumanEval benchmark
             generated_code, time_cost = _run_humaneval_generation(
                 generator, scenario, prompt_strategy, model_name, experiment_id, experiment_artifacts_dir
             )
@@ -286,7 +275,7 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
             generated_code, time_cost = _run_llm_generation(
                 generator, scenario, prompt_strategy, model_name, experiment_id, benchmark_dir_full_path, experiment_artifacts_dir
             )
-        else: # traditional
+        else:
             generated_code, time_cost = _run_traditional_generation(
                 generator, scenario, benchmark_dir_full_path
             )
@@ -299,7 +288,6 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
         print(f"Generator failed to produce valid code. Raw output: {generated_code}")
         if gen_info['type'] == 'traditional':
             _log_experiment_failure(experiment_id, generator_name, model_name, benchmark_name, time_cost)
-        # For LLMs, failure is already handled within the loop, so we just exit.
         return
         
     final_class_name = _get_final_class_name(generator_name, experiment_id)

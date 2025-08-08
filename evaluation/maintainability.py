@@ -4,6 +4,7 @@ import subprocess
 import os
 import xml.etree.ElementTree as ET
 import re
+import jellyfish
 
 def analyze_maintainability(test_file_path: str, pmd_path: str, ruleset_path: str) -> dict:
     """
@@ -92,3 +93,19 @@ def analyze_maintainability(test_file_path: str, pmd_path: str, ruleset_path: st
         
     return results
 
+
+def calculate_correction_distance(original_code_path: str, fixed_code_path: str) -> float:
+    if not os.path.exists(original_code_path) or not os.path.exists(fixed_code_path):
+        return -1.0
+
+    with open(original_code_path, 'r', encoding='utf-8') as f:
+        original_code = f.read()
+    with open(fixed_code_path, 'r', encoding='utf-8') as f:
+        fixed_code = f.read()
+
+    distance = jellyfish.levenshtein_distance(original_code, fixed_code)
+    max_len = max(len(original_code), len(fixed_code))
+    if max_len == 0:
+        return 0.0
+        
+    return distance / max_len
