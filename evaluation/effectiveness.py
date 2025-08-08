@@ -6,18 +6,6 @@ import re
 from config import Config
 
 def check_compilation(test_code: str, class_name: str, benchmark_path: str, test_destination_dir: str) -> tuple[bool, str]:
-    """
-    Checks if the provided test code compiles within the benchmark project.
-
-    Args:
-        test_code: The string content of the generated Java test.
-        class_name: The name of the test class (e.g., "GeneratedOwnerTest").
-        benchmark_path: The root path of the benchmark project.
-
-    Returns:
-        A tuple: (compiles_successfully: bool, build_log: str)
-    """
-
     test_filename = f"{class_name}.java"
     destination_path = os.path.join(test_destination_dir, test_filename)
     os.makedirs(test_destination_dir, exist_ok=True)
@@ -42,10 +30,6 @@ def run_maven_command(command: list, working_dir: str) -> tuple[bool, str]:
         return False, "Error: 'mvn' command not found. Is Maven installed and in your PATH?"
 
 def analyze_effectiveness(test_file_path: str, benchmark_path: str, output_dir: str) -> dict:
-    """
-    Analyzes the effectiveness of a generated test suite.
-    This function is now a pure analysis step.
-    """
     results = {
         "compiles": False,
         "runs_successfully": False,
@@ -91,91 +75,140 @@ def analyze_effectiveness(test_file_path: str, benchmark_path: str, output_dir: 
 
     return results
 
-def analyze_humaneval_effectiveness(generated_test_code: str, scenario: dict, output_dir: str, class_name: str) -> dict:
-    """
-    A simple pipeline to compile and run a generated HumanEval solution file.
-    The LLM should now generate complete, compilable Java files.
-    """
-    results = {"compiles": False, "runs_successfully": False}
-    
-    solution_code = f"""
-    {scenario['prompt']}
-    {scenario['canonical_solution']}
-    """
-
-    imports_from_solution = re.findall(r'import\s+[\w\.\*]+;', scenario['prompt'])
-    imports_from_llm = re.findall(r'import\s+[\w\.\*]+;', generated_test_code)
-    print(imports_from_solution)
-    all_imports = sorted(list(set(imports_from_solution + imports_from_llm)))
-    import_block = "\n".join(all_imports)
-    test_class_code = re.sub(r'import\s+(?:static\s+)?[\w\.\*]+;', '', generated_test_code).strip()
-
-    full_java_code = f"""
-    {import_block}
-    import static org.junit.jupiter.api.Assertions.*;
-    import static org.junit.jupiter.api.Assertions.assertFalse;
-    import static org.junit.jupiter.api.Assertions.assertTrue;
-    import static org.junit.jupiter.api.Assertions.assertEquals;
-    import static org.junit.jupiter.api.Assertions.assertThrows;
-    import static org.junit.jupiter.api.Assertions.assertNotNull;
-    import static org.junit.jupiter.api.Assertions.assertNull;
-    import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-    import org.mockito.Mockito;
-    import org.mockito.junit.jupiter.MockitoExtension;
-    import org.junit.jupiter.api.extension.ExtendWith;
-    import org.junit.jupiter.api.Test;
-    import org.junit.jupiter.api.BeforeEach;
-    import org.junit.jupiter.api.AfterEach;
-    import org.junit.jupiter.api.BeforeAll;
-    {solution_code}
-    {test_class_code}
-    """
-
-    java_file_path = os.path.join(output_dir, f"{class_name}.java")
-    with open(java_file_path, 'w', encoding='utf-8') as f:
-        f.write(full_java_code)
-
-
+def _compile_java_file(java_file_path: str, output_dir: str) -> tuple[bool, str]:
+    """Compile a Java file and return success status and error message."""
     try:
         junit_jar_path = Config.JUNIT_JAR_PATH
         mockito_jar_path = Config.MOCKITO_JAR_PATH
-        # Instead of renaming, compile the original file directly
+        
         compile_result = subprocess.run(
             ['javac', '-cp', f"{junit_jar_path}:{mockito_jar_path}", java_file_path], 
             capture_output=True, text=True
         )
-
-        results["compiles"] = compile_result.returncode == 0
         
-        if compile_result.returncode != 0:
-            print(f"Compilation failed: {compile_result.stderr}")
+        success = compile_result.returncode == 0
+        
+        if not success:
+            error_msg = f"Compilation failed: {compile_result.stderr}"
+            print(error_msg)
             with open(os.path.join(output_dir, 'compilation_error.txt'), 'w') as f:
                 f.write(f"STDOUT:\n{compile_result.stdout}\n\nSTDERR:\n{compile_result.stderr}\n\nRETURN CODE: {compile_result.returncode}")
-            return results
-        print(f"Compilation successful")
-        results["compiles"] = True
+        else:
+            print("Compilation successful")
+            
+        return success, compile_result.stderr
         
-        try:
-            class_path = f"{os.path.dirname(java_file_path)}{os.pathsep}{mockito_jar_path}"
-            result = subprocess.run(
-            ['java', '-jar', junit_jar_path, '--class-path', class_path, '--select-class', class_name],
-            capture_output=True, text=True, timeout=30
-            )
-            results["runs_successfully"] = result.returncode == 0 and "Test run finished" in result.stdout
-            with open(os.path.join(output_dir, 'test_output.txt'), 'w') as f:
-                f.write(f"STDOUT:\n{result.stdout}\n\nSTDERR:\n{result.stderr}\n\nRETURN CODE: {result.returncode}")
-        
-                
-        except subprocess.TimeoutExpired:
-            print("Test execution timed out after 30 seconds")
-            results["runs_successfully"] = False
-        except Exception as e:
-            print(f"Error running tests: {e}")
-            results["runs_successfully"] = False
+    except Exception as e:
+        error_msg = f"Compilation error: {e}"
+        print(error_msg)
+        return False, error_msg
 
+def _run_java_tests_with_coverage(java_file_path: str, class_name: str, output_dir: str) -> bool:
+    try:
+        junit_jar_path = Config.JUNIT_JAR_PATH
+        jacoco_agent_path = os.path.join('tools', 'jacocoagent.jar')
+        jacoco_exec_path = os.path.join(output_dir, 'jacoco.exec')
+        
+        # Run tests with JaCoCo agent to collect coverage data
+        mockito_jar_path = Config.MOCKITO_JAR_PATH
+        class_path = f"{output_dir}{os.pathsep}{mockito_jar_path}"
+        
+        run_cmd = [
+            'java',
+            f'-javaagent:{jacoco_agent_path}=destfile={jacoco_exec_path}',
+            '-jar', junit_jar_path,
+            '--class-path', class_path,
+            '--select-class', class_name
+        ]
+        
+        result = subprocess.run(run_cmd, capture_output=True, text=True, timeout=30)
+        success = result.returncode == 0 and "Test run finished" in result.stdout
+        
+        # Save test output
+        with open(os.path.join(output_dir, 'test_output.txt'), 'w') as f:
+            f.write(f"STDOUT:\n{result.stdout}\n\nSTDERR:\n{result.stderr}\n\nRETURN CODE: {result.returncode}")
+        
+        return success
+        
+    except subprocess.TimeoutExpired:
+        print("Test execution timed out after 30 seconds")
+        return False
+    except Exception as e:
+        print(f"Error running tests with coverage: {e}")
+        return False
+
+def _calculate_coverage_from_jacoco(output_dir: str, results: dict):
+    """Calculate coverage metrics from JaCoCo execution data."""
+    try:
+        jacoco_exec_path = os.path.join(output_dir, 'jacoco.exec')
+        jacoco_cli_path = os.path.join('tools', 'jacococli.jar')
+        report_xml_path = os.path.join(output_dir, 'coverage.xml')
+        
+        report_cmd = [
+            'java', '-jar', jacoco_cli_path, 'report', jacoco_exec_path,
+            '--classfiles', output_dir,
+            '--sourcefiles', output_dir, 
+            '--xml', report_xml_path
+        ]
+        
+        subprocess.run(report_cmd, check=True, capture_output=True)
+        
+        if os.path.exists(report_xml_path):
+            tree = ET.parse(report_xml_path)
+            root = tree.getroot()
+            
+            all_classes = []
+            for pkg in root.findall("package"):
+                for cls in pkg.findall("class"):
+                    class_name = cls.get('name')
+                    all_classes.append(class_name)
+            
+            for pkg in root.findall("package"):
+                for cls in pkg.findall("class"):
+                    if cls.get('name') == 'Solution':
+                        for counter in cls.findall("counter[@type='LINE']"):
+                            missed = int(counter.get('missed', '0'))
+                            covered = int(counter.get('covered', '0'))
+                            results['line_coverage'] = (covered / (missed + covered)) * 100 if (missed + covered) > 0 else 0
+                        for counter in cls.findall("counter[@type='BRANCH']"):
+                            missed = int(counter.get('missed', '0'))
+                            covered = int(counter.get('covered', '0'))
+                            results['branch_coverage'] = (covered / (missed + covered)) * 100 if (missed + covered) > 0 else 0
+                        print(f"Found Solution class coverage: Line={results['line_coverage']:.2f}%, Branch={results['branch_coverage']:.2f}%")
+                        return
+            else:
+                print(f"Warning: Solution class not found in coverage report. Available classes: {all_classes}")
+        else:
+            print("Warning: JaCoCo XML report not generated")
+            
+    except Exception as e:
+        print(f"Error calculating coverage from JaCoCo: {e}")
+        results['line_coverage'] = 0.0
+        results['branch_coverage'] = 0.0
+
+def analyze_humaneval_effectiveness(java_file_path: str, output_dir: str, class_name: str) -> dict:
+    results = {
+        "compiles": False, 
+        "runs_successfully": False,
+        "line_coverage": 0.0,
+        "branch_coverage": 0.0
+    }
+    
+    try:
+        compiles_successfully, error_msg = _compile_java_file(java_file_path, output_dir)
+        results["compiles"] = compiles_successfully
+        
+        if not compiles_successfully:
+            return results
+        
+        tests_successful = _run_java_tests_with_coverage(java_file_path, class_name, output_dir)
+        results["runs_successfully"] = tests_successful
+        
+        _calculate_coverage_from_jacoco(output_dir, results)
+            
     except Exception as e:
         print(f"An unexpected error occurred in HumanEval evaluation: {e}")
         with open(os.path.join(output_dir, 'evaluation_error.txt'), 'w') as f:
             f.write(f"Error: {str(e)}")
-
+    
     return results

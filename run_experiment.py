@@ -10,7 +10,7 @@ from generator.randoop_generator import RandoopGenerator
 from generator.evosuite_generator import EvoSuiteGenerator
 from evaluation.effectiveness import analyze_effectiveness, check_compilation, analyze_humaneval_effectiveness
 from evaluation.maintainability import analyze_maintainability
-from utils import load_prompt_template, load_scenario, remove_markdown_and_backticks, postprocess_java_test
+from utils import load_prompt_template, load_scenario, remove_markdown_and_backticks, postprocess_java_test, combine_humaneval_java_code
 from static_analyzer import analyze_java_file
 
 
@@ -217,14 +217,19 @@ def _finalize_and_log_results(experiment_id, generated_code, final_class_name, g
     """Analyzes the generated code and logs the final results to the database."""
     
     if benchmark_name == "humaneval":
-        # For HumanEval, save the generated solution
-        remove_markdown_and_backticks(generated_code)
-        # solution_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")
-        # with open(solution_path, 'w', encoding='utf-8') as f:
-        #     f.write(generated_code)
+        # For HumanEval, clean the generated code and combine it with the solution
+        cleaned_code = remove_markdown_and_backticks(generated_code)
+        
+        # Combine the solution code with the generated test code
+        combined_code = combine_humaneval_java_code(scenario, cleaned_code)
+        
+        # Save the combined code
+        solution_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")
+        with open(solution_path, 'w', encoding='utf-8') as f:
+            f.write(combined_code)
         
         print("\nAnalyzing HumanEval effectiveness...")
-        effectiveness_results = analyze_humaneval_effectiveness(generated_code, scenario, experiment_artifacts_dir, final_class_name)
+        effectiveness_results = analyze_humaneval_effectiveness(solution_path, experiment_artifacts_dir, final_class_name)
         
         # Maintainability is less relevant for HumanEval, so we use default values
         maintainability_results = {
