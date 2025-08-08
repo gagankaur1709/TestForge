@@ -230,14 +230,9 @@ def _finalize_and_log_results(experiment_id, generated_code, final_class_name, g
         
         print("\nAnalyzing HumanEval effectiveness...")
         effectiveness_results = analyze_humaneval_effectiveness(solution_path, experiment_artifacts_dir, final_class_name)
-        
-        # Maintainability is less relevant for HumanEval, so we use default values
-        maintainability_results = {
-            'cyclomatic_complexity': None,
-            'cognitive_complexity': None,
-            'coupling_between_objects': None,
-            'test_brittleness_score': None
-        }
+
+        print("Analyzing HumanEval maintainability...")
+        maintainability_results = analyze_maintainability(solution_path, config['PMD_PATH'], config['RULESET_PATH'])
     else:
         # For Spring PetClinic and other benchmarks
         actual_test_path = os.path.join(experiment_artifacts_dir, f"{final_class_name}.java")

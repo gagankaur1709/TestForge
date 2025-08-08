@@ -24,6 +24,16 @@ def analyze_maintainability(test_file_path: str, pmd_path: str, ruleset_path: st
     """
     print(f"Analyzing maintainability for: {test_file_path}")
     
+    # Check if PMD path exists
+    if not os.path.exists(pmd_path):
+        print(f"ERROR: PMD path does not exist: {pmd_path}")
+        return results
+    
+    # Check if ruleset path exists
+    if not os.path.exists(ruleset_path):
+        print(f"ERROR: Ruleset path does not exist: {ruleset_path}")
+        return results
+    
     results = {
         "cyclomatic_complexity": 0,
         "cognitive_complexity": 0, 
@@ -34,6 +44,12 @@ def analyze_maintainability(test_file_path: str, pmd_path: str, ruleset_path: st
     report_file = os.path.join(os.path.dirname(test_file_path), "pmd_report.xml")
 
     pmd_executable = os.path.join(pmd_path, 'bin', 'pmd')
+    
+    # Check if PMD executable exists
+    if not os.path.exists(pmd_executable):
+        print(f"ERROR: PMD executable does not exist: {pmd_executable}")
+        return results
+    
     pmd_cmd = [
         pmd_executable, "check",
         "--dir", os.path.dirname(test_file_path),
@@ -44,29 +60,35 @@ def analyze_maintainability(test_file_path: str, pmd_path: str, ruleset_path: st
 
     result = subprocess.run(pmd_cmd, capture_output=True, text=True)
     if os.path.exists(report_file):
-        tree = ET.parse(report_file)
-        root = tree.getroot()
-        violations = list(root.iter('{http://pmd.sourceforge.net/report/2.0.0}violation'))
-        for violation in violations:
-            rule = violation.get('rule')
-            message = violation.text
-            if rule == 'CyclomaticComplexity' and message:
-                try:
-                    match = re.search(r"cyclomatic complexity of (\d+)", message)
-                    if match:
-                        complexity = int(match.group(1))
-                        results['cyclomatic_complexity'] += complexity
-                except Exception as e:
-                    pass
-            elif rule == 'CouplingBetweenObjects' and message:
-                try:
-                    match = re.search(r"of (\d+)", message)
-                    if match:
-                        coupling = int(match.group(1))
-                        results['coupling_between_objects'] = coupling
-                except Exception as e:
-                    pass
-        os.remove(report_file)
+        try:
+            tree = ET.parse(report_file)
+            root = tree.getroot()
+            violations = list(root.iter('{http://pmd.sourceforge.net/report/2.0.0}violation'))
+            
+            for violation in violations:
+                rule = violation.get('rule')
+                message = violation.text
+                
+                if rule == 'CyclomaticComplexity' and message:
+                    try:
+                        match = re.search(r"cyclomatic complexity of (\d+)", message)
+                        if match:
+                            complexity = int(match.group(1))
+                            results['cyclomatic_complexity'] += complexity
+                    except Exception as e:
+                        pass
+                elif rule == 'CouplingBetweenObjects' and message:
+                    try:
+                        match = re.search(r"of (\d+)", message)
+                        if match:
+                            coupling = int(match.group(1))
+                            results['coupling_between_objects'] = coupling
+                    except Exception as e:
+                        pass
+            
+            os.remove(report_file)
+        except Exception as e:
+            print(f"Error parsing PMD report: {e}")
         
     return results
 
