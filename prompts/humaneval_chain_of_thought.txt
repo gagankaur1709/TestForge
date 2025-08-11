@@ -9,7 +9,7 @@ Follow this reasoning framework precisely:
 1.  **SOLUTION ANALYSIS:**
     * Carefully read and understand the provided Java solution to determine its functionality.
     * Identify the public method(s) that need to be tested.
-    * Analyze the logic to identify potential edge cases (e.g., empty inputs, nulls, zero, negative numbers, large numbers).
+    * Analyze the logic to identify potential edge cases (e.g., empty inputs, zero, negative numbers, large numbers).
 
 2.  **TEST CASE DESIGN:**
     * Design a "happy path" test case with a standard input to verify the primary functionality.

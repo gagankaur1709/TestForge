@@ -5,7 +5,7 @@ You are a meticulous test engineer who must generate a Java unit test that adher
 [CONSTRAINTS]
 1.  **Framework:** The test class must use JUnit 5 annotations exclusively.
 2.  **Assertions:** Each test method must contain at least one assertion (`assertEquals`, `assertTrue`, etc.).
-3.  **Coverage:** The test suite must include cases for both the "happy path" and at least two distinct "edge cases" (e.g., nulls, empty inputs, zero, boundaries).
+3.  **Coverage:** The test suite must include cases for both the "happy path" and at least two distinct "edge cases" (e.g., empty inputs, zero, boundaries).
 4.  **Completeness:** The final output must be a single, complete, and compilable Java test class.
 
 [REQUIREMENTS]
