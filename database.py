@@ -27,22 +27,16 @@ def init_db():
             -- Effectiveness Metrics
             compiles BOOLEAN,
             runs_successfully BOOLEAN,
-            fault_detected BOOLEAN,
             line_coverage REAL,
             branch_coverage REAL,
             
             -- Maintainability Metrics
             cyclomatic_complexity INTEGER,
-            cognitive_complexity INTEGER,
             coupling_between_objects INTEGER,
-            test_brittleness_score INTEGER,
             
             -- Cost Metrics
             time_cost REAL,
-            token_cost INTEGER,
-            
-            -- Path to saved artifacts
-            output_path TEXT
+            token_cost INTEGER
         )
     ''')
     
@@ -57,10 +51,10 @@ def add_experiment_result(result_data: dict):
     query = '''
         INSERT INTO experiments (
             experiment_id, generator_name, prompt_strategy, benchmark_name,
-            compiles, runs_successfully, fault_detected, line_coverage, branch_coverage,
-            cyclomatic_complexity, cognitive_complexity, coupling_between_objects, test_brittleness_score,
-            time_cost, token_cost, output_path
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            compiles, runs_successfully, line_coverage, branch_coverage,
+            cyclomatic_complexity, coupling_between_objects,
+            time_cost, token_cost
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     '''
     
     values = (
@@ -70,16 +64,12 @@ def add_experiment_result(result_data: dict):
         result_data.get('benchmark_name'),
         result_data.get('compiles'),
         result_data.get('runs_successfully'),
-        result_data.get('fault_detected'),
         result_data.get('line_coverage'),
         result_data.get('branch_coverage'),
         result_data.get('cyclomatic_complexity'),
-        result_data.get('cognitive_complexity'),
         result_data.get('coupling_between_objects'),
-        result_data.get('test_brittleness_score'),
         result_data.get('time_cost'),
-        result_data.get('token_cost'),
-        result_data.get('output_path')
+        result_data.get('token_cost')
     )
     
     cursor.execute(query, values)

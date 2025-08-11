@@ -75,8 +75,7 @@ def analyze_effectiveness(test_file_path: str, benchmark_path: str, output_dir: 
 
     return results
 
-def _compile_java_file(java_file_path: str, output_dir: str) -> tuple[bool, str]:
-    """Compile a Java file and return success status and error message."""
+def compile_java_file(java_file_path: str, output_dir: str) -> tuple[bool, str]:
     try:
         junit_jar_path = Config.JUNIT_JAR_PATH
         mockito_jar_path = Config.MOCKITO_JAR_PATH
@@ -103,13 +102,12 @@ def _compile_java_file(java_file_path: str, output_dir: str) -> tuple[bool, str]
         print(error_msg)
         return False, error_msg
 
-def _run_java_tests_with_coverage(java_file_path: str, class_name: str, output_dir: str) -> bool:
+def run_java_tests_with_coverage(java_file_path: str, class_name: str, output_dir: str) -> bool:
     try:
         junit_jar_path = Config.JUNIT_JAR_PATH
         jacoco_agent_path = os.path.join('tools', 'jacocoagent.jar')
         jacoco_exec_path = os.path.join(output_dir, 'jacoco.exec')
         
-        # Run tests with JaCoCo agent to collect coverage data
         mockito_jar_path = Config.MOCKITO_JAR_PATH
         class_path = f"{output_dir}{os.pathsep}{mockito_jar_path}"
         
@@ -124,7 +122,6 @@ def _run_java_tests_with_coverage(java_file_path: str, class_name: str, output_d
         result = subprocess.run(run_cmd, capture_output=True, text=True, timeout=30)
         success = result.returncode == 0 and "Test run finished" in result.stdout
         
-        # Save test output
         with open(os.path.join(output_dir, 'test_output.txt'), 'w') as f:
             f.write(f"STDOUT:\n{result.stdout}\n\nSTDERR:\n{result.stderr}\n\nRETURN CODE: {result.returncode}")
         
@@ -137,8 +134,7 @@ def _run_java_tests_with_coverage(java_file_path: str, class_name: str, output_d
         print(f"Error running tests with coverage: {e}")
         return False
 
-def _calculate_coverage_from_jacoco(output_dir: str, results: dict):
-    """Calculate coverage metrics from JaCoCo execution data."""
+def calculate_coverage_from_jacoco(output_dir: str, results: dict):
     try:
         jacoco_exec_path = os.path.join(output_dir, 'jacoco.exec')
         jacoco_cli_path = os.path.join('tools', 'jacococli.jar')
@@ -195,16 +191,19 @@ def analyze_humaneval_effectiveness(java_file_path: str, output_dir: str, class_
     }
     
     try:
-        compiles_successfully, error_msg = _compile_java_file(java_file_path, output_dir)
+        compiles_successfully, error_msg = compile_java_file(java_file_path, output_dir)
         results["compiles"] = compiles_successfully
         
         if not compiles_successfully:
             return results
         
-        tests_successful = _run_java_tests_with_coverage(java_file_path, class_name, output_dir)
+        tests_successful = run_java_tests_with_coverage(java_file_path, class_name, output_dir)
         results["runs_successfully"] = tests_successful
-        
-        _calculate_coverage_from_jacoco(output_dir, results)
+        if not tests_successful:
+            print("Test run failed. Skipping coverage analysis.")
+            return results
+        else:
+            calculate_coverage_from_jacoco(output_dir, results)
             
     except Exception as e:
         print(f"An unexpected error occurred in HumanEval evaluation: {e}")

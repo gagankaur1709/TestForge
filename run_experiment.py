@@ -18,12 +18,10 @@ GENERATOR_REGISTRY = {
     'Google Gemini': {'class': GeminiGenerator, 'required_keys': ['GOOGLE_API_KEY'], 'type': 'llm'},
     'Groq Llama': {'class': CodeLlamaGenerator, 'required_keys': ['GROQ_API_KEY'], 'type': 'llm'},
     'DeepSeek': {'class': DeepSeekGenerator, 'required_keys': ['DEEPSEEK_API_KEY'], 'type': 'llm'},
-    'EvoSuite': {'class': EvoSuiteGenerator, 'required_keys': ['EVOSUITE_JAR_PATH'], 'type': 'traditional'},
     'Randoop': {'class': RandoopGenerator, 'required_keys': ['RANDOOP_JAR_PATH'], 'type': 'traditional'}
 }
 
-def _setup_experiment(generator_name, model_name, prompt_strategy, scenario_name, benchmark_name):
-    """Initializes experiment parameters, configuration, and directories."""
+def setupExperiment(generator_name, model_name, prompt_strategy, scenario_name, benchmark_name):
     exp_id_name = model_name or generator_name.replace(' ', '-')
     experiment_id = f"{exp_id_name}_{scenario_name}_{prompt_strategy or 'default'}_{uuid.uuid4().hex[:8]}"
     print(f"\n--- Starting Experiment: {experiment_id} ---")
@@ -54,8 +52,7 @@ def _setup_experiment(generator_name, model_name, prompt_strategy, scenario_name
     
     return experiment_id, config, generator, scenario, benchmark_dir_full_path, experiment_artifacts_dir
 
-def _get_final_class_name(generator_name, experiment_id):
-    """Determines the final test class name based on the generator."""
+def get_final_class_name(generator_name, experiment_id):
     if generator_name == 'Randoop':
         return "RegressionTest0"
     elif generator_name == 'EvoSuite':
@@ -72,10 +69,10 @@ def _log_experiment_failure(experiment_id, generator_name, model_name, benchmark
         'prompt_strategy': 'N/A',
         'benchmark_name': benchmark_name,
         'time_cost': time_cost,
-        'token_cost': 0, 'output_path': None, 'compiles': False,
-        'runs_successfully': False, 'fault_detected': False, 'line_coverage': 0.0,
-        'branch_coverage': 0.0, 'cyclomatic_complexity': None, 'cognitive_complexity': None,
-        'coupling_between_objects': None, 'test_brittleness_score': None
+        'token_cost': 0, 'compiles': False,
+        'runs_successfully': False, 'line_coverage': 0.0,
+        'branch_coverage': 0.0, 'cyclomatic_complexity': None,
+        'coupling_between_objects': None
     }
     add_experiment_result(failure_results)
     print(f"--- Failure for experiment {experiment_id} has been logged. ---")
@@ -87,7 +84,7 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
     if not analysis_results:
         raise ValueError("Static analysis failed.")
 
-    final_class_name = _get_final_class_name('llm', experiment_id)
+    final_class_name = get_final_class_name('llm', experiment_id)
     test_package = scenario['test_destination'].replace('src/test/java/', '').replace('/', '.')
     
     scaffold_parts = [
@@ -155,8 +152,7 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
             
     return None, time_cost
 
-def _run_humaneval_generation(generator, scenario, prompt_strategy, model_name, experiment_id, experiment_artifacts_dir):
-    """Handles HumanEval-specific LLM generation."""
+def run_humaneval_generation(generator, scenario, prompt_strategy, model_name, experiment_id, experiment_artifacts_dir):
     print(f"\n--- Running HumanEval Generation ---")
     method_signature = scenario['prompt']
     method_body = scenario['canonical_solution']
@@ -164,37 +160,22 @@ def _run_humaneval_generation(generator, scenario, prompt_strategy, model_name, 
     
     code_context = full_method
     print("code_context", code_context)
-    generated_code = ""
-    max_retries = 2
-    time_cost = 0.0
     
-    for attempt in range(max_retries):
-        print(f"\n--- HumanEval Generation Attempt {attempt + 1}/{max_retries} ---")
-        
-        prompt_template_name = 'repair' if attempt > 0 else f'{prompt_strategy}'
-        prompt_template = load_prompt_template(prompt_template_name)
-
-        final_class_name = _get_final_class_name('llm', experiment_id)
-
-        if attempt == 0:
-            prompt = prompt_template.format(
-                code_context=code_context,
-                class_name=final_class_name
-            )
-        else:
-            prompt = prompt_template.format(broken_code=generated_code, error_message="Compilation error")
-        
-        start_time = time.time()
-        raw_code = generator.generate(prompt, prompt_strategy, model_name)
-        time_cost += time.time() - start_time
-        
-        if not raw_code or "Error:" in raw_code:
-            print(f"Generator returned an error or empty code: {raw_code}")
-            continue
+    prompt_template = load_prompt_template(prompt_strategy)
+    final_class_name = get_final_class_name('llm', experiment_id)
     
-        return raw_code, time_cost
+    prompt = prompt_template.format(
+        code_context=code_context,
+        class_name=final_class_name
+    )
     
-    return None, time_cost
+    raw_code, time_cost, token_cost = generator.generate(prompt, prompt_strategy, model_name)
+    
+    if not raw_code or "Error:" in raw_code:
+        print(f"Generator returned an error or empty code: {raw_code}")
+        return None, time_cost
+    
+    return raw_code, time_cost, token_cost
 
 def _run_traditional_generation(generator, scenario, benchmark_dir_full_path):
     """Handles test generation using traditional tools like EvoSuite or Randoop."""
@@ -208,8 +189,7 @@ def _run_traditional_generation(generator, scenario, benchmark_dir_full_path):
     
     return generated_code, time_cost
 
-def _finalize_and_log_results(experiment_id, generated_code, final_class_name, generator_name, model_name, prompt_strategy, benchmark_name, time_cost, experiment_artifacts_dir, config, scenario=None):
-    """Analyzes the generated code and logs the final results to the database."""
+def finalize_and_log_results(experiment_id, generated_code, final_class_name, generator_name, model_name, prompt_strategy, benchmark_name, time_cost, token_cost, experiment_artifacts_dir, config, scenario=None):
     
     if benchmark_name == "humaneval":
         cleaned_code = remove_markdown_and_backticks(generated_code)
@@ -241,8 +221,7 @@ def _finalize_and_log_results(experiment_id, generated_code, final_class_name, g
         'prompt_strategy': prompt_strategy if GENERATOR_REGISTRY[generator_name]['type'] == 'llm' else 'N/A',
         'benchmark_name': benchmark_name,
         'time_cost': time_cost,
-        'token_cost': len(generated_code.split()) if GENERATOR_REGISTRY[generator_name]['type'] == 'llm' else 0,
-        'output_path': experiment_artifacts_dir,
+        'token_cost': token_cost,
         **effectiveness_results,
         **maintainability_results
     }
@@ -251,11 +230,8 @@ def _finalize_and_log_results(experiment_id, generated_code, final_class_name, g
     print(f"--- Experiment {experiment_id} Finished and Saved ---")
 
 def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, scenario_name):
-    """
-    Orchestrates a single, complete experiment run.
-    """
     try:
-        experiment_id, config, generator, scenario, benchmark_dir_full_path, experiment_artifacts_dir = _setup_experiment(
+        experiment_id, config, generator, scenario, benchmark_dir_full_path, experiment_artifacts_dir = setupExperiment(
             generator_name, model_name, prompt_strategy, scenario_name, benchmark_name
         )
     except (ValueError, FileNotFoundError) as e:
@@ -268,7 +244,7 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
 
     try:
         if benchmark_name == "humaneval" and gen_info['type'] == 'llm':
-            generated_code, time_cost = _run_humaneval_generation(
+            generated_code, time_cost, token_cost = run_humaneval_generation(
                 generator, scenario, prompt_strategy, model_name, experiment_id, experiment_artifacts_dir
             )
         elif gen_info['type'] == 'llm':
@@ -290,11 +266,11 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
             _log_experiment_failure(experiment_id, generator_name, model_name, benchmark_name, time_cost)
         return
         
-    final_class_name = _get_final_class_name(generator_name, experiment_id)
+    final_class_name = get_final_class_name(generator_name, experiment_id)
     
-    _finalize_and_log_results(
+    finalize_and_log_results(
         experiment_id, generated_code, final_class_name, generator_name, model_name, 
-        prompt_strategy, benchmark_name, time_cost, experiment_artifacts_dir, config, scenario
+        prompt_strategy, benchmark_name, time_cost, token_cost, experiment_artifacts_dir, config, scenario
     )
 
 if __name__ == "__main__":

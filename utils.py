@@ -355,18 +355,13 @@ def _ensure_package_declaration(code: str, test_package: str) -> str:
     return package_declaration + cleaned_code
 
 def remove_markdown_and_backticks(raw_code: str) -> str:
-    """
-    Removes markdown code blocks and backticks from raw LLM-generated code.
-    Returns the cleaned code without any markdown formatting.
-    """
     if not raw_code:
         return raw_code
-    
-    # Extract the actual test code from the response - handle various markdown formats
+
     code_patterns = [
-        r'```java\s*(.*?)\s*```',  # ```java ... ```
-        r'```\s*(.*?)\s*```',      # ``` ... ```
-        r'`{3,}\s*(.*?)\s*`{3,}',  # Any number of backticks
+        r'```java\s*(.*?)\s*```', 
+        r'```\s*(.*?)\s*```',     
+        r'`{3,}\s*(.*?)\s*`{3,}',
     ]
     
     cleaned_code = raw_code
@@ -376,9 +371,7 @@ def remove_markdown_and_backticks(raw_code: str) -> str:
             cleaned_code = code_match.group(1).strip()
             break
     
-    # If no markdown blocks found, use the raw code but clean it
     if cleaned_code == raw_code:
-        # Remove any leading/trailing markdown artifacts
         cleaned_code = re.sub(r'^[`\-\s]*', '', cleaned_code)
         cleaned_code = re.sub(r'[`\-\s]*$', '', cleaned_code)
     
@@ -411,7 +404,6 @@ def extract_imports_from_code(code: str) -> list[str]:
     return re.findall(r'import\s+[\w\.\*]+;', code)
 
 def remove_imports_from_code(code: str) -> str:
-    """Remove all import and import static statements from Java code."""
     return re.sub(r'import\s+(?:static\s+)?[\w\.\*]+;', '', code).strip()
 
 def build_solution_code(scenario: dict) -> str:
@@ -422,7 +414,6 @@ def build_solution_code(scenario: dict) -> str:
     """
 
 def get_required_imports() -> str:
-    """Get the standard imports required for JUnit testing."""
     return """
     import static org.junit.jupiter.api.Assertions.*;
     import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -442,32 +433,16 @@ def get_required_imports() -> str:
     """
 
 def combine_humaneval_java_code(scenario: dict, generated_test_code: str) -> str:
-    """
-    Combine solution code, imports, and test code into a complete Java file for HumanEval.
-    
-    Args:
-        scenario: The HumanEval scenario containing prompt and canonical solution
-        generated_test_code: The generated test code from the LLM
-        
-    Returns:
-        Complete Java code ready for compilation
-    """
-    # Extract imports from both sources
     imports_from_solution = extract_imports_from_code(scenario['prompt'])
     imports_from_llm = extract_imports_from_code(generated_test_code)
     all_imports = sorted(list(set(imports_from_solution + imports_from_llm)))
     import_block = "\n".join(all_imports)
-    
-    # Remove imports from generated test code
     test_class_code = remove_imports_from_code(generated_test_code)
     
-    # Build solution code
     solution_code = build_solution_code(scenario)
-    
-    # Get required imports
+
     required_imports = get_required_imports()
-    
-    # Combine everything
+
     return f"""
     {import_block}
     {required_imports}
