@@ -100,7 +100,6 @@ def analyze_effectiveness(test_file_path: str, benchmark_path: str, output_dir: 
     results = {
         "compiles": False,
         "runs_successfully": False,
-        "fault_detected": False, 
         "line_coverage": 0.0,
         "branch_coverage": 0.0
     }

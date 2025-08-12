@@ -138,9 +138,21 @@ def run_llm_generation(generator, scenario, prompt_strategy, model_name, experim
             print("Code compiled successfully!")
             return cleaned_code, total_time_cost, token_cost
         else:
-            print(f"Compilation failed on attempt {attempt + 1}. Retrying...")
+            print(f"Compilation failed on attempt {attempt + 1}. Saving failed attempt...")
+            attempt_file_name = f"attempt_{attempt + 1}.java"
+            attempt_file_path = os.path.join(experiment_artifacts_dir, attempt_file_name)
+            with open(attempt_file_path, 'w', encoding='utf-8') as f:
+                f.write(cleaned_code)
+            print(f"Saved failed attempt {attempt + 1} to: {attempt_file_path}")
             
-    return None, total_time_cost, token_cost
+
+            build_log_file_name = f"attempt{attempt + 1}_build_log.txt"
+            build_log_file_path = os.path.join(experiment_artifacts_dir, build_log_file_name)
+            with open(build_log_file_path, 'w', encoding='utf-8') as f:
+                f.write(build_log)
+            print(f"Saved build log for attempt {attempt + 1} to: {build_log_file_path}")
+            
+    return cleaned_code, total_time_cost, token_cost
 
 def run_humaneval_generation(generator, scenario, prompt_strategy, model_name, experiment_id, experiment_artifacts_dir):
     print(f"\n--- Running HumanEval Generation ---")

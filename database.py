@@ -1,5 +1,3 @@
-# database.py
-
 import sqlite3
 import os
 from config import Config
@@ -83,4 +81,3 @@ def get_all_experiments():
     experiments = conn.execute('SELECT * FROM experiments ORDER BY timestamp DESC').fetchall()
     conn.close()
     return experiments
-

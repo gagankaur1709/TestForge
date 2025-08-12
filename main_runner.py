@@ -71,8 +71,9 @@ def prepare_benchmark(benchmark_name: str):
 def main(run_mode='springboot'):
     db_path = Config.DATABASE_PATH
     if os.path.exists(db_path):
-        print(f"Removing existing database at: {db_path}")
-        os.remove(db_path)
+        print(f"Using existing database at: {db_path}")
+    else:
+        print(f"Creating new database at: {db_path}")
 
     print("--- INITIALIZING PILOT STUDY ---")
 
