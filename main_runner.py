@@ -4,7 +4,7 @@ from config import Config
 import os
 import subprocess
 import json
-from discover_classes import discover_classes_in_project
+from discovery import discover_classes_in_project
 
 # Define the LLM providers and models to test
 LLM_PROVIDERS_AND_MODELS = {
@@ -82,8 +82,6 @@ def main(run_mode='humaneval'):
         print("\n--- RUNNING IN SPRINGBOOT MODE ---")
         benchmark_name = "spring-petclinic"
         scenario_file = f"scenarios_{benchmark_name}.json"
-        benchmark_path = os.path.join(Config.BENCHMARK_DIR, benchmark_name)
-        discover_classes_in_project(benchmark_path, scenario_file)
         if not prepare_benchmark(benchmark_name):
             print("Halting full study due to benchmark preparation failure.")
             return

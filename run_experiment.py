@@ -7,7 +7,6 @@ from generator.geminiGenerator import GeminiGenerator
 from generator.deepseekGenerator import DeepSeekGenerator
 from generator.codellama_generator import CodeLlamaGenerator
 from generator.randoop_generator import RandoopGenerator
-from generator.evosuite_generator import EvoSuiteGenerator
 from evaluation.effectiveness import analyze_effectiveness, check_compilation, analyze_humaneval_effectiveness
 from evaluation.maintainability import analyze_maintainability
 from utils import load_prompt_template, load_scenario, remove_markdown_and_backticks, postprocess_java_test, combine_humaneval_java_code
@@ -177,17 +176,13 @@ def run_humaneval_generation(generator, scenario, prompt_strategy, model_name, e
     
     return raw_code, time_cost, token_cost
 
-def _run_traditional_generation(generator, scenario, benchmark_dir_full_path):
-    """Handles test generation using traditional tools like EvoSuite or Randoop."""
+def run_traditional_generation(generator, scenario, benchmark_dir_full_path):
     print(f"\n--- Running Traditional Generator: {generator.__class__.__name__} ---")
     class_file_path = scenario['files'][0]
     code_context = class_file_path.replace('src/main/java/', '').replace('.java', '').replace('/', '.')
+    generated_code, time_cost = generator.generate(code_context)
     
-    start_time = time.time()
-    generated_code = generator.generate(code_context)
-    time_cost = time.time() - start_time
-    
-    return generated_code, time_cost
+    return generated_code, time_cost, 0
 
 def finalize_and_log_results(experiment_id, generated_code, final_class_name, generator_name, model_name, prompt_strategy, benchmark_name, time_cost, token_cost, experiment_artifacts_dir, config, scenario=None):
     
@@ -252,7 +247,7 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
                 generator, scenario, prompt_strategy, model_name, experiment_id, benchmark_dir_full_path, experiment_artifacts_dir
             )
         else:
-            generated_code, time_cost = _run_traditional_generation(
+            generated_code, time_cost, token_cost = run_traditional_generation(
                 generator, scenario, benchmark_dir_full_path
             )
     except Exception as e:

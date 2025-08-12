@@ -2,13 +2,10 @@ import os
 import subprocess
 import shutil
 from typing import Optional
+import time
 from .baseGenerator import TestGenerator
 
 class RandoopGenerator(TestGenerator):
-    """
-    A concrete implementation of TestGenerator that runs the Randoop tool.
-    This provides a feedback-directed random testing baseline.
-    """
 
     def generate(self, code_context: str, prompt_strategy: Optional[str] = None, model_name: Optional[str] = None) -> str:
         class_to_test = code_context
@@ -34,17 +31,17 @@ class RandoopGenerator(TestGenerator):
 
         command = [
             'java',
-            '-classpath', classpath, # Use the complete, explicit classpath
+            '-classpath', classpath,
             'randoop.main.Main',
             'gentests',
             f'--testclass={class_to_test}',
             f'--junit-output-dir={output_dir}'
         ]
 
-        print(f"Running Randoop command: {' '.join(command)}")
-
         try:
+            start_time = time.time()
             subprocess.run(command, check=True, capture_output=True, text=True, timeout=180)
+            time_cost = time.time() - start_time
 
             generated_code = ""
             regression_test_file = "RegressionTest0.java"
@@ -58,7 +55,7 @@ class RandoopGenerator(TestGenerator):
             if not generated_code:
                 return "Error: Randoop ran but did not produce any test files."
 
-            return generated_code
+            return generated_code, time_cost
 
         except subprocess.TimeoutExpired as e:
             return f"Error: Randoop execution timed out.\n---STDERR---\n{e.stderr}\n---STDOUT---\n{e.stdout}"

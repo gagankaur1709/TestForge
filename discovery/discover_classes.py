@@ -88,5 +88,5 @@ def discover_classes_in_project(benchmark_path: str, output_file: str):
     print(f"✅ Discovered {len(scenarios)} classes with their dependencies. Scenarios saved to '{output_file}'.")
 
 if __name__ == '__main__':
-    petclinic_path = os.path.join('benchmarks', 'spring-petclinic')
+    petclinic_path = os.path.join('benchmark', 'spring-petclinic')
     discover_classes_in_project(petclinic_path, 'scenarios_petclinic.json')

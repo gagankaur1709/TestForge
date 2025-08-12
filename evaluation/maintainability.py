@@ -16,9 +16,7 @@ def analyze_maintainability(test_file_path: str, pmd_path: str, ruleset_path: st
     
     results = {
         "cyclomatic_complexity": 0,
-        "cognitive_complexity": 0, 
-        "coupling_between_objects": 0,
-        "test_brittleness_score": 0 
+        "coupling_between_objects": 0
     }
     
     report_file = os.path.join(os.path.dirname(test_file_path), "pmd_report.xml")

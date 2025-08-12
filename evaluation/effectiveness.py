@@ -29,6 +29,73 @@ def run_maven_command(command: list, working_dir: str) -> tuple[bool, str]:
     except FileNotFoundError:
         return False, "Error: 'mvn' command not found. Is Maven installed and in your PATH?"
 
+def parse_jacoco_report(jacoco_report_path: str, results: dict, target_class: str = None) -> bool:
+    if not os.path.exists(jacoco_report_path):
+        print(f"Warning: JaCoCo report not found at {jacoco_report_path}")
+        return False
+    
+    try:
+        tree = ET.parse(jacoco_report_path)
+        root = tree.getroot()
+        
+        # If target_class is specified, look for that specific class
+        if target_class:
+            all_classes = []
+            for pkg in root.findall("package"):
+                for cls in pkg.findall("class"):
+                    class_name = cls.get('name')
+                    all_classes.append(class_name)
+            
+            for pkg in root.findall("package"):
+                for cls in pkg.findall("class"):
+                    if cls.get('name') == target_class:
+                        extract_coverage_from_class(cls, results)
+                        print(f"Found {target_class} class coverage: Line={results['line_coverage']:.2f}%, Branch={results['branch_coverage']:.2f}%")
+                        return True
+            
+            print(f"Warning: {target_class} class not found in coverage report. Available classes: {all_classes}")
+            return False
+        
+        # If no target_class specified, aggregate coverage from all classes
+        else:
+            total_line_missed = 0
+            total_line_covered = 0
+            total_branch_missed = 0
+            total_branch_covered = 0
+            
+            for pkg in root.findall("package"):
+                for cls in pkg.findall("class"):
+                    for counter in cls.findall("counter[@type='LINE']"):
+                        total_line_missed += int(counter.get('missed', '0'))
+                        total_line_covered += int(counter.get('covered', '0'))
+                    for counter in cls.findall("counter[@type='BRANCH']"):
+                        total_branch_missed += int(counter.get('missed', '0'))
+                        total_branch_covered += int(counter.get('covered', '0'))
+            
+            total_lines = total_line_missed + total_line_covered
+            total_branches = total_branch_missed + total_branch_covered
+            
+            results['line_coverage'] = (total_line_covered / total_lines * 100) if total_lines > 0 else 0.0
+            results['branch_coverage'] = (total_branch_covered / total_branches * 100) if total_branches > 0 else 0.0
+            
+            print(f"Aggregate coverage: Line={results['line_coverage']:.2f}%, Branch={results['branch_coverage']:.2f}%")
+            return True
+            
+    except Exception as e:
+        print(f"Error parsing JaCoCo report: {e}")
+        return False
+
+def extract_coverage_from_class(cls_element: ET.Element, results: dict):
+    for counter in cls_element.findall("counter[@type='LINE']"):
+        missed = int(counter.get('missed', '0'))
+        covered = int(counter.get('covered', '0'))
+        results['line_coverage'] = (covered / (missed + covered)) * 100 if (missed + covered) > 0 else 0.0
+    
+    for counter in cls_element.findall("counter[@type='BRANCH']"):
+        missed = int(counter.get('missed', '0'))
+        covered = int(counter.get('covered', '0'))
+        results['branch_coverage'] = (covered / (missed + covered)) * 100 if (missed + covered) > 0 else 0.0
+
 def analyze_effectiveness(test_file_path: str, benchmark_path: str, output_dir: str) -> dict:
     results = {
         "compiles": False,
@@ -61,17 +128,7 @@ def analyze_effectiveness(test_file_path: str, benchmark_path: str, output_dir: 
     jacoco_report_path = os.path.join(benchmark_path, 'target', 'site', 'jacoco', 'jacoco.xml')
     if os.path.exists(jacoco_report_path):
         shutil.copy(jacoco_report_path, os.path.join(output_dir, 'jacoco.xml'))
-        try:
-            tree = ET.parse(jacoco_report_path)
-            root = tree.getroot()
-            for counter in root.findall("counter[@type='LINE']"):
-                missed, covered = int(counter.get('missed', '0')), int(counter.get('covered', '0'))
-                results['line_coverage'] = (covered / (missed + covered)) * 100 if (missed + covered) > 0 else 0
-            for counter in root.findall("counter[@type='BRANCH']"):
-                missed, covered = int(counter.get('missed', '0')), int(counter.get('covered', '0'))
-                results['branch_coverage'] = (covered / (missed + covered)) * 100 if (missed + covered) > 0 else 0
-        except Exception as e:
-            print(f"Error parsing JaCoCo report: {e}")
+        parse_jacoco_report(jacoco_report_path, results)
 
     return results
 
@@ -134,7 +191,7 @@ def run_java_tests_with_coverage(java_file_path: str, class_name: str, output_di
         print(f"Error running tests with coverage: {e}")
         return False
 
-def calculate_coverage_from_jacoco(output_dir: str, results: dict):
+def calculate_coverage_from_jacoco(output_dir: str, results: dict, target_class: str = "Solution"):
     try:
         jacoco_exec_path = os.path.join(output_dir, 'jacoco.exec')
         jacoco_cli_path = os.path.join('tools', 'jacococli.jar')
@@ -149,40 +206,14 @@ def calculate_coverage_from_jacoco(output_dir: str, results: dict):
         
         subprocess.run(report_cmd, check=True, capture_output=True)
         
-        if os.path.exists(report_xml_path):
-            tree = ET.parse(report_xml_path)
-            root = tree.getroot()
-            
-            all_classes = []
-            for pkg in root.findall("package"):
-                for cls in pkg.findall("class"):
-                    class_name = cls.get('name')
-                    all_classes.append(class_name)
-            
-            for pkg in root.findall("package"):
-                for cls in pkg.findall("class"):
-                    if cls.get('name') == 'Solution':
-                        for counter in cls.findall("counter[@type='LINE']"):
-                            missed = int(counter.get('missed', '0'))
-                            covered = int(counter.get('covered', '0'))
-                            results['line_coverage'] = (covered / (missed + covered)) * 100 if (missed + covered) > 0 else 0
-                        for counter in cls.findall("counter[@type='BRANCH']"):
-                            missed = int(counter.get('missed', '0'))
-                            covered = int(counter.get('covered', '0'))
-                            results['branch_coverage'] = (covered / (missed + covered)) * 100 if (missed + covered) > 0 else 0
-                        print(f"Found Solution class coverage: Line={results['line_coverage']:.2f}%, Branch={results['branch_coverage']:.2f}%")
-                        return
-            else:
-                print(f"Warning: Solution class not found in coverage report. Available classes: {all_classes}")
-        else:
-            print("Warning: JaCoCo XML report not generated")
+        parse_jacoco_report(report_xml_path, results, target_class)
             
     except Exception as e:
         print(f"Error calculating coverage from JaCoCo: {e}")
         results['line_coverage'] = 0.0
         results['branch_coverage'] = 0.0
 
-def analyze_humaneval_effectiveness(java_file_path: str, output_dir: str, class_name: str) -> dict:
+def analyze_humaneval_effectiveness(java_file_path: str, output_dir: str, class_name: str = "Solution") -> dict:
     results = {
         "compiles": False, 
         "runs_successfully": False,
@@ -203,7 +234,7 @@ def analyze_humaneval_effectiveness(java_file_path: str, output_dir: str, class_
             print("Test run failed. Skipping coverage analysis.")
             return results
         else:
-            calculate_coverage_from_jacoco(output_dir, results)
+            calculate_coverage_from_jacoco(output_dir, results, "Solution")
             
     except Exception as e:
         print(f"An unexpected error occurred in HumanEval evaluation: {e}")
