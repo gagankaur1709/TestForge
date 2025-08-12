@@ -1,5 +1,4 @@
 import os
-import time
 import uuid
 from config import Config
 from database import init_db, add_experiment_result

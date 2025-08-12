@@ -68,7 +68,7 @@ def prepare_benchmark(benchmark_name: str):
     return True
 
 
-def main(run_mode='humaneval'):
+def main(run_mode='springboot'):
     db_path = Config.DATABASE_PATH
     if os.path.exists(db_path):
         print(f"Removing existing database at: {db_path}")
