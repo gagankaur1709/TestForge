@@ -10,30 +10,19 @@ Follow this reasoning framework precisely:
     * Carefully read and understand the provided Java solution to determine its functionality.
     * Identify the public method(s) that need to be tested.
     * Analyze the logic to identify potential edge cases (e.g., empty inputs, zero, negative numbers, large numbers).
-    * **CRITICAL**: Check if the solution handles null inputs, empty strings, and edge cases properly.
 
 2.  **TEST CASE DESIGN:**
     * Design a "happy path" test case with a standard input to verify the primary functionality.
     * Design at least three "edge case" test cases based on your analysis to test the solution's robustness.
-    * **IMPORTANT**: For each test case, determine the correct expected output based on the ACTUAL solution implementation, not assumptions.
-    * **CRITICAL**: If the solution doesn't handle null/edge cases, your test should expect the appropriate exception or behavior.
+    * For each test case, determine the correct expected output based on the problem description.
 
 3.  **FINAL CODE IMPLEMENTATION:**
     * Generate a complete, compilable JUnit 5 test class.
     * Include assertions (`assertEquals`, `assertTrue`, etc.) to verify the expected output for each test case.
-    * **CRITICAL**: Use `assertThrows` for cases where the solution should throw exceptions (e.g., null inputs).
-    * **IMPORTANT**: Pay attention to case sensitivity in string comparisons and exact data types.
     * Ensure all necessary imports (like `org.junit.jupiter.api.Test`) are included.
     * The final code must be wrapped in a single markdown block.
-
-**ERROR PREVENTION GUIDELINES:**
-- If the solution doesn't handle null inputs, use `assertThrows(NullPointerException.class, () -> solution.method(null))`
-- For string comparisons, ensure exact case matching with the solution's output
-- For collections, use the exact collection type returned by the solution
-- Verify expected values match the solution's actual implementation, not the problem description
 
 ---
 **SOLUTION TO TEST:**
 ```java
 {code_context}
-```

@@ -8,53 +8,38 @@ You are a systematic Java test engineer. Your task is to generate a complete JUn
 -   What is the core functionality of the provided solution?
 -   What are the input parameters and their expected types?
 -   What is the expected output type?
--   **CRITICAL**: Does the solution handle null inputs, empty strings, or edge cases?
 
 **BRANCH 1: Test Case Planning**
 -   What is a "happy path" scenario to test the main logic?
 -   What are the critical "edge cases" to consider (e.g., empty inputs, zero, boundaries)?
 -   What "negative path" scenarios should be tested (e.g., invalid inputs that might cause errors)?
--   **IMPORTANT**: What are the solution's actual limitations and how should they be tested?
 
 **BRANCH 2: Implementation Design**
 -   How should the test class be structured?
 -   What setup is needed in a `@BeforeEach` method, if any?
 -   What specific assertions (`assertEquals`, `assertTrue`, etc.) are needed for each test case?
--   **CRITICAL**: When should `assertThrows` be used for expected exceptions?
 
 **LEAVES: Final Code Implementation**
 -   Write the complete, compilable JUnit 5 test class.
 -   Ensure all necessary imports are included.
 -   Verify that each test case is implemented correctly according to the design.
--   **ESSENTIAL**: Ensure exact case sensitivity and data type matching.
 
 **GUIDED THINKING PROCESS:**
 
 1.  **ANALYZE THE SOLUTION** (Root)
     * Read the provided Java solution carefully to understand its algorithm.
     * Identify the public method signature to be tested.
-    * **CRITICAL**: Determine if the solution handles edge cases or will throw exceptions.
 
 2.  **EXPLORE TEST SCENARIOS** (Branches)
     * Brainstorm a list of diverse and meaningful test cases.
-    * For each case, determine the precise expected output based on the solution's actual implementation.
-    * **IMPORTANT**: Include tests for the solution's limitations (e.g., null handling).
+    * For each case, determine the precise expected output.
 
 3.  **IMPLEMENT THE TEST SUITE** (Leaves)
     * Write a clean, readable JUnit 5 test class.
     * Implement each scenario as a separate `@Test` method with a clear name.
     * Ensure robust assertions for all test cases.
-    * **CRITICAL**: Use `assertThrows` for cases where exceptions are expected.
-
-**ERROR PREVENTION CHECKLIST:**
-- [ ] Null inputs tested with `assertThrows` if solution doesn't handle them
-- [ ] String comparisons use exact case matching
-- [ ] Expected values match solution's actual output
-- [ ] Collection types match solution's return type
-- [ ] Edge cases test solution's actual behavior, not assumptions
 
 ---
 **SOLUTION TO TEST:**
 ```java
 {code_context}
-```

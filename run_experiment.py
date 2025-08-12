@@ -146,7 +146,7 @@ def run_llm_generation(generator, scenario, prompt_strategy, model_name, experim
             print(f"Saved failed attempt {attempt + 1} to: {attempt_file_path}")
             
 
-            build_log_file_name = f"attempt_{attempt + 1}_build_log.txt"
+            build_log_file_name = f"attempt{attempt + 1}_build_log.txt"
             build_log_file_path = os.path.join(experiment_artifacts_dir, build_log_file_name)
             with open(build_log_file_path, 'w', encoding='utf-8') as f:
                 f.write(build_log)
