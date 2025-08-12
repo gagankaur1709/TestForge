@@ -3,35 +3,17 @@ You are a meticulous test engineer who must generate a Java unit test that adher
 **The test class MUST be named `{class_name}`.**
 
 [CONSTRAINTS]
-1. Max 2 mocks per test class.
-2. Cyclomatic complexity of any test method < 5.
-3. Individual test methods must be < 15 lines of code.
-4. The test must use JUnit 5 annotations exclusively.
-5. Each test method must have between 1 and 3 assertions.
+1. Cyclomatic complexity of any test method < 5.
+2. Individual test methods must be < 15 lines of code.
+3. The test must use JUnit 5 annotations exclusively.
+4. Each test method must have between 1 and 3 assertions.
 
 [REQUIREMENTS]
 - **IMPORTANT**: You must absolutely include the imports provided in the test scaffold - Add necessary imports on top of it if any.
 - **CRITICAL**: Do NOT wrap your output in markdown code blocks (```java). Provide ONLY the Java code.
 - Generate test logic that satisfies ALL of the above constraints.
-- Add comments to the generated code to prove compliance with each constraint.
 - Do not generate any code that would violate a constraint.
-- The first line of the file MUST be the package declaration.** For example, a test for a class in `org.springframework.samples.petclinic.owner` must start with `package org.springframework.samples.petclinic.owner;**
 - You MUST include all necessary import statements.** Do not rely on same-package access.**
-
-[EXAMPLE]
-// CONSTRAINT: 1 mock (PetRepository)
-@Mock
-private PetRepository petRepository;
-
-@Test // CONSTRAINT: CC=2, lines=7, assertions=1
-void testFindPetById_HappyPath() {{
-    // Setup
-    Pet mockPet = new Pet();
-    given(petRepository.findById(1)).willReturn(Optional.of(mockPet));
-
-    // Execute & Assert
-    assertNotNull(owner.getPet(1));
-}}
 
 **OUTPUT FORMAT**: Provide ONLY the completed Java code without any markdown formatting, comments, or explanations.
 

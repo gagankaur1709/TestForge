@@ -14,7 +14,6 @@ def load_scenario(scenario_name: str, benchmark_name: str = "spring-petclinic") 
     return scenarios[scenario_name]
 
 def load_prompt_template(prompt_strategy: str) -> str:
-    """Load the appropriate prompt template for the strategy."""
     template_path = os.path.join('prompts', f"{prompt_strategy}.txt")
     if not os.path.exists(template_path):
         raise FileNotFoundError(f"Error: Prompt template not found at '{template_path}'")
@@ -23,10 +22,6 @@ def load_prompt_template(prompt_strategy: str) -> str:
         return f.read()
 
 def load_code_context(benchmark_path: str, scenario: Dict) -> str:
-    """
-    Loads and concatenates the source code for the main file and its
-    specified dependencies for a unit test scenario.
-    """
     all_code_parts = []
     
     files_to_load = scenario.get('files', []) + scenario.get('dependencies', [])
@@ -51,12 +46,6 @@ def load_code_context(benchmark_path: str, scenario: Dict) -> str:
     return "".join(all_code_parts)
 
 def extract_method_return_types(class_code: str) -> Dict[str, str]:
-    """
-    Extracts method return types from a Java class code string.
-    This version is enhanced to be more reliable.
-    """
-    # Regex to capture public, private, protected methods with various modifiers.
-    # It captures the return type (group 2) and method name (group 3).
     method_pattern = re.compile(
         r'(?:public|protected|private|static|\s)*\s*([\w<>\[\],\s]+)\s+(\w+)\s*\([^)]*\)\s*(?:throws\s+[\w,\s]+)?\s*\{'
     )
@@ -66,12 +55,9 @@ def extract_method_return_types(class_code: str) -> Dict[str, str]:
         return_type = match.group(1).strip()
         method_name = match.group(2).strip()
         
-        # Skip constructors
         if return_type == method_name:
             continue
-            
-        # Clean up the return type (e.g., remove annotations or unexpected keywords)
-        # This focuses on getting a clean type like "String", "long", "List<Vet>"
+
         return_type = re.sub(r'@\w+\s*', '', return_type).strip()
         
         return_types[method_name] = return_type
@@ -79,13 +65,6 @@ def extract_method_return_types(class_code: str) -> Dict[str, str]:
     return return_types
 
 def _fix_mockito_numeric_literals_generic(code: str) -> str:
-    """
-    Generic fix for numeric literal type mismatches in Mockito stubs.
-    Handles both Long-to-Integer and Integer-to-Long conversions based on common patterns.
-    Works for any Java project, not specific to any framework.
-    """
-    # Pattern 1: Fix int -> Long in thenReturn/willReturn for common method patterns
-    # This handles methods that commonly return Long across different projects
     long_returning_patterns = [
         r'getTotalElements', r'getTotalPages', r'getNumberOfElements',
         r'getSize', r'getNumber', r'count', r'size', r'length',
@@ -97,21 +76,17 @@ def _fix_mockito_numeric_literals_generic(code: str) -> str:
     ]
     
     for pattern in long_returning_patterns:
-        # Fix when(mock.method()).thenReturn(int)
         code = re.sub(
             rf'(when\s*\(\s*\w+\.{pattern}\s*\(\s*\)\s*\)\s*\.\s*thenReturn\s*\(\s*)(\d+)(\s*\))',
             r'\1\2L\3',
             code
         )
-        # Fix given(mock.method()).willReturn(int)
         code = re.sub(
             rf'(given\s*\(\s*\w+\.{pattern}\s*\(\s*\)\s*\)\s*\.\s*willReturn\s*\(\s*)(\d+)(\s*\))',
             r'\1\2L\3',
             code
         )
-    
-    # Pattern 2: Fix Long -> int for common method patterns
-    # This handles methods that commonly return int across different projects
+
     int_returning_patterns = [
         r'getAge', r'getScore', r'getRating', r'getLevel',
         r'getPriority', r'getStatus', r'getType', r'getCategory',
@@ -119,20 +94,17 @@ def _fix_mockito_numeric_literals_generic(code: str) -> str:
     ]
     
     for pattern in int_returning_patterns:
-        # Fix when(mock.method()).thenReturn(Long)
         code = re.sub(
             rf'(when\s*\(\s*\w+\.{pattern}\s*\(\s*\)\s*\)\s*\.\s*thenReturn\s*\(\s*)(\d+)L(\s*\))',
             r'\1\2\3',
             code
         )
-        # Fix given(mock.method()).willReturn(Long)
         code = re.sub(
             rf'(given\s*\(\s*\w+\.{pattern}\s*\(\s*\)\s*\)\s*\.\s*willReturn\s*\(\s*)(\d+)L(\s*\))',
             r'\1\2\3',
             code
         )
     
-    # Pattern 3: Fix double -> Float for common method patterns
     float_returning_patterns = [
         r'getPrice', r'getCost', r'getAmount', r'getValue',
         r'getRate', r'getPercentage', r'getScore', r'getRating',
@@ -141,21 +113,17 @@ def _fix_mockito_numeric_literals_generic(code: str) -> str:
     ]
     
     for pattern in float_returning_patterns:
-        # Fix when(mock.method()).thenReturn(double)
         code = re.sub(
             rf'(when\s*\(\s*\w+\.{pattern}\s*\(\s*\)\s*\)\s*\.\s*thenReturn\s*\(\s*)(\d+\.\d+)(\s*\))',
             r'\1\2F\3',
             code
         )
-        # Fix given(mock.method()).willReturn(double)
         code = re.sub(
             rf'(given\s*\(\s*\w+\.{pattern}\s*\(\s*\)\s*\)\s*\.\s*willReturn\s*\(\s*)(\d+\.\d+)(\s*\))',
             r'\1\2F\3',
             code
         )
     
-    # Pattern 4: Generic fallback - fix any thenReturn(int) that might be Long
-    # This is a more aggressive approach for cases not covered by specific patterns
     code = re.sub(
         r'(\.thenReturn\s*\(\s*)(\d+)(\s*\))',
         r'\1\2L\3',
@@ -165,11 +133,6 @@ def _fix_mockito_numeric_literals_generic(code: str) -> str:
     return code
 
 def _fix_mockito_argument_matchers(code: str) -> str:
-    """
-    Generic fix for common Mockito argument matcher issues.
-    Works for any Java project.
-    """
-    # Fix incorrect argument matcher usage
     code = re.sub(r'any\(String\.class\)', 'anyString()', code)
     code = re.sub(r'any\(Integer\.class\)', 'anyInt()', code)
     code = re.sub(r'any\(Long\.class\)', 'anyLong()', code)
@@ -179,7 +142,6 @@ def _fix_mockito_argument_matchers(code: str) -> str:
     code = re.sub(r'any\(Set\.class\)', 'anySet()', code)
     code = re.sub(r'any\(Map\.class\)', 'anyMap()', code)
     
-    # Fix missing argument matcher imports
     if "anyString()" in code and "import static org.mockito.ArgumentMatchers.anyString;" not in code:
         code = re.sub(
             r'(import static org\.junit\.jupiter\.api\.Assertions\.\*;)',
@@ -190,26 +152,18 @@ def _fix_mockito_argument_matchers(code: str) -> str:
     return code
 
 def _fix_test_structure_issues(code: str) -> str:
-    """
-    Generic fix for common test structure issues.
-    Works for any Java project.
-    """
-    # Make test class public if it's not
+
     if 'class ' in code and 'public class ' not in code:
         code = re.sub(r'class (\w+)', r'public class \1', code, count=1)
+
+    code = re.sub(r'@InjectMocks\s+private\s+', '@InjectMocks\n    ', code) 
     
-    # Ensure @InjectMocks fields are accessible
-    code = re.sub(r'@InjectMocks\s+private\s+', '@InjectMocks\n    ', code)
-    
-    # Fix missing @ExtendWith annotation
-    if '@InjectMocks' in code and '@ExtendWith' not in code:
+    if '@InjectMocks' in code and '@ExtendWith' not in code:   # Fix missing @ExtendWith annotation
         code = re.sub(
             r'(public class \w+)',
             r'@ExtendWith(MockitoExtension.class)\n\1',
             code
         )
-    
-    # Fix generic type inference issues
     code = re.sub(r'List<>', 'List<Object>', code)
     code = re.sub(r'Set<>', 'Set<Object>', code)
     code = re.sub(r'Map<>', 'Map<Object, Object>', code)
@@ -218,17 +172,11 @@ def _fix_test_structure_issues(code: str) -> str:
     return code
 
 def _type_aware_numeric_healing(code: str, class_under_test_code: str) -> str:
-    """
-    A more robust function to fix numeric literal type mismatches in Mockito stubs.
-    It handles both `when(...).thenReturn(...)` and `given(...).willReturn(...)`.
-    """
     # Get the reliable map of method names to their return types.
     return_types = extract_method_return_types(class_under_test_code)
     if not return_types:
         return code
 
-    # Regex to capture the stubbing pattern, the variable, method, and the numeric literal.
-    # It handles both `when/thenReturn` and `given/willReturn`.
     stub_pattern = re.compile(
         r'(when|given)\s*\(\s*(\w+)\.(\w+)\s*\([^)]*\)\s*\)\s*\.(?:thenReturn|willReturn)\s*\(\s*(\d+)(L|F|D)?\s*\)'
     )
@@ -337,22 +285,12 @@ def cleanup_java_code(java_code: str, class_under_test_code: str) -> str:
     return fixed.strip()
 
 def _ensure_package_declaration(code: str, test_package: str) -> str:
-    """
-    Ensures the package declaration is present at the beginning of the Java file.
-    If missing, it adds the package declaration before any imports.
-    """
-    # Check if package declaration already exists
-    if code.strip().startswith('package '):
+    
+    if code.strip().startswith('package '): # Check if package declaration already exists
         return code
-    
-    # If no package declaration, add it at the beginning
-    package_declaration = f"package {test_package};\n\n"
-    
-    # Remove any leading whitespace or artifacts
-    cleaned_code = code.strip()
-    
-    # Add package declaration at the beginning
-    return package_declaration + cleaned_code
+    package_declaration = f"package {test_package};\n\n"     # If no package declaration, add it at the beginning
+    cleaned_code = code.strip()     # Remove any leading whitespace or artifacts
+    return package_declaration + cleaned_code     # Add package declaration at the beginning
 
 def remove_markdown_and_backticks(raw_code: str) -> str:
     if not raw_code:
@@ -384,21 +322,14 @@ def postprocess_java_test(raw_code: str, code_context: str) -> str:
     if not raw_code:
         return raw_code
     
-    # First, remove markdown and backticks
-    cleaned_code = remove_markdown_and_backticks(raw_code)
-
-    # Extract package from code_context or use default
-    package_match = re.search(r'package\s+([\w\.]+);', code_context)
-    test_package = package_match.group(1) if package_match else "org.springframework.samples.petclinic.vet"
-    
-    # Ensure package declaration is present
-    cleaned_code = _ensure_package_declaration(cleaned_code, test_package)
-    
+    cleaned_code = remove_markdown_and_backticks(raw_code) # First, remove markdown and backticks
+    package_match = re.search(r'package\s+([\w\.]+);', code_context)   # Extract package from code_context or use default
+    test_package = package_match.group(1) if package_match else "org.springframework.samples.petclinic.vet" 
+    cleaned_code = _ensure_package_declaration(cleaned_code, test_package)# Ensure package declaration is present 
     cleaned_code = cleanup_java_code(cleaned_code, code_context)
     
     return cleaned_code
 
-# HumanEval-specific utility functions
 def extract_imports_from_code(code: str) -> list[str]:
     """Extract all import statements from Java code."""
     return re.findall(r'import\s+[\w\.\*]+;', code)

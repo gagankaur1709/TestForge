@@ -33,9 +33,11 @@ class DeepSeekGenerator(TestGenerator):
                 model=model_name,
             )
             raw_response = chat_completion.choices[0].message.content
+            time_cost = chat_completion.usage.total_time
+            token_cost = chat_completion.usage.total_tokens
             if not raw_response:
                 return "Error: No response text received from DeepSeek API."
-            return self._extract_code(raw_response)
+            return self._extract_code(raw_response), time_cost, token_cost
         except Exception as e:
             return f"An error occurred while calling the DeepSeek API: {e}"
 

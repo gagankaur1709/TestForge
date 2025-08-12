@@ -10,30 +10,9 @@ Generate comprehensive and high-quality test logic for the provided test scaffol
 1. Use semantic test names that follow the `should_when` convention (e.g., `shouldReturnOwner_whenValidIdIsProvided`).
 2. Strictly follow the Arrange-Act-Assert pattern within each test method, using comments to clearly separate each section.
 3. Minimize test brittleness by mocking all external dependencies (e.g., repositories, services, clients). Do not test the dependencies themselves.
-4. Document the purpose of each test method with a clear Javadoc comment.
-5. Balance achieving high code coverage with creating tests that are easy to read and maintain.
-6. **IMPORTANT**: You must absolutely include the imports provided in the test scaffold - Add necessary imports on top of it if any.
-7. **CRITICAL**: Do NOT wrap your output in markdown code blocks (```java). Provide ONLY the Java code.
-
-[EXAMPLE OUTPUT]
-/**
- * Verifies that the service correctly retrieves an owner by its ID.
- */
-@Test
-void shouldReturnOwner_whenValidIdIsProvided() {{
-    // Arrange
-    Owner owner = new Owner();
-    owner.setId(1);
-    given(ownerRepository.findById(1)).willReturn(Optional.of(owner));
-
-    // Act
-    Owner foundOwner = ownerService.findOwnerById(1);
-
-    // Assert
-    assertThat(foundOwner).isNotNull();
-    assertThat(foundOwner.getId()).isEqualTo(1);
-    verify(ownerRepository).findById(1); // Verify the mock was called
-}}
+4. Balance achieving high code coverage with creating tests that are easy to read and maintain.
+5. **IMPORTANT**: You must absolutely include the imports provided in the test scaffold - Add necessary imports on top of it if any.
+6. **CRITICAL**: Do NOT wrap your output in markdown code blocks (```java). Provide ONLY the Java code.
 
 **OUTPUT FORMAT**: Provide ONLY the completed Java code without any markdown formatting, comments, or explanations.
 

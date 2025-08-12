@@ -60,7 +60,7 @@ def get_final_class_name(generator_name, experiment_id):
         sanitized_id = experiment_id.replace('-', '_')
         return f"GeneratedTest_{sanitized_id}"
 
-def _log_experiment_failure(experiment_id, generator_name, model_name, benchmark_name, time_cost):
+def log_experiment_failure(experiment_id, generator_name, model_name, benchmark_name, time_cost):
     """Logs a failed experiment run to the database."""
     failure_results = {
         'experiment_id': experiment_id,
@@ -76,8 +76,7 @@ def _log_experiment_failure(experiment_id, generator_name, model_name, benchmark
     add_experiment_result(failure_results)
     print(f"--- Failure for experiment {experiment_id} has been logged. ---")
 
-def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experiment_id, benchmark_dir_full_path, experiment_artifacts_dir):
-    """Handles the LLM generation and self-correction loop."""
+def run_llm_generation(generator, scenario, prompt_strategy, model_name, experiment_id, benchmark_dir_full_path, experiment_artifacts_dir):
     target_file_path = os.path.join(benchmark_dir_full_path, scenario['files'][0])
     analysis_results = analyze_java_file(target_file_path)
     if not analysis_results:
@@ -104,7 +103,7 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
 
     max_retries = 2
     cleaned_code = ""
-    time_cost = 0.0
+    total_time_cost = 0.0
     
     for attempt in range(max_retries):
         print(f"\n--- LLM Generation Attempt {attempt + 1}/{max_retries} ---")
@@ -125,9 +124,8 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
         else:
             prompt = prompt_template.format(broken_code=cleaned_code, error_message=build_log)
 
-        start_time = time.time()
-        raw_code = generator.generate(prompt, prompt_strategy, model_name)
-        time_cost += time.time() - start_time
+        raw_code, attempt_time_cost, token_cost = generator.generate(prompt, prompt_strategy, model_name)
+        total_time_cost += attempt_time_cost
         
         if not raw_code or "Error:" in raw_code:
             print(f"Generator returned an error or empty code: {raw_code}")
@@ -139,17 +137,11 @@ def _run_llm_generation(generator, scenario, prompt_strategy, model_name, experi
 
         if compiles:
             print("Code compiled successfully!")
-            return cleaned_code, time_cost
+            return cleaned_code, total_time_cost, token_cost
         else:
-            log_path = os.path.join(experiment_artifacts_dir, f"build_failure_log_attempt_{attempt + 1}.txt")
-            with open(log_path, 'w', encoding='utf-8') as f:
-                f.write(build_log)
-            failed_test_path = os.path.join(experiment_artifacts_dir, f"FailedTest_attempt_{attempt + 1}.java")
-            with open(failed_test_path, 'w', encoding='utf-8') as f:
-                f.write(cleaned_code)
-            print("Compilation failed. Logs and failed test saved.")
+            print(f"Compilation failed on attempt {attempt + 1}. Retrying...")
             
-    return None, time_cost
+    return None, total_time_cost, token_cost
 
 def run_humaneval_generation(generator, scenario, prompt_strategy, model_name, experiment_id, experiment_artifacts_dir):
     print(f"\n--- Running HumanEval Generation ---")
@@ -243,7 +235,7 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
                 generator, scenario, prompt_strategy, model_name, experiment_id, experiment_artifacts_dir
             )
         elif gen_info['type'] == 'llm':
-            generated_code, time_cost = _run_llm_generation(
+            generated_code, time_cost, token_cost = run_llm_generation(
                 generator, scenario, prompt_strategy, model_name, experiment_id, benchmark_dir_full_path, experiment_artifacts_dir
             )
         else:
@@ -252,13 +244,13 @@ def run_experiment(generator_name, model_name, prompt_strategy, benchmark_name, 
             )
     except Exception as e:
         print(f"An unexpected error occurred during generation: {e}")
-        _log_experiment_failure(experiment_id, generator_name, model_name, benchmark_name, time_cost)
+        log_experiment_failure(experiment_id, generator_name, model_name, benchmark_name, time_cost)
         return
 
     if not generated_code or "Error:" in generated_code:
         print(f"Generator failed to produce valid code. Raw output: {generated_code}")
         if gen_info['type'] == 'traditional':
-            _log_experiment_failure(experiment_id, generator_name, model_name, benchmark_name, time_cost)
+            log_experiment_failure(experiment_id, generator_name, model_name, benchmark_name, time_cost)
         return
         
     final_class_name = get_final_class_name(generator_name, experiment_id)

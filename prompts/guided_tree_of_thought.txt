@@ -5,20 +5,20 @@ You are a systematic test engineer. Your task is to generate test logic for the 
 **CRITICAL**: Do NOT wrap your output in markdown code blocks (```java). Provide ONLY the Java code.**
 
 **Step 1: High-Level Test Plan**
-First, analyze the class under test (code context) and create a high-level plan. List each public method and the different categories of test cases needed (e.g., happy path, edge cases, null handling, error conditions).
+First, analyze the class under test (code context) and create a high-level plan. List each public method and the different categories of test cases needed (e.g., happy path, edge cases, error conditions).
 
 **Step 2: Detailed Test Case Design**
 For each test case in your plan, think through the specifics:
-- **Test Case 1 (e.g., for `getPet()`):**
+- **Test Case 1:**
   - **Goal:** Verify the happy path.
-  - **Setup:** Mock the repository to return a valid Pet object.
+  - **Setup:** Mock the repository to return a valid object.
   - **Action:** Call the `getPet()` method.
-  - **Assertion:** Assert that the returned Pet is not null.
-- **Test Case 2 (e.g., for `getPet()`):**
+  - **Assertion:** 
+- **Test Case 2:**
   - **Goal:** Verify the edge case where the pet is not found.
   - **Setup:** Mock the repository to return an empty Optional.
-  - **Action:** Call the `getPet()` method.
-  - **Assertion:** Assert that the result is null or an exception is thrown.
+  - **Action:** Call themethod method.
+  - **Assertion:** 
 
 **Step 3: Final Code Generation**
 Based on your detailed design, complete the provided test scaffold by implementing the test logic in each empty test method. 
