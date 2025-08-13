@@ -2,52 +2,119 @@
 
 {% block content %}
   <h1 class="text-3xl font-bold text-gray-900 mb-6">Run New Experiment</h1>
-  <div class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
-    <form action="{{ url_for('run') }}" method="post">
-      <div class="space-y-6">
-        <div>
-            <label for="generator_provider" class="block text-sm font-medium text-gray-700">Generator Provider</label>
-            <select id="generator_provider" name="generator_provider" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+  
+  <div class="space-y-6">
+    
+    <div class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Individual Experiment</h2>
+      <form action="{{ url_for('run') }}" method="post">
+        <input type="hidden" name="experiment_type" value="individual">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="generator_name" class="block text-sm font-medium text-gray-700">Generator Provider</label>
+            <select id="generator_name" name="generator_name" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
               {% for provider in models_by_provider.keys() %}
                 <option value="{{ provider }}">{{ provider }}</option>
               {% endfor %}
             </select>
           </div>
-  
+
           <div>
             <label for="model_name" class="block text-sm font-medium text-gray-700">Specific Model</label>
             <select id="model_name" name="model_name" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
             </select>
           </div>
 
-        <div>
-          <label for="prompt_strategy" class="block text-sm font-medium text-gray-700">Prompt Strategy</label>
-          <select id="prompt_strategy" name="prompt_strategy" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-            <option>chain_of_thought</option>
-            <option>guided_tree_of_thought</option>
-            <option>constraint_based</option>
-            <option>role_playing</option>
-          </select>
-        </div>
+          <div>
+            <label for="prompt_strategy" class="block text-sm font-medium text-gray-700">Prompt Strategy</label>
+            <select id="prompt_strategy" name="prompt_strategy" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+              {% for strategy in prompt_strategies %}
+                <option value="{{ strategy }}">{{ strategy }}</option>
+              {% endfor %}
+            </select>
+          </div>
 
-        <div>
-          <label for="benchmark_name" class="block text-sm font-medium text-gray-700">Benchmark Project</label>
-          <select id="benchmark_name" name="benchmark_name" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-            <option>spring-petclinic</option>
-          </select>
+          <div>
+            <label for="benchmark_name" class="block text-sm font-medium text-gray-700">Benchmark Project</label>
+            <select id="benchmark_name" name="benchmark_name" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+              {% for benchmark in benchmarks %}
+                <option value="{{ benchmark }}">{{ benchmark }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div id="scenario_section" class="md:col-span-2" style="display: none;">
+            <label for="scenario_name" class="block text-sm font-medium text-gray-700">Scenario Name (Optional)</label>
+            <input type="text" id="scenario_name" name="scenario_name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., org_springframework_samples_petclinic_owner_ownercontroller">
+          </div>
         </div>
-      </div>
-      <div class="mt-8">
-        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-          Start Experiment
-        </button>
-      </div>
-    </form>
+        
+        <div class="mt-6">
+          <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Start Individual Experiment
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Full Experiment Suite</h2>
+      <p class="text-sm text-gray-600 mb-4">Run complete experiment suites for comprehensive analysis. This will execute all combinations of generators, models, and prompt strategies.</p>
+      
+      <form action="{{ url_for('run') }}" method="post">
+        <input type="hidden" name="experiment_type" value="full_suite">
+        <div class="space-y-4">
+          <div>
+            <label for="suite_benchmark" class="block text-sm font-medium text-gray-700">Benchmark Project</label>
+            <select id="suite_benchmark" name="benchmark_name" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+              {% for benchmark in benchmarks %}
+                <option value="{{ benchmark }}">{{ benchmark }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        
+        <div class="mt-6">
+          <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            Start Full Experiment Suite
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Statistical Analysis</h2>
+      <p class="text-sm text-gray-600 mb-4">Run statistical analysis on existing experiment data to generate insights and visualizations.</p>
+      
+      <form action="{{ url_for('run') }}" method="post">
+        <input type="hidden" name="experiment_type" value="statistical_analysis">
+        <div class="space-y-4">
+          <div>
+            <label for="analysis_type" class="block text-sm font-medium text-gray-700">Analysis Type</label>
+            <select id="analysis_type" name="analysis_type" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+              <option value="humaneval">HumanEval Analysis (RQ1)</option>
+              <option value="petclinic">Spring-PetClinic Analysis (RQ2)</option>
+              <option value="tradeoffs">Cost-Benefit Analysis (RQ3)</option>
+              <option value="correction_distance">Correction Distance Analysis</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="mt-6">
+          <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+            Run Statistical Analysis
+          </button>
+        </div>
+      </form>
+    </div>
+
   </div>
 
   <script>
-    const providerSelect = document.getElementById('generator_provider');
+    const providerSelect = document.getElementById('generator_name');
     const modelSelect = document.getElementById('model_name');
+    const benchmarkSelect = document.getElementById('benchmark_name');
+    const scenarioSection = document.getElementById('scenario_section');
     const modelsByProvider = JSON.parse('{{ models_by_provider | tojson | safe }}');
 
     function updateModelOptions() {
@@ -55,7 +122,6 @@
       const models = modelsByProvider[selectedProvider] || [];
       
       modelSelect.innerHTML = '';
-
       models.forEach(model => {
         const option = document.createElement('option');
         option.value = model;
@@ -64,8 +130,50 @@
       });
     }
 
-    providerSelect.addEventListener('change', updateModelOptions);
+    function updatePromptStrategies() {
+      const selectedBenchmark = benchmarkSelect.value;
+      const promptStrategySelect = document.getElementById('prompt_strategy');
+      
+      promptStrategySelect.innerHTML = '';
+      
+      if (selectedBenchmark === 'humaneval') {
+        const humanevalStrategies = JSON.parse('{{ humaneval_strategies | tojson | safe }}');
+        humanevalStrategies.forEach(strategy => {
+          const option = document.createElement('option');
+          option.value = strategy;
+          option.textContent = strategy;
+          promptStrategySelect.appendChild(option);
+        });
+      } else {
+        const promptStrategies = JSON.parse('{{ prompt_strategies | tojson | safe }}');
+        promptStrategies.forEach(strategy => {
+          const option = document.createElement('option');
+          option.value = strategy;
+          option.textContent = strategy;
+          promptStrategySelect.appendChild(option);
+        });
+      }
+    }
 
-    document.addEventListener('DOMContentLoaded', updateModelOptions);
+    function toggleScenarioSection() {
+      const selectedBenchmark = benchmarkSelect.value;
+      if (selectedBenchmark === 'spring-petclinic') {
+        scenarioSection.style.display = 'block';
+      } else {
+        scenarioSection.style.display = 'none';
+      }
+    }
+
+    providerSelect.addEventListener('change', updateModelOptions);
+    benchmarkSelect.addEventListener('change', function() {
+      updatePromptStrategies();
+      toggleScenarioSection();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      updateModelOptions();
+      updatePromptStrategies();
+      toggleScenarioSection();
+    });
   </script>
 {% endblock %}
