@@ -9,7 +9,228 @@ The core architecture is plug-and-play, allowing researchers to easily add, remo
 
 ## Research Focus
 This framework is designed to investigate the following core research questions:
-1. RQ1 (Effectiveness): Which approach—advanced LLM prompting or a traditional automated tool—generates more effective integration tests in terms of bug-finding ability and code coverage?
-2. RQ2 (Maintainability): How does the maintainability of LLM-generated integration tests compare to those from traditional tools, an aspect largely unexplored in existing research?
-3. RQ3 (Cost): What are the associated resource costs (e.g., generation time, computational expense, required human effort) for creating integration tests with each approach?
-4. RQ4 (Trade-off): What is the overall cost-benefit trade-off, and do the quality improvements (especially in maintainability) from advanced LLM prompting justify their higher costs for integration testing?
+1. **RQ1 (Effectiveness)**: How does prompt engineering affect the quality and maintainability of LLM-generated tests for fundamental algorithmic tasks?
+2. **RQ2 (Maintainability)**: How do advanced LLM prompting techniques compare against traditional tools in generating effective and maintainable unit tests for a complex, real-world application?
+3. **RQ3 (Cost)**: What is the overall cost-benefit trade-off of using these different automated testing approaches?
+
+## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Project Structure](#project-structure)
+- [Usage Manual](#usage-manual)
+- [Statistical Analysis](#statistical-analysis)
+- [Web Dashboard](#web-dashboard)
+- [Troubleshooting](#troubleshooting)
+
+## Prerequisites
+
+### System Requirements
+- **Python 3.8+**
+- **Java 11+** (for Maven and test execution)
+- **Maven 3.6+** (for building Java projects)
+- **Git** (for version control)
+
+### Required Tools
+- **Randoop** (traditional test generation tool)
+- **JUnit 5** (test framework)
+- **Mockito** (mocking framework)
+
+## Installation
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd gxk484
+```
+
+### 2. Create Virtual Environment
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+### 3. Install Python Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Set Up Java Tools
+Download and place the following JAR files in the `tools/` directory:
+- `randoop-all-4.3.4.jar` (Randoop)
+- `junit-platform-console-standalone-1.10.3.jar` (JUnit 5)
+- `mockito-junit-jupiter-5.8.0-combined.jar` (Mockito)
+
+### 5. Initialize Database
+```bash
+python -c "from database import init_db; init_db()"
+```
+
+## Configuration
+
+### 1. Environment Variables
+Create a `.env` file in the project root:
+```env
+# LLM API Keys
+GOOGLE_API_KEY=your_google_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
+
+# Flask Configuration
+SECRET_KEY=your_secret_key_here
+```
+
+### 2. Benchmark Setup
+The framework supports multiple benchmarks:
+- **Spring-PetClinic**: Complex Spring Boot application
+- **HumanEval-X**: Algorithmic programming problems
+
+## Project Structure
+```
+gxk484/
+├── benchmark/                 # Benchmark applications
+│   ├── spring-petclinic/     # Spring Boot application
+│   └── humaneval-x/          # HumanEval benchmark
+├── generator/                 # Test generation modules
+│   ├── baseGenerator.py      # Abstract base class
+│   ├── geminiGenerator.py    # Google Gemini integration
+│   ├── codellama_generator.py # Groq Llama integration
+│   ├── deepseekGenerator.py  # DeepSeek integration
+│   └── randoop_generator.py  # Randoop integration
+├── evaluation/               # Test evaluation modules
+│   ├── effectiveness.py      # Coverage and compilation analysis
+│   └── maintainability.py    # Code quality metrics
+├── discovery/                # Scenario discovery tools
+│   ├── discover_classes.py   # Java class discovery
+│   └── discover_humaneval.py # HumanEval scenario generation
+├── statistical_tests/        # Statistical analysis scripts
+│   ├── analyze_results.py    # HumanEval analysis
+│   ├── analyze_petclinic.py  # Spring-PetClinic analysis
+│   └── analyze_tradeoffs.py  # Cost-benefit analysis
+├── templates/                # Flask web templates
+├── data/                     # SQLite database
+├── outputs/                  # Generated test outputs
+├── tools/                    # Java tool JARs
+├── prompts/                  # LLM prompt templates
+├── main_runner.py           # Main experiment runner
+├── run_experiment.py        # Individual experiment execution
+├── app.py                   # Flask web application
+├── database.py              # Database operations
+├── config.py                # Configuration management
+└── requirements.txt         # Python dependencies
+```
+
+## Usage Manual
+
+### 1. Running Experiments
+
+#### Full Experiment Suite
+```bash
+# Run all experiments for Spring-PetClinic
+python main_runner.py
+
+# Run all experiments for HumanEval
+python main_runner.py --benchmark humaneval
+```
+
+### 2. Scenario Discovery
+
+#### Discover Java Classes (Spring-PetClinic)
+```bash
+python discovery/run_discovery.py --benchmark spring-petclinic
+```
+
+#### Discover HumanEval Scenarios
+```bash
+python discovery/run_discovery.py --benchmark humaneval
+```
+
+### 3. Statistical Analysis
+
+#### HumanEval Analysis (RQ1)
+```bash
+cd statistical_tests
+python analyze_results.py
+```
+
+#### Spring-PetClinic Analysis (RQ2)
+```bash
+cd statistical_tests
+python analyze_petclinic.py
+```
+
+#### Cost-Benefit Analysis (RQ3)
+```bash
+cd statistical_tests
+python analyze_tradeoffs.py
+```
+
+### 4. Correction Distance Calculation
+```bash
+python calculate_correction_distances.py
+```
+
+## Statistical Analysis
+
+### Available Scripts
+
+#### `analyze_results.py` (HumanEval - RQ1)
+- **Purpose**: Analyze prompt engineering effects on test quality
+- **Metrics**: Success rate, line coverage, branch coverage, cyclomatic complexity
+- **Tests**: Kruskal-Wallis, Mann-Whitney U, Post-hoc analysis
+- **Output**: Statistical results table, visualizations, database storage
+
+#### `analyze_petclinic.py` (Spring-PetClinic - RQ2)
+- **Purpose**: Compare LLM vs traditional tools on complex applications
+- **Metrics**: Line coverage, branch coverage, cyclomatic complexity, coupling
+- **Tests**: Kruskal-Wallis, Mann-Whitney U, Correction distance analysis
+- **Output**: Statistical results, box plots, correction distance analysis
+
+#### `analyze_tradeoffs.py` (Cost-Benefit - RQ3)
+- **Purpose**: Analyze cost-benefit trade-offs between methods
+- **Metrics**: Time cost, token cost, coverage, complexity, efficiency
+- **Visualization**: Scatter plots, bubble charts, method ranking
+- **Output**: Cost-benefit analysis, method rankings, efficiency metrics
+
+### Output Files
+All analysis scripts generate:
+- **Statistical results** stored in `data/experiments.db`
+- **Visualizations** saved in `analysis_results/` directory
+- **Summary tables** printed to console
+- **Post-hoc analysis** for significant results
+
+## Web Dashboard
+
+### Starting the Dashboard
+```bash
+python app.py
+```
+
+### Accessing the Dashboard
+Open your browser and navigate to: `http://localhost:5000`
+
+### Features
+- **Experiment Overview**: View all experiments and their results
+- **Real-time Monitoring**: Track experiment progress
+- **Result Visualization**: Interactive charts and tables
+- **Database Management**: View and manage experiment data
+
+## Contributing
+
+### Adding New Generators
+1. Create a new generator class inheriting from `baseGenerator.py`
+2. Implement the `generate()` method
+3. Add the generator to `GENERATOR_REGISTRY` in `run_experiment.py`
+4. Update configuration and documentation
+
+### Adding New Benchmarks
+1. Place benchmark in `benchmark/` directory
+2. Create discovery script in `discovery/`
+3. Update `main_runner.py` configuration
+4. Add statistical analysis script if needed
+
+### Adding New Metrics
+1. Implement metric calculation in `evaluation/`
+2. Update database schema in `database.py`
+3. Modify analysis scripts to include new metrics
+4. Update web dashboard templates
