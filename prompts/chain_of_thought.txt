@@ -4,13 +4,6 @@ The goal of unit testing is to test the class in isolation, so any external depe
 
 **The test class MUST be named `{class_name}`.**
 
-**IMPORTANT TESTING PATTERNS:**
-- Use `BindException` instead of `Errors` for validation testing
-- For entities, use no-argument constructor then call setters: `Entity entity = new Entity(); entity.setName("TestName");`
-- For controllers, mock dependencies and verify interactions
-- For repositories, mock return values and verify calls
-- Always use `mock(Class.class)` instead of `new Class()` for abstract classes/interfaces
-
 Follow this reasoning framework precisely:
 
 1.  **CONTEXT ANALYSIS:**
