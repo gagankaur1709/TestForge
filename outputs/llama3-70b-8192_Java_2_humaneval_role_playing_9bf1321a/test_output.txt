@@ -1,0 +1,77 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_zero_when_number_is_integer()[0m [32m✔[0m
+[36m│     ├─[0m [31mshould_throw_arithmetic_exception_when_number_is_infinity()[0m [31m✘[0m [31mExpected java.lang.ArithmeticException to be thrown, but nothing was thrown.[0m
+[36m│     ├─[0m [31mshould_throw_arithmetic_exception_when_number_is_nan()[0m [31m✘[0m [31mExpected java.lang.ArithmeticException to be thrown, but nothing was thrown.[0m
+[36m│     ├─[0m [34mshould_return_decimal_part_when_number_is_positive()[0m [32m✔[0m
+[36m│     ├─[0m [31mshould_return_decimal_part_when_number_is_negative()[0m [31m✘[0m [31mexpected: <0.5> but was: <-0.5>[0m
+[36m│     └─[0m [34mshould_return_zero_when_number_is_zero()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (3):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a:should_throw_arithmetic_exception_when_number_is_infinity()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a', methodName = 'should_throw_arithmetic_exception_when_number_is_infinity', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: Expected java.lang.ArithmeticException to be thrown, but nothing was thrown.
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+       org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+       org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+       org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+       GeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a.should_throw_arithmetic_exception_when_number_is_infinity(GeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a.java:73)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a:should_throw_arithmetic_exception_when_number_is_nan()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a', methodName = 'should_throw_arithmetic_exception_when_number_is_nan', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: Expected java.lang.ArithmeticException to be thrown, but nothing was thrown.
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+       org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+       org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+       org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+       GeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a.should_throw_arithmetic_exception_when_number_is_nan(GeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a.java:66)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a:should_return_decimal_part_when_number_is_negative()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a', methodName = 'should_return_decimal_part_when_number_is_negative', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <0.5> but was: <-0.5>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:86)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:81)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1014)
+       GeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a.should_return_decimal_part_when_number_is_negative(GeneratedTest_llama3_70b_8192_Java_2_humaneval_role_playing_9bf1321a.java:82)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 73 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         6 tests found           ]
+[         0 tests skipped         ]
+[         6 tests started         ]
+[         0 tests aborted         ]
+[         3 tests successful      ]
+[         3 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

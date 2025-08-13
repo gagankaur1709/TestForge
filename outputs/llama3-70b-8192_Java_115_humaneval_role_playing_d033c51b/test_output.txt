@@ -1,0 +1,50 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_115_humaneval_role_playing_d033c51b[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_0_when_grid_is_empty_and_bucket_capacity_is_1()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_0_when_grid_is_2_by_3_and_bucket_capacity_is_5()[0m [32m✔[0m
+[36m│     ├─[0m [31mshould_return_0_when_grid_is_null_and_bucket_capacity_is_1()[0m [31m✘[0m [31mCannot invoke "java.util.List.iterator()" because "<parameter1>" is null[0m
+[36m│     ├─[0m [34mshould_return_6_when_grid_is_3_by_4_and_bucket_capacity_is_1()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_1_when_grid_is_1_by_1_and_bucket_capacity_is_1()[0m [32m✔[0m
+[36m│     └─[0m [34mshould_return_5_when_grid_is_4_by_4_and_bucket_capacity_is_2()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (1):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_115_humaneval_role_playing_d033c51b:should_return_0_when_grid_is_null_and_bucket_capacity_is_1()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_115_humaneval_role_playing_d033c51b', methodName = 'should_return_0_when_grid_is_null_and_bucket_capacity_is_1', methodParameterTypes = '']
+    => java.lang.NullPointerException: Cannot invoke "java.util.List.iterator()" because "<parameter1>" is null
+       Solution.maxFill(GeneratedTest_llama3_70b_8192_Java_115_humaneval_role_playing_d033c51b.java:65)
+       GeneratedTest_llama3_70b_8192_Java_115_humaneval_role_playing_d033c51b.should_return_0_when_grid_is_null_and_bucket_capacity_is_1(GeneratedTest_llama3_70b_8192_Java_115_humaneval_role_playing_d033c51b.java:139)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 52 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         6 tests found           ]
+[         0 tests skipped         ]
+[         6 tests started         ]
+[         0 tests aborted         ]
+[         5 tests successful      ]
+[         1 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

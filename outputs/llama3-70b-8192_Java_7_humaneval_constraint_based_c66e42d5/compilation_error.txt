@@ -1,0 +1,13 @@
+STDOUT:
+
+
+STDERR:
+outputs/llama3-70b-8192_Java_7_humaneval_constraint_based_c66e42d5/GeneratedTest_llama3_70b_8192_Java_7_humaneval_constraint_based_c66e42d5.java:82: error: cannot find symbol
+        NullPointerException exception = Assertions.assertThrows(NullPointerException.class, 
+                                         ^
+  symbol:   variable Assertions
+  location: class GeneratedTest_llama3_70b_8192_Java_7_humaneval_constraint_based_c66e42d5
+1 error
+
+
+RETURN CODE: 1

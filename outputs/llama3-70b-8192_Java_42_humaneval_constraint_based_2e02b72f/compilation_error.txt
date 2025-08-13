@@ -1,0 +1,18 @@
+STDOUT:
+
+
+STDERR:
+outputs/llama3-70b-8192_Java_42_humaneval_constraint_based_2e02b72f/GeneratedTest_llama3_70b_8192_Java_42_humaneval_constraint_based_2e02b72f.java:80: error: cannot find symbol
+        List<Integer> mockedList = mock(List.class);
+                                   ^
+  symbol:   method mock(Class<List>)
+  location: class GeneratedTest_llama3_70b_8192_Java_42_humaneval_constraint_based_2e02b72f
+outputs/llama3-70b-8192_Java_42_humaneval_constraint_based_2e02b72f/GeneratedTest_llama3_70b_8192_Java_42_humaneval_constraint_based_2e02b72f.java:83: error: cannot find symbol
+        verifyNoInteractions(mockedList);
+        ^
+  symbol:   method verifyNoInteractions(List<Integer>)
+  location: class GeneratedTest_llama3_70b_8192_Java_42_humaneval_constraint_based_2e02b72f
+2 errors
+
+
+RETURN CODE: 1

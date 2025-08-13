@@ -1,0 +1,53 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_145_humaneval_constraint_based_15f37350[0m [32m✔[0m
+[36m│     ├─[0m [34mtestOrderByPoints_EmptyList()[0m [32m✔[0m
+[36m│     ├─[0m [31mtestOrderByPoints_MultipleElementsWithSameDigitSum()[0m [31m✘[0m [31mexpected: <[10, 12, 20, 21]> but was: <[10, 20, 12, 21]>[0m
+[36m│     ├─[0m [34mtestOrderByPoints_SingleElement()[0m [32m✔[0m
+[36m│     └─[0m [34mtestOrderByPoints_HappyPath()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (1):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_145_humaneval_constraint_based_15f37350:testOrderByPoints_MultipleElementsWithSameDigitSum()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_145_humaneval_constraint_based_15f37350', methodName = 'testOrderByPoints_MultipleElementsWithSameDigitSum', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <[10, 12, 20, 21]> but was: <[10, 20, 12, 21]>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_145_humaneval_constraint_based_15f37350.testOrderByPoints_MultipleElementsWithSameDigitSum(GeneratedTest_llama3_70b_8192_Java_145_humaneval_constraint_based_15f37350.java:97)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 57 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         4 tests found           ]
+[         0 tests skipped         ]
+[         4 tests started         ]
+[         0 tests aborted         ]
+[         3 tests successful      ]
+[         1 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

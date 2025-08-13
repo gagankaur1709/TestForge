@@ -1,0 +1,55 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_42_humaneval_role_playing_751923c7[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldIncrementElementsByOne_whenListContainsMixedNumbers()[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldReturnEmptyList_whenInputListIsEmpty()[0m [32m✔[0m
+[36m│     ├─[0m [31mshouldIncrementElementsByOne_whenListContainsNull()[0m [31m✘[0m [31mCannot invoke "java.lang.Integer.intValue()" because "<parameter1>" is null[0m
+[36m│     ├─[0m [34mshouldIncrementElementsByOne_whenListContainsSingleElement()[0m [32m✔[0m
+[36m│     └─[0m [34mshouldIncrementElementsByOne_whenListContainsPositiveNumbers()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (1):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_42_humaneval_role_playing_751923c7:shouldIncrementElementsByOne_whenListContainsNull()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_42_humaneval_role_playing_751923c7', methodName = 'shouldIncrementElementsByOne_whenListContainsNull', methodParameterTypes = '']
+    => java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()" because "<parameter1>" is null
+       Solution.lambda$incrList$0(GeneratedTest_llama3_70b_8192_Java_42_humaneval_role_playing_751923c7.java:40)
+       java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+       java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:992)
+       java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+       java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+       java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:921)
+       java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+       java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:682)
+       Solution.incrList(GeneratedTest_llama3_70b_8192_Java_42_humaneval_role_playing_751923c7.java:40)
+       GeneratedTest_llama3_70b_8192_Java_42_humaneval_role_playing_751923c7.shouldIncrementElementsByOne_whenListContainsNull(GeneratedTest_llama3_70b_8192_Java_42_humaneval_role_playing_751923c7.java:110)
+       [...]
+
+Test run finished after 55 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         5 tests found           ]
+[         0 tests skipped         ]
+[         5 tests started         ]
+[         0 tests aborted         ]
+[         4 tests successful      ]
+[         1 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

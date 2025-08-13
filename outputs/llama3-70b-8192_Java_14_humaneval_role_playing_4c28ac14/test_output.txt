@@ -1,0 +1,38 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_14_humaneval_role_playing_4c28ac14[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_list_of_all_prefixes_when_input_string_is_not_empty()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_list_with_single_element_when_input_string_has_single_character()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_list_with_prefixes_in_correct_order()[0m [32m✔[0m
+[36m│     └─[0m [34mshould_return_empty_list_when_input_string_is_empty()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Test run finished after 53 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         4 tests found           ]
+[         0 tests skipped         ]
+[         4 tests started         ]
+[         0 tests aborted         ]
+[         4 tests successful      ]
+[         0 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 0

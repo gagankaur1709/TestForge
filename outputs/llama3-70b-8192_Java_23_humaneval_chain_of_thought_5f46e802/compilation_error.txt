@@ -1,0 +1,13 @@
+STDOUT:
+
+
+STDERR:
+outputs/llama3-70b-8192_Java_23_humaneval_chain_of_thought_5f46e802/GeneratedTest_llama3_70b_8192_Java_23_humaneval_chain_of_thought_5f46e802.java:65: error: cannot find symbol
+        NullPointerException exception = Assertions.assertThrows(NullPointerException.class, () -> solution.strlen(null));
+                                         ^
+  symbol:   variable Assertions
+  location: class GeneratedTest_llama3_70b_8192_Java_23_humaneval_chain_of_thought_5f46e802
+1 error
+
+
+RETURN CODE: 1

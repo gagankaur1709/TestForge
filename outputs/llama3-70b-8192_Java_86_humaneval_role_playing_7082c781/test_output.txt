@@ -1,0 +1,95 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781[0m [32m✔[0m
+[36m│     ├─[0m [31mshould_ReturnOrderedString_When_InputStringHasLeadingAndTrailingSpaces()[0m [31m✘[0m [31mexpected: <abc def> but was: <   abc   def>[0m
+[36m│     ├─[0m [34mshould_ReturnEmptyString_When_InputStringIsEmpty()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_ReturnOriginalString_When_InputStringHasNoSpaces()[0m [32m✔[0m
+[36m│     ├─[0m [31mshould_ReturnOrderedString_When_InputStringHasMultipleWords()[0m [31m✘[0m [31mexpected: <!!!Wdlor Hello> but was: <Hello !!!Wdlor>[0m
+[36m│     ├─[0m [34mshould_ReturnOrderedString_When_InputStringHasSingleWord()[0m [32m✔[0m
+[36m│     ├─[0m [31mshould_ReturnOrderedString_When_InputStringHasMixedCaseWords()[0m [31m✘[0m [31mexpected: <ABcd efgH> but was: <ABcd Hefg>[0m
+[36m│     └─[0m [31mshould_ReturnOrderedString_When_InputStringHasConsecutiveSpaces()[0m [31m✘[0m [31mexpected: <abc def> but was: <abc   def>[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (4):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781:should_ReturnOrderedString_When_InputStringHasLeadingAndTrailingSpaces()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781', methodName = 'should_ReturnOrderedString_When_InputStringHasLeadingAndTrailingSpaces', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <abc def> but was: <   abc   def>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781.should_ReturnOrderedString_When_InputStringHasLeadingAndTrailingSpaces(GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781.java:94)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781:should_ReturnOrderedString_When_InputStringHasMultipleWords()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781', methodName = 'should_ReturnOrderedString_When_InputStringHasMultipleWords', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <!!!Wdlor Hello> but was: <Hello !!!Wdlor>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781.should_ReturnOrderedString_When_InputStringHasMultipleWords(GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781.java:70)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781:should_ReturnOrderedString_When_InputStringHasMixedCaseWords()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781', methodName = 'should_ReturnOrderedString_When_InputStringHasMixedCaseWords', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <ABcd efgH> but was: <ABcd Hefg>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781.should_ReturnOrderedString_When_InputStringHasMixedCaseWords(GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781.java:76)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781:should_ReturnOrderedString_When_InputStringHasConsecutiveSpaces()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781', methodName = 'should_ReturnOrderedString_When_InputStringHasConsecutiveSpaces', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <abc def> but was: <abc   def>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781.should_ReturnOrderedString_When_InputStringHasConsecutiveSpaces(GeneratedTest_llama3_70b_8192_Java_86_humaneval_role_playing_7082c781.java:88)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 64 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         7 tests found           ]
+[         0 tests skipped         ]
+[         7 tests started         ]
+[         0 tests aborted         ]
+[         3 tests successful      ]
+[         4 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

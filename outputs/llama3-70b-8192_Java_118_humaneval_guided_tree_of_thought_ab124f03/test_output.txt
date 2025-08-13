@@ -1,0 +1,44 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_118_humaneval_guided_tree_of_thought_ab124f03[0m [32m✔[0m
+[36m│     ├─[0m [34mtestGetClosestVowel_yogurt()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestGetClosestVowel_threeCharacters()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestGetClosestVowel_ab()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestGetClosestVowel_quick()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestGetClosestVowel_twoCharacters()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestGetClosestVowel_singleCharacter()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestGetClosestVowel_FULL()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestGetClosestVowel_noVowelInBetween()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestGetClosestVowel_vowelAtStart()[0m [32m✔[0m
+[36m│     └─[0m [34mtestGetClosestVowel_vowelAtEnd()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Test run finished after 54 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[        10 tests found           ]
+[         0 tests skipped         ]
+[        10 tests started         ]
+[         0 tests aborted         ]
+[        10 tests successful      ]
+[         0 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 0

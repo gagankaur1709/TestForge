@@ -1,0 +1,48 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_132_humaneval_role_playing_423a5280[0m [32m✔[0m
+[36m│     ├─[0m [31mshould_return_false_when_input_string_is_null()[0m [31m✘[0m [31mCannot invoke "String.length()" because "<parameter1>" is null[0m
+[36m│     ├─[0m [34mshould_return_false_when_input_string_does_not_have_nested_brackets()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_false_when_input_string_is_empty()[0m [32m✔[0m
+[36m│     └─[0m [34mshould_return_true_when_input_string_has_nested_brackets()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (1):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_132_humaneval_role_playing_423a5280:should_return_false_when_input_string_is_null()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_132_humaneval_role_playing_423a5280', methodName = 'should_return_false_when_input_string_is_null', methodParameterTypes = '']
+    => java.lang.NullPointerException: Cannot invoke "String.length()" because "<parameter1>" is null
+       Solution.isNested(GeneratedTest_llama3_70b_8192_Java_132_humaneval_role_playing_423a5280.java:42)
+       GeneratedTest_llama3_70b_8192_Java_132_humaneval_role_playing_423a5280.should_return_false_when_input_string_is_null(GeneratedTest_llama3_70b_8192_Java_132_humaneval_role_playing_423a5280.java:87)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 49 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         4 tests found           ]
+[         0 tests skipped         ]
+[         4 tests started         ]
+[         0 tests aborted         ]
+[         3 tests successful      ]
+[         1 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

@@ -1,0 +1,63 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_54_humaneval_role_playing_2adb8e18[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldReturnTrueWhenBothStringsHaveSameCharactersInDifferentOrder()[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldReturnFalseWhenStringsHaveDifferentCharacters()[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldReturnTrueWhenBothStringsAreEmpty()[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldReturnFalseWhenStringsHaveDifferentCharactersWithDifferentCounts()[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldReturnTrueWhenBothStringsHaveSameSingleCharacter()[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldReturnTrueWhenBothStringsHaveSameCharacters()[0m [32m✔[0m
+[36m│     ├─[0m [31mshouldReturnFalseWhenOneStringIsNullAndTheOtherIsNot()[0m [31m✘[0m [31mCannot invoke "String.toCharArray()" because "<parameter1>" is null[0m
+[36m│     ├─[0m [34mshouldReturnFalseWhenOneStringIsEmptyAndTheOtherIsNot()[0m [32m✔[0m
+[36m│     ├─[0m [31mshouldReturnFalseWhenBothStringsAreNull()[0m [31m✘[0m [31mCannot invoke "String.toCharArray()" because "<parameter1>" is null[0m
+[36m│     ├─[0m [34mshouldReturnFalseWhenStringsHaveDifferentCharactersInDifferentOrder()[0m [32m✔[0m
+[36m│     └─[0m [34mshouldReturnTrueWhenBothStringsHaveSameCharactersWithDifferentCounts()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (2):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_54_humaneval_role_playing_2adb8e18:shouldReturnFalseWhenOneStringIsNullAndTheOtherIsNot()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_54_humaneval_role_playing_2adb8e18', methodName = 'shouldReturnFalseWhenOneStringIsNullAndTheOtherIsNot', methodParameterTypes = '']
+    => java.lang.NullPointerException: Cannot invoke "String.toCharArray()" because "<parameter1>" is null
+       Solution.sameChars(GeneratedTest_llama3_70b_8192_Java_54_humaneval_role_playing_2adb8e18.java:47)
+       GeneratedTest_llama3_70b_8192_Java_54_humaneval_role_playing_2adb8e18.shouldReturnFalseWhenOneStringIsNullAndTheOtherIsNot(GeneratedTest_llama3_70b_8192_Java_54_humaneval_role_playing_2adb8e18.java:126)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_54_humaneval_role_playing_2adb8e18:shouldReturnFalseWhenBothStringsAreNull()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_54_humaneval_role_playing_2adb8e18', methodName = 'shouldReturnFalseWhenBothStringsAreNull', methodParameterTypes = '']
+    => java.lang.NullPointerException: Cannot invoke "String.toCharArray()" because "<parameter1>" is null
+       Solution.sameChars(GeneratedTest_llama3_70b_8192_Java_54_humaneval_role_playing_2adb8e18.java:47)
+       GeneratedTest_llama3_70b_8192_Java_54_humaneval_role_playing_2adb8e18.shouldReturnFalseWhenBothStringsAreNull(GeneratedTest_llama3_70b_8192_Java_54_humaneval_role_playing_2adb8e18.java:133)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 58 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[        11 tests found           ]
+[         0 tests skipped         ]
+[        11 tests started         ]
+[         0 tests aborted         ]
+[         9 tests successful      ]
+[         2 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

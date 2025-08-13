@@ -1,0 +1,18 @@
+STDOUT:
+
+
+STDERR:
+outputs/llama3-70b-8192_Java_29_humaneval_guided_tree_of_thought_f9c77624/GeneratedTest_llama3_70b_8192_Java_29_humaneval_guided_tree_of_thought_f9c77624.java:84: error: cannot find symbol
+        NullPointerException exception = Assertions.assertThrows(NullPointerException.class, 
+                                         ^
+  symbol:   variable Assertions
+  location: class GeneratedTest_llama3_70b_8192_Java_29_humaneval_guided_tree_of_thought_f9c77624
+outputs/llama3-70b-8192_Java_29_humaneval_guided_tree_of_thought_f9c77624/GeneratedTest_llama3_70b_8192_Java_29_humaneval_guided_tree_of_thought_f9c77624.java:92: error: cannot find symbol
+        NullPointerException exception = Assertions.assertThrows(NullPointerException.class, 
+                                         ^
+  symbol:   variable Assertions
+  location: class GeneratedTest_llama3_70b_8192_Java_29_humaneval_guided_tree_of_thought_f9c77624
+2 errors
+
+
+RETURN CODE: 1

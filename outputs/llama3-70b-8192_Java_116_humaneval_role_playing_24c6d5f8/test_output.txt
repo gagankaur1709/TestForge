@@ -1,0 +1,81 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldSortArrayWithSameBinaryOnesCount()[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldSortEmptyArray()[0m [32m✔[0m
+[36m│     ├─[0m [31mshouldSortArrayWithZero()[0m [31m✘[0m [31mexpected: <[0, 1, 2, 3, 4]> but was: <[0, 1, 2, 4, 3]>[0m
+[36m│     ├─[0m [34mshouldSortArrayWithSingleElement()[0m [32m✔[0m
+[36m│     ├─[0m [31mshouldSortArrayByOnesInBinaryRepresentationAndThenByValue()[0m [31m✘[0m [31mexpected: <[1, 2, 3, 4, 5]> but was: <[1, 2, 4, 3, 5]>[0m
+[36m│     └─[0m [31mshouldSortArrayWithNegativeNumbers()[0m [31m✘[0m [31mexpected: <[-6, -5, -4, -3, -2]> but was: <[-4, -2, -6, -5, -3]>[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (3):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8:shouldSortArrayWithZero()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8', methodName = 'shouldSortArrayWithZero', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <[0, 1, 2, 3, 4]> but was: <[0, 1, 2, 4, 3]>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8.shouldSortArrayWithZero(GeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8.java:83)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8:shouldSortArrayByOnesInBinaryRepresentationAndThenByValue()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8', methodName = 'shouldSortArrayByOnesInBinaryRepresentationAndThenByValue', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <[1, 2, 3, 4, 5]> but was: <[1, 2, 4, 3, 5]>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8.shouldSortArrayByOnesInBinaryRepresentationAndThenByValue(GeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8.java:67)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8:shouldSortArrayWithNegativeNumbers()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8', methodName = 'shouldSortArrayWithNegativeNumbers', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <[-6, -5, -4, -3, -2]> but was: <[-4, -2, -6, -5, -3]>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8.shouldSortArrayWithNegativeNumbers(GeneratedTest_llama3_70b_8192_Java_116_humaneval_role_playing_24c6d5f8.java:75)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 61 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         6 tests found           ]
+[         0 tests skipped         ]
+[         6 tests started         ]
+[         0 tests aborted         ]
+[         3 tests successful      ]
+[         3 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

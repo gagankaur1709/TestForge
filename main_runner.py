@@ -4,6 +4,7 @@ from config import Config
 import os
 import subprocess
 import json
+import time
 from discovery import discover_classes_in_project
 
 # Define the LLM providers and models to test
@@ -68,7 +69,7 @@ def prepare_benchmark(benchmark_name: str):
     return True
 
 
-def main(run_mode='springboot'):
+def main(run_mode='humaneval'):
     db_path = Config.DATABASE_PATH
     if os.path.exists(db_path):
         print(f"Using existing database at: {db_path}")
@@ -134,6 +135,10 @@ def main(run_mode='springboot'):
                         )
                     except Exception as e:
                         print(f"!!!!!! An error occurred for {provider}/{model}/{strategy} on {scenario}: {e} !!!!!!")
+                    
+                    # Wait 5 seconds between requests to avoid rate limiting
+                    print("Waiting 5 seconds before next experiment...")
+                    time.sleep(5)
 
     print("\n--- EXPERIMENT EXECUTION COMPLETE ---")
     print("All experiments have been executed. Check the database and the 'outputs' directory for results.")

@@ -1,0 +1,48 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_11_humaneval_constraint_based_4d675956[0m [32m✔[0m
+[36m│     ├─[0m [34mTest stringXor with valid inputs[0m [32m✔[0m
+[36m│     └─[0m [36mTest stringXor with edge cases[0m [32m✔[0m
+[36m│        ├─[0m [34m[1] 0, 0, 0[0m [32m✔[0m
+[36m│        ├─[0m [34m[2] 1, 1, 0[0m [32m✔[0m
+[36m│        ├─[0m [34m[3] 10, 10, 00[0m [32m✔[0m
+[36m│        ├─[0m [34m[4] 11, 11, 00[0m [32m✔[0m
+[36m│        ├─[0m [34m[5] 1010, 1010, 0000[0m [32m✔[0m
+[36m│        ├─[0m [34m[6] 1111, 1111, 0000[0m [32m✔[0m
+[36m│        ├─[0m [34m[7] 0, 1, 1[0m [32m✔[0m
+[36m│        ├─[0m [34m[8] 1, 0, 1[0m [32m✔[0m
+[36m│        ├─[0m [34m[9] 10, 11, 01[0m [32m✔[0m
+[36m│        ├─[0m [34m[10] 11, 10, 01[0m [32m✔[0m
+[36m│        ├─[0m [34m[11] 1010, 1111, 0101[0m [32m✔[0m
+[36m│        └─[0m [34m[12] 1111, 1010, 0101[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Test run finished after 78 ms
+[         5 containers found      ]
+[         0 containers skipped    ]
+[         5 containers started    ]
+[         0 containers aborted    ]
+[         5 containers successful ]
+[         0 containers failed     ]
+[        13 tests found           ]
+[         0 tests skipped         ]
+[        13 tests started         ]
+[         0 tests aborted         ]
+[        13 tests successful      ]
+[         0 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 0

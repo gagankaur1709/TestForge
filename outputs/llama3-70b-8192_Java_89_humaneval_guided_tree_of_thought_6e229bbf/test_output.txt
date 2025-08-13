@@ -1,0 +1,69 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_89_humaneval_guided_tree_of_thought_6e229bbf[0m [32m✔[0m
+[36m│     ├─[0m [31mtestEncrypt_SingleLetter()[0m [31m✘[0m [31mexpected: <mm> but was: <pp>[0m
+[36m│     ├─[0m [31mtestEncrypt_NonAlphabeticCharacters()[0m [31m✘[0m [31mexpected: <h3 ll!> but was: <l3 pp!>[0m
+[36m│     ├─[0m [34mtestEncrypt_EmptyString()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestEncrypt_HappyPath()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestEncrypt_MultipleLetters()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestEncrypt_TwoLettersWithET()[0m [32m✔[0m
+[36m│     └─[0m [34mtestEncrypt_TwoLetters()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (2):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_89_humaneval_guided_tree_of_thought_6e229bbf:testEncrypt_SingleLetter()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_89_humaneval_guided_tree_of_thought_6e229bbf', methodName = 'testEncrypt_SingleLetter', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <mm> but was: <pp>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_89_humaneval_guided_tree_of_thought_6e229bbf.testEncrypt_SingleLetter(GeneratedTest_llama3_70b_8192_Java_89_humaneval_guided_tree_of_thought_6e229bbf.java:94)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_89_humaneval_guided_tree_of_thought_6e229bbf:testEncrypt_NonAlphabeticCharacters()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_89_humaneval_guided_tree_of_thought_6e229bbf', methodName = 'testEncrypt_NonAlphabeticCharacters', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <h3 ll!> but was: <l3 pp!>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_89_humaneval_guided_tree_of_thought_6e229bbf.testEncrypt_NonAlphabeticCharacters(GeneratedTest_llama3_70b_8192_Java_89_humaneval_guided_tree_of_thought_6e229bbf.java:84)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 62 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         7 tests found           ]
+[         0 tests skipped         ]
+[         7 tests started         ]
+[         0 tests aborted         ]
+[         5 tests successful      ]
+[         2 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

@@ -1,0 +1,80 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465[0m [32m✔[0m
+[36m│     ├─[0m [34mtestSortArraySingleElement()[0m [32m✔[0m
+[36m│     ├─[0m [31mtestSortArrayZeroAndOnes()[0m [31m✘[0m [31mexpected: <[0, 1, 2, 3, 4]> but was: <[0, 1, 2, 4, 3]>[0m
+[36m│     ├─[0m [31mtestSortArrayHappyPath()[0m [31m✘[0m [31mexpected: <[1, 2, 3, 4, 5]> but was: <[1, 2, 4, 3, 5]>[0m
+[36m│     ├─[0m [34mtestSortArrayEmptyList()[0m [32m✔[0m
+[36m│     └─[0m [31mtestSortArrayNegativeNumbers()[0m [31m✘[0m [31mexpected: <[-6, -5, -4, -3, -2]> but was: <[-4, -2, -6, -5, -3]>[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (3):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465:testSortArrayZeroAndOnes()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465', methodName = 'testSortArrayZeroAndOnes', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <[0, 1, 2, 3, 4]> but was: <[0, 1, 2, 4, 3]>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465.testSortArrayZeroAndOnes(GeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465.java:81)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465:testSortArrayHappyPath()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465', methodName = 'testSortArrayHappyPath', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <[1, 2, 3, 4, 5]> but was: <[1, 2, 4, 3, 5]>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465.testSortArrayHappyPath(GeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465.java:67)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465:testSortArrayNegativeNumbers()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465', methodName = 'testSortArrayNegativeNumbers', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <[-6, -5, -4, -3, -2]> but was: <[-4, -2, -6, -5, -3]>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465.testSortArrayNegativeNumbers(GeneratedTest_llama3_70b_8192_Java_116_humaneval_constraint_based_36581465.java:74)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 54 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         5 tests found           ]
+[         0 tests skipped         ]
+[         5 tests started         ]
+[         0 tests aborted         ]
+[         2 tests successful      ]
+[         3 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

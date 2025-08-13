@@ -1,0 +1,44 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_39_humaneval_role_playing_f6cea98f[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_433494437_when_n_is_10()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_13_when_n_is_4()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_5_when_n_is_3()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_514229_when_n_is_9()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_3_when_n_is_2()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_2_when_n_is_1()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_28657_when_n_is_8()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_1597_when_n_is_7()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_233_when_n_is_6()[0m [32m✔[0m
+[36m│     └─[0m [34mshould_return_89_when_n_is_5()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Test run finished after 52 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[        10 tests found           ]
+[         0 tests skipped         ]
+[        10 tests started         ]
+[         0 tests aborted         ]
+[        10 tests successful      ]
+[         0 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 0

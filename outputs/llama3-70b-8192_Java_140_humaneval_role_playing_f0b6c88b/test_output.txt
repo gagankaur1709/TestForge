@@ -1,0 +1,52 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_140_humaneval_role_playing_f0b6c88b[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldReturnOriginalStringWhenNoSpaces()[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldReplaceMultipleTrailingSpacesWithHyphen()[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldReplaceTrailingSpacesWithUnderscore()[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldReplaceMultipleSpacesWithHyphen()[0m [32m✔[0m
+[36m│     ├─[0m [34mshouldReplaceLeadingSpaceWithUnderscore()[0m [32m✔[0m
+[36m│     ├─[0m [31mshouldHandleNullInput()[0m [31m✘[0m [31mCannot invoke "String.length()" because "<parameter1>" is null[0m
+[36m│     ├─[0m [34mshouldHandleEmptyString()[0m [32m✔[0m
+[36m│     └─[0m [34mshouldReplaceSingleSpaceWithUnderscore()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (1):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_140_humaneval_role_playing_f0b6c88b:shouldHandleNullInput()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_140_humaneval_role_playing_f0b6c88b', methodName = 'shouldHandleNullInput', methodParameterTypes = '']
+    => java.lang.NullPointerException: Cannot invoke "String.length()" because "<parameter1>" is null
+       Solution.fixSpaces(GeneratedTest_llama3_70b_8192_Java_140_humaneval_role_playing_f0b6c88b.java:41)
+       GeneratedTest_llama3_70b_8192_Java_140_humaneval_role_playing_f0b6c88b.shouldHandleNullInput(GeneratedTest_llama3_70b_8192_Java_140_humaneval_role_playing_f0b6c88b.java:111)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 54 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         8 tests found           ]
+[         0 tests skipped         ]
+[         8 tests started         ]
+[         0 tests aborted         ]
+[         7 tests successful      ]
+[         1 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

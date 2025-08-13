@@ -1,0 +1,54 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_29_humaneval_role_playing_c376998d[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_list_with_strings_starting_with_prefix()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_empty_list_when_input_list_is_empty()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_empty_list_when_no_strings_start_with_prefix()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_list_with_all_strings_when_prefix_is_empty()[0m [32m✔[0m
+[36m│     └─[0m [31mshould_return_list_with_strings_starting_with_prefix_case_insensitive()[0m [31m✘[0m [31mexpected: <[Abc, Array]> but was: <[]>[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (1):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_29_humaneval_role_playing_c376998d:should_return_list_with_strings_starting_with_prefix_case_insensitive()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_29_humaneval_role_playing_c376998d', methodName = 'should_return_list_with_strings_starting_with_prefix_case_insensitive', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <[Abc, Array]> but was: <[]>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_29_humaneval_role_playing_c376998d.should_return_list_with_strings_starting_with_prefix_case_insensitive(GeneratedTest_llama3_70b_8192_Java_29_humaneval_role_playing_c376998d.java:113)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 53 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         5 tests found           ]
+[         0 tests skipped         ]
+[         5 tests started         ]
+[         0 tests aborted         ]
+[         4 tests successful      ]
+[         1 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

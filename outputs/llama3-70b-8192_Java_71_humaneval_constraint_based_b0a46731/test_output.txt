@@ -1,0 +1,68 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731[0m [32m✔[0m
+[36m│     ├─[0m [31mtestValidTriangle()[0m [31m✘[0m [31mCannot invoke "Solution.triangleArea(double, double, double)" because "this.solution" is null[0m
+[36m│     ├─[0m [31mtestInvalidTriangle()[0m [31m✘[0m [31mCannot invoke "Solution.triangleArea(double, double, double)" because "this.solution" is null[0m
+[36m│     ├─[0m [31mtestEdgeCaseEqualSides()[0m [31m✘[0m [31mCannot invoke "Solution.triangleArea(double, double, double)" because "this.solution" is null[0m
+[36m│     └─[0m [31mtestEdgeCaseZero()[0m [31m✘[0m [31mCannot invoke "Solution.triangleArea(double, double, double)" because "this.solution" is null[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (4):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731:testValidTriangle()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731', methodName = 'testValidTriangle', methodParameterTypes = '']
+    => java.lang.NullPointerException: Cannot invoke "Solution.triangleArea(double, double, double)" because "this.solution" is null
+       GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731.testValidTriangle(GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731.java:56)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731:testInvalidTriangle()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731', methodName = 'testInvalidTriangle', methodParameterTypes = '']
+    => java.lang.NullPointerException: Cannot invoke "Solution.triangleArea(double, double, double)" because "this.solution" is null
+       GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731.testInvalidTriangle(GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731.java:61)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731:testEdgeCaseEqualSides()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731', methodName = 'testEdgeCaseEqualSides', methodParameterTypes = '']
+    => java.lang.NullPointerException: Cannot invoke "Solution.triangleArea(double, double, double)" because "this.solution" is null
+       GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731.testEdgeCaseEqualSides(GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731.java:71)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731:testEdgeCaseZero()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731', methodName = 'testEdgeCaseZero', methodParameterTypes = '']
+    => java.lang.NullPointerException: Cannot invoke "Solution.triangleArea(double, double, double)" because "this.solution" is null
+       GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731.testEdgeCaseZero(GeneratedTest_llama3_70b_8192_Java_71_humaneval_constraint_based_b0a46731.java:66)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 49 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         4 tests found           ]
+[         0 tests skipped         ]
+[         4 tests started         ]
+[         0 tests aborted         ]
+[         0 tests successful      ]
+[         4 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

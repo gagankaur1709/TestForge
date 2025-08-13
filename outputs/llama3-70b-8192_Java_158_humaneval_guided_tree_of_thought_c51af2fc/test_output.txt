@@ -1,0 +1,54 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_158_humaneval_guided_tree_of_thought_c51af2fc[0m [32m✔[0m
+[36m│     ├─[0m [34mtestFindMax_SingleWord()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestFindMax_HappyPath()[0m [32m✔[0m
+[36m│     ├─[0m [31mtestFindMax_EmptyList()[0m [31m✘[0m [31mIndex -1 out of bounds for length 0[0m
+[36m│     ├─[0m [34mtestFindMax_MultipleMaxUniqueCharacters()[0m [32m✔[0m
+[36m│     └─[0m [34mtestFindMax_SameUniqueCharacters()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (1):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_158_humaneval_guided_tree_of_thought_c51af2fc:testFindMax_EmptyList()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_158_humaneval_guided_tree_of_thought_c51af2fc', methodName = 'testFindMax_EmptyList', methodParameterTypes = '']
+    => java.lang.IndexOutOfBoundsException: Index -1 out of bounds for length 0
+       java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:100)
+       java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:106)
+       java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:302)
+       java.base/java.util.Objects.checkIndex(Objects.java:359)
+       java.base/java.util.ArrayList.get(ArrayList.java:427)
+       Solution.findMax(GeneratedTest_llama3_70b_8192_Java_158_humaneval_guided_tree_of_thought_c51af2fc.java:63)
+       GeneratedTest_llama3_70b_8192_Java_158_humaneval_guided_tree_of_thought_c51af2fc.testFindMax_EmptyList(GeneratedTest_llama3_70b_8192_Java_158_humaneval_guided_tree_of_thought_c51af2fc.java:113)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 56 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         5 tests found           ]
+[         0 tests skipped         ]
+[         5 tests started         ]
+[         0 tests aborted         ]
+[         4 tests successful      ]
+[         1 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

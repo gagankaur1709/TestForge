@@ -33,7 +33,6 @@ data/experiments.db
 test_outputs/
 reports/
 *.log
-outputs/
 
 pmd_report.xml
 

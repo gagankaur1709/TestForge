@@ -1,0 +1,69 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_140_humaneval_guided_tree_of_thought_ee562a92[0m [32m✔[0m
+[36m│     ├─[0m [34mtestFixSpaces_NoSpaces()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestFixSpaces_MultipleSpaces()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestFixSpaces_LeadingSpace()[0m [32m✔[0m
+[36m│     ├─[0m [34mtestFixSpaces_SingleSpace()[0m [32m✔[0m
+[36m│     ├─[0m [31mtestFixSpaces_MultipleConsecutiveSpaces()[0m [31m✘[0m [31mexpected: <_Example-_4> but was: <_Example-4->[0m
+[36m│     ├─[0m [31mtestFixSpaces_TrailingSpaces()[0m [31m✘[0m [31mexpected: <_Example_5> but was: <_Example_5->[0m
+[36m│     └─[0m [34mtestFixSpaces_EmptyString()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (2):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_140_humaneval_guided_tree_of_thought_ee562a92:testFixSpaces_MultipleConsecutiveSpaces()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_140_humaneval_guided_tree_of_thought_ee562a92', methodName = 'testFixSpaces_MultipleConsecutiveSpaces', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <_Example-_4> but was: <_Example-4->
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_140_humaneval_guided_tree_of_thought_ee562a92.testFixSpaces_MultipleConsecutiveSpaces(GeneratedTest_llama3_70b_8192_Java_140_humaneval_guided_tree_of_thought_ee562a92.java:96)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_140_humaneval_guided_tree_of_thought_ee562a92:testFixSpaces_TrailingSpaces()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_140_humaneval_guided_tree_of_thought_ee562a92', methodName = 'testFixSpaces_TrailingSpaces', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <_Example_5> but was: <_Example_5->
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       GeneratedTest_llama3_70b_8192_Java_140_humaneval_guided_tree_of_thought_ee562a92.testFixSpaces_TrailingSpaces(GeneratedTest_llama3_70b_8192_Java_140_humaneval_guided_tree_of_thought_ee562a92.java:101)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 59 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         7 tests found           ]
+[         0 tests skipped         ]
+[         7 tests started         ]
+[         0 tests aborted         ]
+[         5 tests successful      ]
+[         2 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

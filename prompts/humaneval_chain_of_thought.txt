@@ -15,6 +15,9 @@ Follow this reasoning framework precisely:
     * Design a "happy path" test case with a standard input to verify the primary functionality.
     * Design at least three "edge case" test cases based on your analysis to test the solution's robustness.
     * For each test case, determine the correct expected output based on the problem description.
+    * **IMPORTANT**: For each test case, determine the correct expected output based on the ACTUAL solution implementation, not assumptions.
+    * **CRITICAL**: If the solution doesn't handle null/edge cases, your test should expect the appropriate exception or behavior.
+    * **IMPORTANT**: Do NOT test for exceptions that are not present in the solution. Focus on testing the actual functionality.
 
 3.  **FINAL CODE IMPLEMENTATION:**
     * Generate a complete, compilable JUnit 5 test class.

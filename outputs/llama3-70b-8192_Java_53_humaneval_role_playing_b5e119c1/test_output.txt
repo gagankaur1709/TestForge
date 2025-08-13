@@ -1,0 +1,56 @@
+STDOUT:
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+[36m╷[0m
+[36m├─[0m [36mJUnit Jupiter[0m [32m✔[0m
+[36m│  └─[0m [36mGeneratedTest_llama3_70b_8192_Java_53_humaneval_role_playing_b5e119c1[0m [32m✔[0m
+[36m│     ├─[0m [31mshould_return_sum_when_adding_two_max_integer_values()[0m [31m✘[0m [31mexpected: <-2147483647> but was: <-2>[0m
+[36m│     ├─[0m [34mshould_return_sum_when_adding_two_negative_numbers()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_sum_when_adding_two_positive_numbers()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_sum_when_adding_zero_and_positive_number()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_sum_when_adding_zero_and_negative_number()[0m [32m✔[0m
+[36m│     ├─[0m [34mshould_return_sum_when_adding_two_min_integer_values()[0m [32m✔[0m
+[36m│     └─[0m [34mshould_return_sum_when_adding_positive_and_negative_numbers()[0m [32m✔[0m
+[36m├─[0m [36mJUnit Vintage[0m [32m✔[0m
+[36m└─[0m [36mJUnit Platform Suite[0m [32m✔[0m
+
+Failures (1):
+  JUnit Jupiter:GeneratedTest_llama3_70b_8192_Java_53_humaneval_role_playing_b5e119c1:should_return_sum_when_adding_two_max_integer_values()
+    MethodSource [className = 'GeneratedTest_llama3_70b_8192_Java_53_humaneval_role_playing_b5e119c1', methodName = 'should_return_sum_when_adding_two_max_integer_values', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <-2147483647> but was: <-2>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:145)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:531)
+       GeneratedTest_llama3_70b_8192_Java_53_humaneval_role_playing_b5e119c1.should_return_sum_when_adding_two_max_integer_values(GeneratedTest_llama3_70b_8192_Java_53_humaneval_role_playing_b5e119c1.java:81)
+       java.base/java.lang.reflect.Method.invoke(Method.java:577)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+Test run finished after 55 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         7 tests found           ]
+[         0 tests skipped         ]
+[         7 tests started         ]
+[         0 tests aborted         ]
+[         6 tests successful      ]
+[         1 tests failed          ]
+
+
+
+STDERR:
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+
+
+RETURN CODE: 1

@@ -1,0 +1,18 @@
+STDOUT:
+
+
+STDERR:
+outputs/llama3-70b-8192_Java_47_humaneval_role_playing_26d80429/GeneratedTest_llama3_70b_8192_Java_47_humaneval_role_playing_26d80429.java:106: error: cannot find symbol
+        List<Integer> list = mock(List.class);
+                             ^
+  symbol:   method mock(Class<List>)
+  location: class GeneratedTest_llama3_70b_8192_Java_47_humaneval_role_playing_26d80429
+outputs/llama3-70b-8192_Java_47_humaneval_role_playing_26d80429/GeneratedTest_llama3_70b_8192_Java_47_humaneval_role_playing_26d80429.java:113: error: cannot find symbol
+        verify(list).sort();
+        ^
+  symbol:   method verify(List<Integer>)
+  location: class GeneratedTest_llama3_70b_8192_Java_47_humaneval_role_playing_26d80429
+2 errors
+
+
+RETURN CODE: 1
