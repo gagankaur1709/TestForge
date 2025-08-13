@@ -21,7 +21,6 @@ BENCHMARK_TO_ANALYZE = "spring-petclinic"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def load_data_from_db(benchmark_name: str) -> pd.DataFrame:
-    """Loads and prepares the data from the SQLite database."""
     print(f"Loading data from database: {DB_PATH}")
     try:
         conn = sqlite3.connect(DB_PATH)
