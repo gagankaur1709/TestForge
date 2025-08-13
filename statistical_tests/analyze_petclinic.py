@@ -6,10 +6,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 import sys
+import json
+from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import Config
+from database import add_statistical_result
 
 DB_PATH = Config.DATABASE_PATH
 OUTPUT_DIR = "analysis_results"
@@ -51,13 +54,29 @@ def perform_statistical_analysis(df: pd.DataFrame, metric: str, traditional_tool
     print(f"  H-statistic: {h_statistic:.4f}, P-value: {p_value:.4f}")
     if p_value < 0.05:
         print("  => Result is STATISTICALLY SIGNIFICANT. There are differences among the methods.")
+        is_significant = True
     else:
         print("  => Result is NOT statistically significant.")
+        is_significant = False
 
     best_llm_method = successful_df[successful_df['method'].isin(llm_methods)].groupby('method')[metric].median().idxmax()
     print(f"\nIdentifying best LLM method based on median '{metric}': {best_llm_method}")
 
     llm_data = successful_df[successful_df['method'] == best_llm_method][metric].dropna()
+
+    add_statistical_result({
+        'benchmark_name': BENCHMARK_TO_ANALYZE,
+        'metric_name': metric,
+        'test_type': 'kruskal_wallis',
+        'test_statistic': h_statistic,
+        'p_value': p_value,
+        'is_significant': is_significant,
+        'significance_level': 0.05,
+        'sample_size': len(successful_df),
+        'group_names': json.dumps(all_methods),
+        'posthoc_results': None,
+        'analysis_stage': 'overall_comparison'
+    })
 
     for tool in traditional_tools:
         print(f"\nComparing '{best_llm_method}' vs. '{tool}' (Mann-Whitney U Test):")
@@ -67,8 +86,24 @@ def perform_statistical_analysis(df: pd.DataFrame, metric: str, traditional_tool
             print(f"  U-statistic: {u_statistic:.4f}, P-value: {p_value:.4f}")
             if p_value < 0.05:
                 print("  => Result is STATISTICALLY SIGNIFICANT. The two methods are different.")
+                is_significant = True
             else:
                 print("  => Result is NOT statistically significant.")
+                is_significant = False
+        
+            add_statistical_result({
+                'benchmark_name': BENCHMARK_TO_ANALYZE,
+                'metric_name': metric,
+                'test_type': 'mann_whitney_u',
+                'test_statistic': u_statistic,
+                'p_value': p_value,
+                'is_significant': is_significant,
+                'significance_level': 0.05,
+                'sample_size': len(llm_data) + len(tool_data),
+                'group_names': json.dumps([best_llm_method, tool]),
+                'posthoc_results': None,
+                'analysis_stage': 'pairwise_comparison'
+            })
         else:
             print("  Not enough data to compare.")
 
@@ -100,8 +135,23 @@ def analyze_correction_distance(df: pd.DataFrame, llm_methods: list):
     print(f"  H-statistic: {h_statistic:.4f}, P-value: {p_value:.4f}")
     if p_value < 0.05:
         print("  => Result is STATISTICALLY SIGNIFICANT. There are differences in correction distance among LLM methods.")
+        is_significant = True
     else:
         print("  => Result is NOT statistically significant.")
+        is_significant = False
+    add_statistical_result({
+        'benchmark_name': BENCHMARK_TO_ANALYZE,
+        'metric_name': 'correction_distance',
+        'test_type': 'kruskal_wallis',
+        'test_statistic': h_statistic,
+        'p_value': p_value,
+        'is_significant': is_significant,
+        'significance_level': 0.05,
+        'sample_size': len(llm_df),
+        'group_names': json.dumps(list(methods_with_data)),
+        'posthoc_results': None,
+        'analysis_stage': 'correction_distance_analysis'
+    })
     
     print("\nCorrection Distance Summary by Method:")
     summary = llm_df.groupby('method')['correction_distance'].agg(['count', 'mean', 'median', 'std', 'min', 'max'])
