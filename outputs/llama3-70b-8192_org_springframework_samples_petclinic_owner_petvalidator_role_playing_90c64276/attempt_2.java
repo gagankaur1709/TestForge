@@ -15,7 +15,7 @@ import org.springframework.samples.petclinic.owner.Pet;
 import org.springframework.validation.Errors;
 
 @ExtendWith(MockitoExtension.class)
-public class PetValidatorTest {
+public class GeneratedTest_llama3_70b_8192_org_springframework_samples_petclinic_owner_petvalidator_role_playing_90c64276 {
 
     @Mock
     private Errors errors;

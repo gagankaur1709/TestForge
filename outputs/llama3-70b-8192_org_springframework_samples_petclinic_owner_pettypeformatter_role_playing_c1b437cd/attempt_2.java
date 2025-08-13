@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PetTypeFormatterTest {
+public class GeneratedTest_llama3_70b_8192_org_springframework_samples_petclinic_owner_pettypeformatter_role_playing_c1b437cd {
 
     @Mock
     private PetTypeRepository types;

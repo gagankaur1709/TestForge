@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class VetServiceTest {
+public class GeneratedTest_llama3_70b_8192_org_springframework_samples_petclinic_vet_vet_guided_tree_of_thought_3cafd665 {
 
     @Mock
     private VetRepository vetRepository;

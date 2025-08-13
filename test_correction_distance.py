@@ -5,10 +5,10 @@ import sys
 from evaluation.maintainability import calculate_correction_distance
 
 
-RESULTS_DIR = "pilot_study_results/outputs" 
+RESULTS_DIR = "Spring_study_results/outputs" 
 FOLDER_PREFIX = "llama3-70b-8192"
-FAILED_FILE_NAME = "FailedTest_attempt_1.java"
-CORRECTED_FILE_NAME = "Corrected_attempt_1.java"
+FAILED_FILE_NAME = "attempt_2.java"
+CORRECTED_FILE_NAME = "Corrected_attempt.java"
 
 def test_distance_calculation():
     print(f"--- Testing Correction Distance Calculation ---")

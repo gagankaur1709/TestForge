@@ -17,7 +17,6 @@
           <div>
             <label for="model_name" class="block text-sm font-medium text-gray-700">Specific Model</label>
             <select id="model_name" name="model_name" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-              <!-- Options will be populated by JavaScript -->
             </select>
           </div>
 
@@ -65,10 +64,8 @@
       });
     }
 
-    // Update models when the provider changes
     providerSelect.addEventListener('change', updateModelOptions);
 
-    // Initial population
     document.addEventListener('DOMContentLoaded', updateModelOptions);
   </script>
 {% endblock %}
