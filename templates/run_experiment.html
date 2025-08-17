@@ -45,7 +45,9 @@
 
           <div id="scenario_section" class="md:col-span-2" style="display: none;">
             <label for="scenario_name" class="block text-sm font-medium text-gray-700">Scenario Name (Optional)</label>
-            <input type="text" id="scenario_name" name="scenario_name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., org_springframework_samples_petclinic_owner_ownercontroller">
+            <input type="text" id="scenario_name" name="scenario_name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Leave empty to use first available scenario">
+            <p class="mt-1 text-sm text-gray-500">For Spring-PetClinic: e.g., org_springframework_samples_petclinic_owner_ownercontroller</p>
+            <p class="mt-1 text-sm text-gray-500">For HumanEval: e.g., Java_0, Java_1, etc.</p>
           </div>
         </div>
         
@@ -157,7 +159,7 @@
 
     function toggleScenarioSection() {
       const selectedBenchmark = benchmarkSelect.value;
-      if (selectedBenchmark === 'spring-petclinic') {
+      if (selectedBenchmark === 'spring-petclinic' || selectedBenchmark === 'humaneval') {
         scenarioSection.style.display = 'block';
       } else {
         scenarioSection.style.display = 'none';
