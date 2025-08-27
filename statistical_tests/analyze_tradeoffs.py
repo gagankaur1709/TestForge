@@ -24,7 +24,10 @@ def load_and_prepare_data(benchmark_name: str) -> pd.DataFrame:
         print(f"Successfully loaded {len(df)} total records.")
         df_filtered = df[df['benchmark_name'] == benchmark_name].copy()
         
-        df_filtered['method'] = df_filtered['generator_name'].apply(lambda x: x.split(' ')[0])
+        # Create comprehensive method names including prompt strategies
+        df_filtered['method'] = df_filtered.apply(lambda row: 
+            row['generator_name'] if row['prompt_strategy'] is None or pd.isna(row['prompt_strategy'])
+            else f"{row['generator_name']} ({row['prompt_strategy']})", axis=1)
         
         print(f"Found {len(df_filtered)} records for benchmark: '{benchmark_name}'")
         return df_filtered
@@ -113,12 +116,71 @@ def generate_tradeoff_visualization(summary_df: pd.DataFrame):
     print(f"Trade-off plot saved to: {output_path}")
     plt.close()
 
+def generate_financial_tradeoff_plot(summary_df: pd.DataFrame):
+    llm_summary = summary_df[summary_df['avg_token_cost'] > 0]
+    
+    if llm_summary.empty:
+        print("No LLM data with token costs found, skipping financial trade-off plot.")
+        return
+        
+    print("\n--- Generating Financial Trade-off Visualization ---")
+    
+    plt.figure(figsize=(12, 8))
+    
+    bubble_sizes = llm_summary['avg_cyclomatic_complexity'] * 20  
+    scatter = plt.scatter(
+        llm_summary['avg_token_cost'],
+        llm_summary['avg_line_coverage'],
+        s=bubble_sizes,
+        c=range(len(llm_summary)),
+        cmap='viridis',
+        alpha=0.7,
+        edgecolors='black',
+        linewidth=2
+    )
+    
+    # Add method labels
+    for i, method in enumerate(llm_summary['method']):
+        token_cost = llm_summary['avg_token_cost'].iloc[i]
+        coverage = llm_summary['avg_line_coverage'].iloc[i]
+        complexity = llm_summary['avg_cyclomatic_complexity'].iloc[i]
+        
+        method_short = method.split('(')[-1].replace(')', '') if '(' in method else method
+        
+        plt.annotate(
+            f"{method_short}\n({token_cost:.0f} tokens)",
+            (token_cost, coverage),
+            xytext=(10, 10),
+            textcoords='offset points',
+            fontsize=11,
+            fontweight='bold',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8),
+            ha='left'
+        )
+    
+    plt.title(f"Token Cost vs Coverage Effectiveness on {BENCHMARK_TO_ANALYZE}\n(Bubble size = Cyclomatic Complexity)", fontsize=16, weight='bold')
+    plt.xlabel("Average Token Cost (tokens)", fontsize=14)
+    plt.ylabel("Average Line Coverage (%)", fontsize=14)
+    plt.grid(True, alpha=0.3)
+    
+    plt.axhline(y=llm_summary['avg_line_coverage'].median(), color='grey', linestyle='--', alpha=0.5, label='Median Coverage')
+    plt.axvline(x=llm_summary['avg_token_cost'].median(), color='grey', linestyle='--', alpha=0.5, label='Median Cost')
+    plt.legend()
+    
+    plt.tight_layout()
+    
+    output_path = os.path.join(OUTPUT_DIR, "token_cost_vs_coverage.png")
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    print(f"Token Cost vs Coverage plot saved to: {output_path}")
+    plt.close()
+
 def main():
     df_petclinic = load_and_prepare_data(BENCHMARK_TO_ANALYZE)
     if df_petclinic.empty: return
         
     summary_data = create_summary_table(df_petclinic)
     generate_tradeoff_visualization(summary_data)
+    generate_financial_tradeoff_plot(summary_data)
 
     print("\n--- Analysis for RQ3 Complete ---")
 
